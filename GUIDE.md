@@ -14,8 +14,8 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
 In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the game, but crying about it doesn't help.
 
 ## Contents of repo.
-- AutoKey_data : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands, the is done by clicking `set` and then on the widelands window. 
-- AutoKey_data individual files : fore each in autokey select them and click `Hotkey`, then define it by clicking `set` in the dialog and then press the actual keyboard key such as F1. make sure you save. This is not a tutorial on autokey, passed this do your own research.
+- AutoKey_data : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands, this is done by clicking `set` and then on the widelands window. 
+- AutoKey_data individual files : fore each in autokey select them and click `Hotkey`, then define it by clicking `set` in the dialog and then press the actual keyboard key such as F1. make sure you save. This is not a tutorial on autokey, passed this do your own research if your stumped, tell grok it'll help.
 - Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. I have it as the dir above the current module directory and then into Sounds blah blah.
 
 ## General Shortcuts (set in AutoKey)
