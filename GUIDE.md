@@ -38,6 +38,9 @@ I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual building
 - `in_building_dialog`: Actions on building dialogs, e.g. Amazon Woodcutter upgrade the building to Rare Tree Cutter. Or Dismantle with ctrl held. This can be very dangerous if you don't pay attention.
 - `call_shortcut()`: is the main engine for sending to 'race' defined functions. If 'Amazon' is selected in `race()` then a call to this with "Shortcut" key e.g. if the AutoKey is F1 `widelands.call_shortcut('F1',keyboard)`, then it will call `Amazon_F1`. If race is "1" which is Atlantean then function will be `Atlantean_F1` — all logical.
 
+## Creating Your Own Functions
+I tried my best to use unused game keys but obviously some of the F keys are used by the game but now my macro is capturing them instead. I was using the 'dot' key as well until my last build where I use the space bar for pause instead. The `.` is no longer used but for those who want to keep pause at `pause` and not use `space` I've left it as unused. You can use it to build, dismantle, upgrade or other if you want.
+
 ## Keyboard Shortcuts
 
 ### Development & General
