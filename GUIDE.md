@@ -1,7 +1,7 @@
 # Detailed Guide - Widelands AutoKey Macros
 
 ## Background
-Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover over site and hit the keyboard shortcut and the building was built. This is a far better improvement on that simplistic version.
+Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover Mouse over site and hit the keyboard shortcut and the building is built. This is a far better improvement on that simplistic version with more features.
 
 ## Environment
 - **Widelands version**: 1.3  
@@ -13,40 +13,40 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
 ## Overview
 In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the game, but crying about it doesn't help.
 
-The **detect icon under the mouse** only works on clean icons, not ones under trees or such, so it is limited by that. In general however: hover mouse over build icon and it will figure if it is **Red**, **Orange** or **Green**. From there it will build whatever that 'key' is associated with. Since this was originally created when I was obsessed with Atlantean, it has a really good setup for it — example: hover over a build icon and hit F1 it will build a Quarry. F2 builds a woodcutter etc.
+The **detect icon under the mouse** only works on clean icons, not ones under trees or such, so it is limited by that. In general however: hover mouse over build icon and it will figure if it is **Red**, **Orange** or **Green**. From there it will build whatever that 'key' is associated with. Since this was originally created when I was obsessed with Atlantean, it has a good setup for it — example: hover over a build icon and hit F1 it will build a Quarry. F2 builds a woodcutter etc. Since this version was designed using Amazon there are more functions..
 
 ## General Shortcuts (set in AutoKey)
-I'm using F1 to F12, `[]\;',/(tab) for individual buildings and some functions. The feedback is a quick **pause-unpause**. So you can build during a game pause. This obviously, like all code, can be modified. I've labeled all functions as friendly as possible.
+I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual buildings and some functions. The feedback is a quick **pause-unpause**. So you can build during a game pause. This obviously, like all code, can be modified. I've labeled all functions as friendly as possible.
 
 **Keep in mind**: ONLY Amazon and Atlantean have functioning macros. The other three have not been done — just Python functions have been created for ease of modification when ready.
 
 ## Some Important Notes
 - `DEBUG = False`  
-  If this is `True` it will be very slow as it is writing images to your 'temp' dir — there are literally thousands of writes.
+  If this is `True` it will be very slow as it is writing images to your 'temp' dir. Be patient this is for getting things honed in, not for game play.
 - In this game I use `/dev/shm/` (WORK_PATH). Your choice — I have an SSD.
-- `WORK_PATH` is a **Must**! It is not only for debugging — it is also where the module saves its transient info on whether you are selecting the first flag of a road or is this your second (destination) selection. `;'/"` are my most common used keys and if you use AutoKey's remember state, it writes it to the user's disk which is not healthy for SSD.
-- `def race()`: Here you manually select which race you are playing. Just change the number in `All`.
+- `WORK_PATH` is a **Must**! It is not only for debugging — it is also where the module saves its transient info on whether you are selecting the first flag of a road or is this your second (destination) selection. `;'/` are my most common used keys and if you use AutoKey's remember state, it writes it to the user's disk which is not healthy for SSD as there are literally thousands of read/writes involved with this system.
+- `def race()`: Here you manually select which race you are playing. Just change the number in `num = `.
 - `debug_save_shm_append(text)`: is Always on. If you want to stop this, obviously 'return' the function before the write.
 - `stable_click` and `stable_click_relative` use Xlib, as AutoKey was constantly giving me race conditions resulting in very flaky functions.
-- `NOTIFICATIONS_DIR` and `PLAY_SOUND` are yours to play with — if you want audio feedback. If not, disable this in functions that call `_play_sound()`.
+- `NOTIFICATIONS_DIR` and `PLAY_SOUND` are yours to play with — if you want audio feedback. If not, disable  `_play_sound()` with a return. I've uploaded my sounds in the `Notification`
 - `def detect_icon_type`: Here we have the core of defining what build site is under the mouse. It uses `pyautogui.screenshot` to take a snapshot of what is under the mouse. Runs a colour comparison on it and determines what 'colour' the icon is. This is a new innovation and has **only** been tested on a green background, no desert or anything else. So how it works in Desert games or other terrain? Trying to determine 'shape' instead of colour was useless as far as I could see — too many issues...
 - `transient_store_get` and `set` are the essentials for road build and my 'tab' toggle. Where it acts as a kind of 'shift lock' because the actual use of shift or ctrl on F keys ended up messing the pause-unpause which I find essential for feedback as most of my 'creating' is done in pause mode.
 - `ctrl_press()` and `release` are Xlib direct functions because AutoKey is not made for precise work. It constantly had race conditions that would sometimes have ctrl held and others not — it was maddening. It works now...
-- `_save_snapshot`: this is for creation and debug only. Turn DEBUG on and it will save the images in the WORK_PATH so you can see where the 'click' was made.
-- `build_item` and `build_item_tab_change` are relatively self-explanatory. If you are opening on the tab you want then it is `item`, if you need to tab to a different build size then it is `tab_change`.
-- `def err_no_col()`: **SPECIAL NOTE!!!!!** this is MY personal feedback system. Here you will have to modify the script to `print(stuff)` or whatever you use.
+- `_save_snapshot`: this is for creation and debug only. Turn DEBUG on and it will save the images in the WORK_PATH so you can see where the 'click' was made. Extremely slow but great for getting things setup.
+- `build_item` and `build_item_tab_change` are relatively self-explanatory. If you are opening on the tab you want then it is `build_item`, if you need to tab to a different build size then it is `tab_change`.
+- `def err_no_col()`: **SPECIAL NOTE!!!!!** this is MY personal feedback system. Here you will have to modify the script to `print(stuff)` or whatever you want to use.
 - `in_building_dialog`: Actions on building dialogs, e.g. Amazon Woodcutter upgrade the building to Rare Tree Cutter. Or Dismantle with ctrl held. This can be very dangerous if you don't pay attention.
 - `call_shortcut()`: is the main engine for sending to 'race' defined functions. If 'Amazon' is selected in `race()` then a call to this with "Shortcut" key e.g. if the AutoKey is F1 `widelands.call_shortcut('F1',keyboard)`, then it will call `Amazon_F1`. If race is "1" which is Atlantean then function will be `Atlantean_F1` — all logical.
 
 ## Keyboard Shortcuts
 
 ### Development & General
-- `` ` `` = Development, reloads the widelands module for AutoKey
-- Space = Pause game (set via game shortcuts — my personal like)
-- Tab = Toggles 'tab toggle'  
+- `` ` `` = Development, reloads the widelands module for AutoKey, so module modifications take affect.
+- Space = Pause game (set via game shortcuts — my personal like) This is unpause_pause() code as well so if you want this feature, then make sure that your using the same 'pause' or 'space' or whatever you have pause set to.
+- Tab = Toggles 'tab toggle' Basically gives you double the keys available, acts as a defacto ShiftLock. The game will not accept shift F1 etc without issues. But if you want to use 'shift' etc have a try. eg. Amazon with shift-F1 would have a function named Amazon_shift_F1 when as a label passed from the autokey script. Be aware feedback is confused as the hold of shift interfears with the autokey send of 'pause'..
   Sound Down = False (default state on startup)  
   Sound Up = True, for keys defined with Tab Toggle sets different task
-- * = Toggle Show Build sites (NUM PAD * — set via game shortcuts pref — my personal like)
+- * = Toggle Show Build sites (NUM PAD * — set via game shortcuts pref — my personal like) This is replacing the 'space' default for Toggle show building. As I set and forget this at start of game. 
 
 ### Road Building
 - ; = Hover on the 'flag', then press the key, then move the mouse to the end location 'flag' where you want the road to end. Hit the key again. It will flag all the road. Clicking the mouse after the first keyboard hit will tell you how many spaces. When you are hovering over the exact spot you want and hit key it will build the road to there.
@@ -54,13 +54,13 @@ I'm using F1 to F12, `[]\;',/(tab) for individual buildings and some functions. 
 - / = Build single road, joining parallel roads zigzag. Optimum for 2 space joining of roads. Must start and end on an already flagged road flag. If the distance is more than 2 spaces it will **not** put flags in the road you are creating.
 
 ### Amazon
-**Tab toggle Down (normal, default state)**  
+**Tab toggle Down (normal, false, default state)**  
 - end = Stone_Workshop  
 - - = Patrol_Post  
 - = = Tower  
 - np_add(+) = Liana_Cutter  
 
-**Tab toggle Up**  
+**Tab toggle Up (true)**  
 - end = Furnace "GOLD"  
 - - = Upgrades 'currently' Building Woodcutter to Rare  
 - = = Warriors_Dwelling  
@@ -81,7 +81,7 @@ F11 = Hunter_Gatherer
 F12 = Wilderness_Keeper (inner radii is for fish)
 
 **Other**  
-[ = Double Click (Delete road under mouse, clean up foresters)  
+[ = Double Click (Delete road under mouse, clean up foresters area)  
 ] = Dismantles Stonecutter, UPGRADES BUILT woodcutter  
 \ = Dismantles Patrol, Tower and Fortress  
 scroll_lock = Dismantles Woodcutter
