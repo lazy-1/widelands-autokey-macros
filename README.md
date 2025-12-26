@@ -12,17 +12,17 @@ pip3 install python-xlib pyautogui pillow
  
 2. Copy `widelands.py` to your AutoKey Module folder (or create a new script and paste the content).
 
-3. Set hotkeys in AutoKey (examples in the code: F1–F12, ; ' / etc.).
+3. Set hotkeys in AutoKey AutoKey_data/Widelands supplied, put it in your autokey/data/Scripts/ directory.
 
-4. **Important**: Personalise coordinates and paths in the file — these are tuned to my screen/resolution.
+4. **Important**: Personalise coordinates and paths in the file — these are tuned to my screen/resolution 1920x1080.
 
 5. Race selection: Edit `def race()` at the top to match your current game (0=Amazon, 1=Atlantean, etc.).
 
 ### Features
 
-- One-key building placement (hover + F-key)
+- One-key building placement (hover mouse + F-key)
 - Road helpers: zigzag, connect, long roads
-- Tab switching for small/medium/large buildings
+- Tab switching as a fake Shiftlock key to double potential key uses.
 - Dismantle/upgrade shortcuts
 - Visual/audio feedback (pause-unpause, optional sounds)
 
