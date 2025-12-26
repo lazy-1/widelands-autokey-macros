@@ -1,13 +1,7 @@
 
 # widelands.py  –  Widelands-specific functions only
-
 #
 #
-#
-#
-#
-
-
 
 import os
 import sys
@@ -20,15 +14,12 @@ from math import sqrt
 import io
 from PIL import Image
 from datetime import datetime
-#import imagehash
-import p2autokeym
-
 from Xlib import display, X
 from Xlib.ext import xtest
 
+import p2autokeym # My personal stuff, comment it out and use your own feedback
 
 
-# Global placeholders for AutoKey API objects
 
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
