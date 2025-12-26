@@ -2,12 +2,14 @@
 
 ## Background
 Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover Mouse over site and hit the keyboard shortcut and the building is built. This is a far better improvement on that simplistic version with more features.
+- This Guide is meant to help you through the hardest parts and show you the way to your own edits. Even if your new to python it should be simple enough to understand what and why. 
 
-## Environment
+## Environment it was Tested on.
 - **Widelands version**: 1.3  
-  Run command: `flatpak run org.widelands.Widelands`
-- **OS**: Current upgraded Linux Mint 2025  
-- **AutoKey**: Natively installed  
+  Run command: `flatpak run org.widelands.Widelands` 
+- **OS**: Current upgraded Linux Mint 2025
+- **Screen** 1920x1080
+- **AutoKey**: Natively installed from repo (v 0.95.10)
 - **Note**: This is a Linux setup. If anyone ever wishes to use Microsoft and this stuff, go right ahead — I doubt it will translate directly, but at least the general idea may help.
 
 ## Overview
