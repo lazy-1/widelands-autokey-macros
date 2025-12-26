@@ -3,7 +3,7 @@
 
 Macros for faster building, road laying, and common actions in **Widelands 1.3+** (Linux only).
 
-Tested on Linux Mint 2025 with native AutoKey.
+Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as you'll need to modify the module and work a little on autokey. I've made a comprehensive Guide so it shouldn't be that hard. 
 
 ### Quick Start
 
