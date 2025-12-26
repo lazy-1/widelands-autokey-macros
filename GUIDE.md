@@ -13,7 +13,10 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
 ## Overview
 In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the game, but crying about it doesn't help.
 
-The **detect icon under the mouse** only works on clean icons, not ones under trees or such, so it is limited by that. In general however: hover mouse over build icon and it will figure if it is **Red**, **Orange** or **Green**. From there it will build whatever that 'key' is associated with. Since this was originally created when I was obsessed with Atlantean, it has a good setup for it — example: hover over a build icon and hit F1 it will build a Quarry. F2 builds a woodcutter etc. Since this version was designed using Amazon there are more functions..
+## Contents of repo.
+- AutoKey_data : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands, the is done by clicking `set` and then on the widelands window. 
+- AutoKey_data individual files : fore each in autokey select them and click `Hotkey`, then define it by clicking `set` in the dialog and then press the actual keyboard key such as F1. make sure you save. This is not a tutorial on autokey, passed this do your own research.
+- Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. I have it as the dir above the current module directory and then into Sounds blah blah.
 
 ## General Shortcuts (set in AutoKey)
 I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual buildings and some functions. The feedback is a quick **pause-unpause**. So you can build during a game pause. This obviously, like all code, can be modified. I've labeled all functions as friendly as possible.
@@ -21,6 +24,11 @@ I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual building
 **Keep in mind**: ONLY Amazon and Atlantean have functioning macros. The other three have not been done — just Python functions have been created for ease of modification when ready.
 
 ## Some Important Notes
+
+The **detect icon under the mouse** only works on clean icons, not ones under trees or such, so it is limited by that. In general however: hover mouse over build icon and it will figure if it is **Red**, **Orange** or **Green**. From there it will build whatever that 'key' is associated with. Since this was originally created when I was obsessed with Atlantean, it has a good setup for it — example: hover over a build icon and hit F1 it will build a Quarry. F2 builds a woodcutter etc. Since this version was designed using Amazon there are more functions for them.
+
+## The Module Itself
+
 - `DEBUG = False`  
   If this is `True` it will be very slow as it is writing images to your 'temp' dir. Be patient this is for getting things honed in, not for game play.
 - In this game I use `/dev/shm/` (WORK_PATH). Your choice — I have an SSD.
