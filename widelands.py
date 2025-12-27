@@ -299,11 +299,6 @@ def err_no_col(txt=''):
 
 
 
-    
-
-
-
-    
 def in_building_dialog(x,y):# For Dismantles & Upgrades
     ctrl_press()#ctrl_on()'
     if DEBUG:
