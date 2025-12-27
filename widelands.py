@@ -30,10 +30,10 @@ NOTIFICATIONS_DIR = os.path.normpath(
 
 
 
-PLAY_SOUND = {'RED':NOTIFICATIONS_DIR+'bell.oga',
-              'ORANGE':NOTIFICATIONS_DIR+'complete.oga',
-              'GREEN':NOTIFICATIONS_DIR+'dialog-warning.oga',
-              'none':NOTIFICATIONS_DIR+'phone-incoming-call.oga',
+PLAY_SOUND = {'red':NOTIFICATIONS_DIR+'bell.oga',
+              'orange':NOTIFICATIONS_DIR+'complete.oga',
+              'green':NOTIFICATIONS_DIR+'dialog-warning.oga',
+              'big_error':NOTIFICATIONS_DIR+'phone-incoming-call.oga',
               'meedmeep':NOTIFICATIONS_DIR+'MeebMeeb.ogg',
               'down1':NOTIFICATIONS_DIR+'KDE_Window_Close.ogg',
               'up1':NOTIFICATIONS_DIR+'KDE_Window_Open.ogg',
@@ -48,17 +48,24 @@ PLAY_SOUND = {'RED':NOTIFICATIONS_DIR+'bell.oga',
 
 
 def _play_sound(result):
-    path = PLAY_SOUND.get(result, PLAY_SOUND['none'])
+    path = PLAY_SOUND.get(result, PLAY_SOUND['sharpstrum1'])
     #print(result,path)
     subprocess.Popen(["paplay", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-KEYBOARD = BUILDING = ICON = None
 
 
+CONTEXT = {
+    'race': None,
+    'keyboard': None,
+    'building': None,
+    'icon': None,
+    'start_pos': None,
+    # Add more later if needed
+}
 
 DEBUG = True
-DEBUG = False
+#DEBUG = False
 
 
 WORK_PATH = '/dev/shm/Widelands/'
@@ -72,8 +79,12 @@ AUTOKEY_TOGGLE_FILE = WORK_PATH+'autokey_transient_store.json'
 
 
 def _set_io(keyboard, building, icon):
-    global KEYBOARD, BUILDING, ICON
-    KEYBOARD, BUILDING, ICON = keyboard, building, icon 
+    global CONTEXT
+    CONTEXT['keyboard'] = keyboard
+    CONTEXT['building'] = building
+    CONTEXT['icon'] = icon
+
+
     
 def race():
     num,race = 0,''
@@ -82,6 +93,7 @@ def race():
     elif num == 2:race = 'Barbarian'
     elif num == 3:race = 'Empire'
     elif num == 4:race = 'Frisian'
+    CONTEXT['race'] = race
     return race
 
 def debug_save_shm_append(text):
@@ -177,74 +189,6 @@ def restore_mouse_pos(pos):
 
         
 
-def detect_icon_type(building):
-    debug = False
-    x_str, y_str = get_mouse_position()
-    x, y = int(x_str), int(y_str)
-    size = 29
-    half = size // 2
-    try:
-        img = pyautogui.screenshot(region=(x-half, y-half, size, size))
-    except:
-        return None
-    pixels = [p[:3] for p in img.getdata()]
-    n = len(pixels)
-    r = sum(p[0] for p in pixels) // n
-    g = sum(p[1] for p in pixels) // n
-    b = sum(p[2] for p in pixels) // n
-
-    # --------------------------------------------------------------
-    # 1. GREEN first — they are the brightest and most unique
-    # --------------------------------------------------------------
-    if g > 85 and r < 65 and b < 20:          # rock-solid green check
-        colour = "GREEN"
-
-    # --------------------------------------------------------------
-    # 2. Dark orange on dark terrain (the only remaining problem)
-    #    → high red, but G very close to R and total brightness low
-    # --------------------------------------------------------------
-    elif r > 60 and g > 65 and abs(r - g) < 18 and (r + g + b) < 290:
-        colour = "ORANGE"
-
-    # --------------------------------------------------------------
-    # 3. Everything else → normal distance check (bright icons)
-    # --------------------------------------------------------------
-    else:
-        dg = sqrt((r-36)**2 + (g-104)**2 + (b-3)**2)
-        do = sqrt((r-128)**2 + (g-88)**2 + (b-6)**2)
-        dr = sqrt((r-98)**2 + (g-52)**2 + (b-8)**2)
-
-        if dg <= 29:
-            colour = "GREEN"
-        elif do <= 58:
-            colour = "ORANGE"
-        elif dr <= 48:
-            colour = "RED"
-        else:
-            colour = "none"
-    
-    if debug:
-        short_time = datetime.now().strftime("%H%M%S")
-        filename = f"{short_time}_{building}_{colour}.png"
-        img.save(os.path.join(WORK_PATH, filename))
-        
-        print("\nXXX detect_icon_type START XXX")
-        print(f"Building Actual Selection: {building}")
-        print(f"{short_time}  Actual: {building}   FINAL RESULT: {colour}")
-        print("XXX detect_icon_type END XXX\n")        
-        _play_sound(colour)
-        # ASSUMING F1,F2,F3 (Barbarian) Test is used specificly id the colour
-        log_line = f"{datetime.now().strftime('%H%M%S_%f')[:-4]} {x} {y} Actual-{building} Result-{colour}\n"
-        debug_save_shm_append(log_line)
-    else:
-        log_line = f"{datetime.now().strftime('%H%M%S_%f')[:-4]} {x} {y} Building-{building} Result-{colour}\n"
-        debug_save_shm_append(log_line)
-
-            
-    return colour if colour != "none" else None
-
-
-
 
 
 
@@ -300,14 +244,6 @@ def get_mouse_position():
     y = parts[1].split(":")[1]
     return x, y
 
-def _save_snapshot(x=0,y=0,desc='none'):
-    if not DEBUG: return
-    x_str, y_str = get_mouse_position()
-    x, y = int(x_str)+x, int(y_str)+y
-    ts = datetime.now().strftime("%H%M%S_%f")[:-4]
-    filename = f"{ts}_{desc}_{BUILDING}_{ICON}.png"
-    pyautogui.screenshot(region=(x-25, y-25, 50, 50)).save(
-        os.path.join(WORK_PATH, filename))
 
 
 
@@ -320,24 +256,24 @@ def _save_snapshot(x=0,y=0,desc='none'):
 
 
 def build_item(x=0, y=0):# Current Tab
-    stable_click()
-    time.sleep(0.05)
-    _save_snapshot(0,0,'icon')
-    _save_snapshot(x,y,'item')
-    stable_click_relative(x, y) 
+    if DEBUG:
+        get_screenshot_info(desc='mouse_open_pos',size=50)
+        get_screenshot_info(x=x,y=y,desc='destination_click',size=50)
+    stable_click_relative(x, y)
+    stable_click(3)
     unpause_pause(0.15)
 
 def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
-    stable_click()
-    time.sleep(0.05)
-    _save_snapshot(0,0,'icon')
-    _save_snapshot(x_tab,y_tab,'tab')
+    if DEBUG:
+        get_screenshot_info(desc='mouse_open_pos',size=50)
+        get_screenshot_info(x=x_tab,y=y_tab,desc='tab_selection',size=50)
     stable_click_relative(x_tab,y_tab)
     time.sleep(0.05)
-    _save_snapshot(x_bldg,y_bldg,'item')
+    if DEBUG:
+        get_screenshot_info(x=x_bldg,y=y_bldg,desc='build_selection',size=60)
     stable_click_relative(x_bldg, y_bldg)
     unpause_pause(0.15)
-
+    stable_click(3)
     
 def build_item_M_S(x_bldg, y_bldg): # Move Medium to Small Tab
     x_tab, y_tab = (-35, 0)
@@ -356,30 +292,35 @@ def build_item_L_M(x_bldg, y_bldg): # Move Large to Medium Tab
 
 
     
-def err_no_col():
-    #print(f"No icon_col, {BUILDING}")
+def err_no_col(txt=''):
+    #print(f"No site, {CONTEXT['building']}")
     # uncomment above and comment below if this is Not already done.
-    p2autokeym.dbus_send_FM('Widelands','TEXT',{'icon_col':'no colour returned','building type':BUILDING})
+    p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':txt})
+
+
+
+def in_building_dialog(x,y):# For Dismantles & Upgrades
+    ctrl_press()#ctrl_on()'
+    if DEBUG:
+        get_screenshot_info(x=x,y=y,desc='in_building_dialog',size=21)
+    #stable_click_relative(x, y) 
+    time.sleep(0.05)
+    ctrl_release()#ctrl_off()
+    unpause_pause()
+    stable_click(3)
+    restore_mouse_pos(CONTEXT['start_pos'])
+
+
+
+
 
 
 
     
-def in_building_dialog(x,y):# For Dismantles & Upgrades
-    ctrl_press()#ctrl_on()
-    stable_click()   
-    _save_snapshot(0,0,'icon')
-    time.sleep(0.05)
-    _save_snapshot(x,y,BUILDING)
-    stable_click_relative(x, y) 
-    time.sleep(0.05)
-    ctrl_release()#ctrl_off()
-    unpause_pause()
-
-
 def unpause_pause(delay=0.2):
-    KEYBOARD.send_keys("<pause>")
+    CONTEXT['keyboard'].send_keys("<pause>")
     time.sleep(delay)
-    KEYBOARD.send_keys("<pause>")
+    CONTEXT['keyboard'].send_keys("<pause>")
 
 
 # Direct keysym for Left Ctrl
@@ -464,110 +405,292 @@ def call_shortcut(key, keyboard):
     else:
         #print(f"Missing {func_name}")
         # uncomment above and comment below if this is Not already done.
+        _play_sound('big_error')
         p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}"})
 
 
+def analyze_dialog(building): #For build sites mainly
+    # 1. Open the dialog/window
+    CONTEXT['start_pos'] = capture_mouse_pos()
+    stable_click()
+    time.sleep(0.12)  # Let it fully render
+    build, site, variance = get_screenshot_info(desc=building)
+    return build, site
+
+def determine_dialog():# For a built building what is it?
+    # 1. Open the dialog/window
+    CONTEXT['start_pos'] = capture_mouse_pos()
+    stable_click()
+    time.sleep(0.12)  # Let it fully render
+    build,site,var = get_screenshot_info(x=-68,y=-35,size=21,
+                                         method='building')
+    if site == 'Standard_brown':
+        build,site,var = get_screenshot_info(x=-327,y=-67,size=21,
+                                             method='building')
+    return site
+
+def get_screenshot_info(x=0,y=0,desc='n-a',size=29,method='general'):
+    #  Get current mouse position
+    x_str, y_str = get_mouse_position() 
+    x, y = int(x_str)+x, int(y_str)+y
+    half = size // 2
+    try:
+        img = pyautogui.screenshot(region=(x - half, y - half, size, size))
+    except Exception as e:
+        print(f"Screenshot failed: {e}")
+        _play_sound('big_error')
+        return False, 'none', 0
+    
+    #  Calculate average RGB
+    pixels = [p[:3] for p in img.getdata()]
+    n = len(pixels)
+    if n == 0:
+        print("No pixels in snapshot")
+        return
+
+    r = sum(p[0] for p in pixels) // n
+    g = sum(p[1] for p in pixels) // n
+    b = sum(p[2] for p in pixels) // n
+
+    variance = sum((p[0]-r)**2 + (p[1]-g)**2 + (p[2]-b)**2 for p in pixels) / n
+    if method == 'general':
+        build, site = classify_tab_color(r, g, b, variance)
+    elif method == 'building':
+        build, site = classify_building(r, g, b, variance)
+    else:
+        build, site = "None"
+    timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
+    info = f"{timestamp}_{desc}-{ 'T' if build else 'F' }-{site}-{str(int(variance))}_RGB{r:03d}_{g:03d}_{b:03d}"
+    if DEBUG:
+        # Save snapshot with timestamp + RGB in filename
+        filename = f"{WORK_PATH}{info}.png"
+        img.save(filename)
+
+    debug_save_shm_append(info+'\n')
+    return build, site, variance
+    
+
+
+def classify_tab_color(r, g, b, variance):
+    # IF you need more tests brightness is an option..
+    # brightness = (r + g + b) // 3
+
+    # RED tab — wider tolerance + low variance
+    if (abs(r - 98) <= 10 and abs(g - 26) <= 8 and abs(b - 18) <= 8
+        and variance < 8000):
+        return (True, 'red')
+
+    # ORANGE tab — tighter tolerance + low variance
+    if (abs(r - 136) <= 5 and abs(g - 72) <= 5 and abs(b - 11) <= 5
+        and variance < 12000):
+        return (True, 'orange')
+
+    # GREEN tab — tighter tolerance + low variance
+    if (abs(r - 18) <= 5 and abs(g - 87) <= 5 and abs(b - 8) <= 5
+        and variance < 6000):
+        return (True, 'green')
+    
+    return classify_dialog(r, g, b, variance)
+
+def classify_dialog(r, g, b, variance):
+    # Built Building Dialogs
+    race = CONTEXT['race']
+    if race == 'Amazon':
+        if (abs(r - 107) <= 5 and abs(g - 76) <= 5 and abs(b - 48) <= 5
+            and variance < 11000):
+            return (False, 'swirl')
+        if (abs(r - 113) <= 5 and abs(g - 84) <= 5 and abs(b - 45) <= 5
+            and variance < 3500):
+            return (False, 'Charcoal')
+
+        if (abs(r - 98) <= 5 and abs(g - 72) <= 5 and abs(b - 55) <= 5
+            and variance < 6000):
+            return (False, 'remove_worker')
+
+        if (abs(r - 97) <= 5 and abs(g - 77) <= 5 and abs(b - 47) <= 5
+            and variance < 700):
+            return (False, 'upgrade_building')
+
+        if (abs(r - 85) <= 2 and abs(g - 76) <= 2 and abs(b - 15) <= 2
+            and 12000 < variance < 13500):
+            return (False, 'woodcutter_built')
 
 
 
+        
+
+    elif race == 'Atlantean':
+        pass
+
+    elif race == 'Barbarian':
+        pass
+    elif race == 'Empire':
+        pass
+    elif race == 'Frisian':
+        pass
+    
+    return (False, f"({r}, {g}, {b}, {int(variance)})")  
+    
+ 
+def classify_building(r, g, b, variance):
+    # Built Building Dialogs
+    race = CONTEXT['race']
+    if race == 'Amazon':
+        if (abs(r - 110) <= 10 and abs(g - 95) <= 10 and abs(b - 31) <= 6
+            and 8000 < variance < 10000):# Ga image
+            return (False, 'Garrison')
+        
+        if (abs(r - 86) <= 6 and abs(g - 66) <= 6 and abs(b - 38) <= 6
+            and 250 < variance < 600):# Blank brown image
+            return (False, 'Standard_brown')
+        
+        if (abs(r - 67) <= 5 and abs(g - 51) <= 5 and abs(b - 25) <= 5
+            and 1000 < variance < 2000):# Tiny Liana icon
+            return (False, 'Liana')
+
+        if (abs(r - 70) <= 5 and abs(g - 58) <= 5 and abs(b - 40) <= 5
+            and 3000 < variance < 4000):# Tiny StoneCutter icon
+            return (False, 'Stonecutter')
+
+        if (abs(r - 112) <= 5 and abs(g - 87) <= 5 and abs(b - 60) <= 5
+            and 9000 < variance < 10500):# Tiny Woodcutter icon
+            return (False, 'Woodcutter')
+        
+    elif race == 'Atlantean':
+        pass
+
+    elif race == 'Barbarian':
+        pass
+    elif race == 'Empire':
+        pass
+    elif race == 'Frisian':
+        pass
+    
+    return (False, f"({r}, {g}, {b}, {int(variance)})")  
+    
+
+
+
+    
+        
 # Amazon
 # ===============================================
 # Amazon — FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
 
 
+
+
+
 def Amazon_F1(keyboard):
     btype = 'Stonecutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (10, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F2(keyboard):
     btype = 'Woodcutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    if toggle_tab:  # remove worker
-        Amazon_remove_worker(70, -40)
-    else: # Build Site
+    if build:
         item_pos = (60, 45) 
-        if icon_col == 'RED':
+        if site == 'red':
             build_item(*item_pos)
-        elif icon_col == 'ORANGE':
+        elif site == 'orange':
             build_item_M_S(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_S(*item_pos)
-        else:
-            err_no_col()
+        return
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
+    if built == 'woodcutter_built':
+        if site == 'swirl':
+            if toggle_tab:  
+                in_building_dialog(-234, 0,'upgrade_built_building')
+                return
+            else:
+                in_building_dialog(68, -34, 'remove_worker')
+                return
+    else:
+        if site == 'swirl': # 'Upgrade_to_Rare_unbuilt'
+                in_building_dialog(-210, 0,'upgrade_unbuilt_building')
+                return
+  
+    err_no_col(f'{built} toggled-{toggle_tab}')
+
 
 def Amazon_F3(keyboard):
     btype = 'Jungle_Preserve'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    if toggle_tab:  # remove worker
-        Amazon_remove_worker(70, -40)
-    else: # Build Site
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if build:
         item_pos = (105, 45)
-        if icon_col == 'RED':
+        if site == 'red':
             build_item(*item_pos)
-        elif icon_col == 'ORANGE':
+        elif site == 'orange':
             build_item_M_S(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_S(*item_pos)
         else:
             err_no_col()
+        return
+    
+    if site == 'swirl': # remove worker
+        in_building_dialog(68, -34, 'remove_worker')
+        
+    
+
 
 def Amazon_F4(keyboard):
     btype = 'Water_Gatherer'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    item_pos = (5, 95)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    item_pos = (10, 95)
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F5(keyboard):
     btype = 'Cassava_Root_Cooker'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (75, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)  # GREEN → medium tab
     else:
         err_no_col()
 
 def Amazon_F6(keyboard):
     btype = 'Chocolate_Brewery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    item_pos = (105, 95)  # corrected from 125 → 95 to match actual position
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    item_pos = (125, 95)  # corrected from 125 → 95 to match actual position
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F7(keyboard):
     btype = 'Charcoal_Kiln'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     if toggle_tab:# infinate Production of charcoal
         start_pos = capture_mouse_pos()
@@ -577,41 +700,41 @@ def Amazon_F7(keyboard):
 
     else:#'Charcoal_Kiln'
         item_pos = (25, 95)
-        if icon_col == 'ORANGE':
+        if site == 'orange':
             build_item(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_M(*item_pos)
         else:
             err_no_col()
 
 def Amazon_F8(keyboard):
     btype = 'Food_Preserver'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (175, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F9(keyboard):
     btype = 'DressMakery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (-25, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F10(keyboard):
     btype = 'Rare_Tree_Plantation'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     if toggle_tab:  #  Infinate Rare Tree Production
         start_pos = capture_mouse_pos()
@@ -621,37 +744,37 @@ def Amazon_F10(keyboard):
         restore_mouse_pos(start_pos)
     else: #  # Build Site
         item_pos = (125, 50)
-        if icon_col == 'ORANGE':
+        if site == 'orange':
             build_item(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_M(*item_pos)
         else:
             err_no_col()
 
 def Amazon_F11(keyboard):
     btype = 'Hunter_Gatherer'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (160, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Amazon_F12(keyboard):
     btype = 'Wilderness_Keeper'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    item_pos = (60, 85)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    item_pos = (60, 95)
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
@@ -660,15 +783,15 @@ def Amazon_F12(keyboard):
 def Amazon_end(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Furnace' if toggle_tab else 'Stone_Workshop'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
 
     # Toggle changes only the item position
     item_pos = (75, 50) if toggle_tab else (175, 45)
 
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)
     else:
         err_no_col()
@@ -676,24 +799,24 @@ def Amazon_end(keyboard):
 def Amazon_plus(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Rope_Weaver' if toggle_tab else 'Liana_Cutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
 
     # Toggle changes only the item position
     item_pos = (25, 45) if toggle_tab else (205, 45)
     if toggle_tab:#'Rope_Weaver'
-        if icon_col == 'ORANGE':
+        if site == 'orange':
             build_item(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_M(*item_pos)
         else:
             err_no_col()
     else:#'Liana_Cutter'
-        if icon_col == 'RED':
+        if site == 'red':
             build_item(*item_pos)
-        elif icon_col == 'ORANGE':
+        elif site == 'orange':
             build_item_M_S(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_S(*item_pos)
         else:
             err_no_col()
@@ -701,15 +824,15 @@ def Amazon_plus(keyboard):
 def Amazon_equal(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Warriors_Dwelling' if toggle_tab else 'Tower'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
 
     # Toggle changes only the item position
     #      'Warriors_Dwelling'     else     'Tower' (default)
     item_pos = (125, 145) if toggle_tab else (175, 145)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_M(*item_pos)
     else:
         err_no_col()
@@ -725,15 +848,15 @@ def Amazon_hyphen(keyboard):
         restore_mouse_pos(start_pos)
     else:  # Patrol_Post — normal build
         btype = 'Patrol-Post'
-        icon_col = detect_icon_type(btype)
-        _set_io(keyboard, btype, icon_col)
-        item_pos = (160, 100)
+        build, site = analyze_dialog(btype)
+        _set_io(keyboard, btype, site)
+        item_pos = (160, 95)
 
-        if icon_col == 'RED':
+        if site == 'red':
             build_item(*item_pos)
-        elif icon_col == 'ORANGE':
+        elif site == 'orange':
             build_item_M_S(*item_pos)
-        elif icon_col == 'GREEN':
+        elif site == 'green':
             build_item_L_S(*item_pos)
         else:
             err_no_col()
@@ -744,20 +867,34 @@ def Amazon_hyphen(keyboard):
 
 
 def Amazon_scroll_lock(keyboard):
-    _set_io(keyboard, 'Amazon_scroll_lock', 'none')
-    in_building_dialog(-165, 0) # Dismantle Woodcutter
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    if site == 'Liana':
+        in_building_dialog(-235,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-275, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-205, 0)
 
     
 def Amazon_backslash(keyboard):
-    # Dismantle Guardhouse, Tower, Castle
-    _set_io(keyboard, 'Amazon_backslash', 'none')
-    in_building_dialog(-130, 0)
-
+    # Dismantle Sites..
+    _set_io(keyboard, 'Amazon_backslash_Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    if site == 'Liana':
+        in_building_dialog(-195,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-235, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-165, 0)
     
 def Amazon_rightbracket(keyboard):
-    # Dismantle  Quarry
-    _set_io(keyboard, 'Amazon_rightbracket', 'none')
-    in_building_dialog(-235, 0)
+    pass
+
 
 def Amazon_leftbracket(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
@@ -771,12 +908,6 @@ def Amazon_leftbracket(keyboard):
         stable_click()
         unpause_pause(0.1)
 
-def Amazon_remove_worker(x,y):
-    start_pos = capture_mouse_pos()
-    in_building_dialog(70, -40)
-    unpause_pause(0.1)
-    stable_click(3)
-    restore_mouse_pos(start_pos)
 
 
 # Atlantean
@@ -787,194 +918,194 @@ def Amazon_remove_worker(x,y):
 
 def Atlantean_F1(keyboard):
     btype = 'Quarry'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (5, 40)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F2(keyboard):
     btype = 'Woodcutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (60, 45)  # standardised Y to match most buildings
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F3(keyboard):
     btype = 'Forester'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (105, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F4(keyboard):
     btype = 'Well'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (55, 95)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F5(keyboard):
     btype = 'Bakery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (175, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F6(keyboard):
     btype = 'Smokery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (75, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F7(keyboard):
     btype = 'Mill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F8(keyboard):
     btype = 'Smelter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (20, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F9(keyboard):
     btype = 'Weaponsmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F10(keyboard):
     btype = 'Armoursmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (175, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F11(keyboard):
     btype = 'Fish'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (155, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_F12(keyboard):
     btype = 'Fishbreader'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (205, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_end(keyboard):
     btype = 'SawMill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (25, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_hyphen(keyboard):
     btype = 'Guardhouse'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (200, 100)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Atlantean_equal(keyboard):
     btype = 'Tower'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 135)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
@@ -1000,194 +1131,194 @@ def Atlantean_rightbracket(keyboard):
 
 def Barbarian_F1(keyboard):
     btype = 'Quarry'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (5, 40)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F2(keyboard):
     btype = 'Woodcutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (60, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F3(keyboard):
     btype = 'Forester'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (105, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F4(keyboard):
     btype = 'Well'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (55, 95)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F5(keyboard):
     btype = 'Bakery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (175, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F6(keyboard):
     btype = 'Smokery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (75, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F7(keyboard):
     btype = 'Mill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F8(keyboard):
     btype = 'Smelter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (20, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F9(keyboard):
     btype = 'Weaponsmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F10(keyboard):
     btype = 'Armoursmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (175, 95)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F11(keyboard):
     btype = 'Fish'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (155, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_F12(keyboard):
     btype = 'Fishbreader'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (205, 45)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_end(keyboard):
     btype = 'SawMill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (25, 50)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_hyphen(keyboard):
     btype = 'Guardhouse'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (200, 100)
-    if icon_col == 'RED':
+    if site == 'red':
         build_item(*item_pos)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         build_item_M_S(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_L_S(*item_pos)
     else:
         err_no_col()
 
 def Barbarian_equal(keyboard):
     btype = 'Tower'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
     item_pos = (125, 135)
-    if icon_col == 'ORANGE':
+    if site == 'orange':
         build_item(*item_pos)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         build_item_M_S(*item_pos)
     else:
         err_no_col()
@@ -1216,179 +1347,179 @@ def Barbarian_rightbracket(keyboard):
 
 def Empire_F1(keyboard):
     btype = 'Quarry'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(5, 40)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, -25, 40)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -60, 40)
     else:
         err_no_col()
 
 def Empire_F2(keyboard):
     btype = 'Woodcutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(60, 40)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 20, 55)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -10, 45)
     else:
         err_no_col()
 
 def Empire_F3(keyboard):
     btype = 'Forester'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(105, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 80, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 40, 45)
     else:
         err_no_col()
 
 def Empire_F4(keyboard):
     btype = 'Well'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(55, 95)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 25, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -15, 95)
     else:
         err_no_col()
 
 def Empire_F5(keyboard):
     btype = 'Bakery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(175, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 140, 50)
     else:
         err_no_col()
 
 def Empire_F6(keyboard):
     btype = 'Smokery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(75, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 40, 50)
     else:
         err_no_col()
 
 def Empire_F7(keyboard):
     btype = 'Mill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 50)
     else:
         err_no_col()
 
 def Empire_F8(keyboard):
     btype = 'Smelter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(20, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, -15, 95)
     else:
         err_no_col()
 
 def Empire_F9(keyboard):
     btype = 'Weaponsmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 95)
     else:
         err_no_col()
 
 def Empire_F10(keyboard):
     btype = 'Armoursmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(175, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 140, 95)
     else:
         err_no_col()
 
 def Empire_F11(keyboard):
     btype = 'Fish'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(155, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 120, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 85, 45)
     else:
         err_no_col()
 
 def Empire_F12(keyboard):
     btype = 'Fishbreader'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(205, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 170, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 140, 45)
     else:
         err_no_col()
 
 def Empire_end(keyboard):
     btype = 'SawMill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(25, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, -15, 50)
     else:
         err_no_col()
 
 def Empire_hyphen(keyboard):
     btype = 'Guardhouse'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(200, 100)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 170, 100)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 140, 100)
     else:
         err_no_col()
 
 def Empire_equal(keyboard):
     btype = 'Tower'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 135)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 135)
     else:
         err_no_col()
@@ -1414,179 +1545,179 @@ def Empire_rightbracket(keyboard):
 
 def Frisian_F1(keyboard):
     btype = 'Quarry'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(5, 40)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, -25, 40)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -60, 40)
     else:
         err_no_col()
 
 def Frisian_F2(keyboard):
     btype = 'Woodcutter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(60, 40)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 20, 55)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -10, 45)
     else:
         err_no_col()
 
 def Frisian_F3(keyboard):
     btype = 'Forester'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(105, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 80, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 40, 45)
     else:
         err_no_col()
 
 def Frisian_F4(keyboard):
     btype = 'Well'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(55, 95)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 25, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, -15, 95)
     else:
         err_no_col()
 
 def Frisian_F5(keyboard):
     btype = 'Bakery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(175, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 140, 50)
     else:
         err_no_col()
 
 def Frisian_F6(keyboard):
     btype = 'Smokery'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(75, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 40, 50)
     else:
         err_no_col()
 
 def Frisian_F7(keyboard):
     btype = 'Mill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 50)
     else:
         err_no_col()
 
 def Frisian_F8(keyboard):
     btype = 'Smelter'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(20, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, -15, 95)
     else:
         err_no_col()
 
 def Frisian_F9(keyboard):
     btype = 'Weaponsmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 95)
     else:
         err_no_col()
 
 def Frisian_F10(keyboard):
     btype = 'Armoursmith'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(175, 95)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 140, 95)
     else:
         err_no_col()
 
 def Frisian_F11(keyboard):
     btype = 'Fish'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(155, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 120, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 85, 45)
     else:
         err_no_col()
 
 def Frisian_F12(keyboard):
     btype = 'Fishbreader'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(205, 45)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 170, 45)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 140, 45)
     else:
         err_no_col()
 
 def Frisian_end(keyboard):
     btype = 'SawMill'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(25, 50)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, -15, 50)
     else:
         err_no_col()
 
 def Frisian_hyphen(keyboard):
     btype = 'Guardhouse'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'RED':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'red':
         notepd_strait(200, 100)
-    elif icon_col == 'ORANGE':
+    elif site == 'orange':
         notepd_tab_select(-35, 0, 170, 100)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-65, 0, 140, 100)
     else:
         err_no_col()
 
 def Frisian_equal(keyboard):
     btype = 'Tower'
-    icon_col = detect_icon_type(btype)
-    _set_io(keyboard, btype, icon_col)
-    if icon_col == 'ORANGE':
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if site == 'orange':
         notepd_strait(125, 135)
-    elif icon_col == 'GREEN':
+    elif site == 'green':
         notepd_tab_select(-35, 0, 95, 135)
     else:
         err_no_col()
