@@ -1,4 +1,4 @@
-#
+# 2025 12 28
 # A module for Widelands.
 #
 # widelands.py  –  Widelands-specific functions only
