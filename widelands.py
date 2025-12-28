@@ -19,9 +19,13 @@ from datetime import datetime
 from Xlib import display, X
 from Xlib.ext import xtest
 
-import p2autokeym # My personal stuff, comment it out and use your own feedback
+# My personal stuff, comment it out and use your own feedback
 
-
+try:# My personal stuff autokey module.
+    import p2autokeym
+    HAS_P2AUTOKEYM = True
+except ImportError:
+    HAS_P2AUTOKEYM = False
 
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -50,10 +54,11 @@ PLAY_SOUND = {'red':NOTIFICATIONS_DIR+'bell.oga',
 
 
 def _play_sound(result):
-    path = PLAY_SOUND.get(result, PLAY_SOUND['sharpstrum1'])
-    #print(result,path)
-    subprocess.Popen(["paplay", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
+    try:
+        path = PLAY_SOUND.get(result, PLAY_SOUND['sharpstrum1'])
+        subprocess.Popen(["paplay", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        print('sound issues?')  # fail — no sound
 
 
 
@@ -292,13 +297,20 @@ def build_item_L_M(x_bldg, y_bldg): # Move Large to Medium Tab
 
 
 
-
+def err_no_col(message="Unknown error"):
+    """
+    Error handler: uses p2autokeym dbus if available, else simple print.
+    """
+    if HAS_P2AUTOKEYM:
+        # Your personal dbus feedback
+        p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':txt})
+        _play_sound('big_error')
+    else:
+        # Fallback  no p2autokeym
+        print(f"ERROR: {message}")
+        # Optional: play a sound if you want audible feedback
+        _play_sound('big_error')
     
-def err_no_col(txt=''):
-    #print(f"No site, {CONTEXT['building']}")
-    # uncomment above and comment below if this is Not already done.
-    p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':txt})
-
 
 
 def in_building_dialog(x,y):# For Dismantles & Upgrades
@@ -405,12 +417,14 @@ def call_shortcut(key, keyboard):
     if func and callable(func):
         func(keyboard)
     else:
-        #print(f"Missing {func_name}")
-        # uncomment above and comment below if this is Not already done.
         _play_sound('big_error')
-        p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}"})
+        if HAS_P2AUTOKEYM:
+            p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}"})
+        else:
+            print(f"Missing {func_name}")
 
 
+            
 def analyze_dialog(building): #For build sites mainly
     # 1. Open the dialog/window
     CONTEXT['start_pos'] = capture_mouse_pos()
