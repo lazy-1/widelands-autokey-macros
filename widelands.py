@@ -18,6 +18,7 @@ from PIL import Image
 from datetime import datetime
 from Xlib import display, X
 from Xlib.ext import xtest
+from mss import mss
 
 # My personal stuff, comment it out and use your own feedback
 
@@ -449,7 +450,80 @@ def determine_dialog():# For a built building what is it?
                                              method='building')
     return site
 
-def get_screenshot_info(x=0,y=0,desc='n-a',size=29,method='general'):
+
+
+
+
+def get_screenshot_info(x=0, y=0, desc='n-a', size=29, method='general'):
+    # Get current mouse position
+    x_str, y_str = get_mouse_position() 
+    x, y = int(x_str) + x, int(y_str) + y
+    half = size // 2
+
+    try:
+        with mss() as sct:
+            monitor = {"left": x - half, "top": y - half, "width": size, "height": size}
+            sct_img = sct.grab(monitor)
+            # Convert to PIL Image (RGB)
+            img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+
+    except Exception as e:
+        print(f"Screenshot failed: {e}")
+        _play_sound('big_error')
+        return False, 'none', 0
+
+    # Calculate average RGB
+    pixels = [p[:3] for p in img.getdata()]
+    n = len(pixels)
+    if n == 0:
+        print("No pixels in snapshot")
+        return False, 'none', 0
+
+    r = sum(p[0] for p in pixels) // n
+    g = sum(p[1] for p in pixels) // n
+    b = sum(p[2] for p in pixels) // n
+
+    variance = sum((p[0]-r)**2 + (p[1]-g)**2 + (p[2]-b)**2 for p in pixels) / n
+
+    # Call the appropriate classifier (exactly as original)
+    if method == 'general':
+        build, site = classify_tab_color(r, g, b, variance)
+    elif method == 'building':
+        build, site = classify_building(r, g, b, variance)
+    elif method == 'modify':
+        build, site = classify_dialog(r, g, b, variance)
+    else:
+        build, site = False, "None"
+
+    # Timestamp and info string (exactly as original)
+    timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
+    info = f"{timestamp}_{desc}-{ 'T' if build else 'F' }-{site}-{str(int(variance))}_RGB{r:03d}_{g:03d}_{b:03d}"
+
+    if DEBUG:
+        filename = f"{WORK_PATH}{info}.png"
+        img.save(filename)
+
+    debug_save_shm_append(info + '\n')
+
+    return build, site, variance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def OLDget_screenshot_info(x=0,y=0,desc='n-a',size=29,method='general'):
     #  Get current mouse position
     x_str, y_str = get_mouse_position() 
     x, y = int(x_str)+x, int(y_str)+y
@@ -609,7 +683,18 @@ def classify_building(r, g, b, variance):
 # Amazon — FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
 
+"""
 
+# pip install mss
+from mss import mss
+with mss() as sct:
+    img = sct.grab({"left": x-half, "top": y-half, "width": size, "height": size})
+    img = Image.frombytes("RGB", img.size, img.bgra, "raw", "BGRX")
+
+
+
+
+"""
 
 
 
