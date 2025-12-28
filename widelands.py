@@ -27,6 +27,11 @@ try:# My personal stuff autokey module.
 except ImportError:
     HAS_P2AUTOKEYM = False
 
+DEBUG = True
+DEBUG = False
+
+
+    
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -71,8 +76,7 @@ CONTEXT = {
     # Add more later if needed
 }
 
-DEBUG = True
-#DEBUG = False
+
 
 
 WORK_PATH = '/dev/shm/Widelands/'
@@ -275,7 +279,7 @@ def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
         get_screenshot_info(desc='mouse_open_pos',size=50)
         get_screenshot_info(x=x_tab,y=y_tab,desc='tab_selection',size=50)
     stable_click_relative(x_tab,y_tab)
-    time.sleep(0.05)
+    time.sleep(0.02)
     if DEBUG:
         get_screenshot_info(x=x_bldg,y=y_bldg,desc='build_selection',size=60)
     stable_click_relative(x_bldg, y_bldg)
@@ -303,7 +307,7 @@ def err_no_col(message="Unknown error"):
     """
     if HAS_P2AUTOKEYM:
         # Your personal dbus feedback
-        p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':txt})
+        p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':message})
         _play_sound('big_error')
     else:
         # Fallback  no p2autokeym
@@ -317,7 +321,7 @@ def in_building_dialog(x,y):# For Dismantles & Upgrades
     ctrl_press()#ctrl_on()'
     if DEBUG:
         get_screenshot_info(x=x,y=y,desc='in_building_dialog',size=21)
-    #stable_click_relative(x, y) 
+    stable_click_relative(x, y) 
     time.sleep(0.05)
     ctrl_release()#ctrl_off()
     unpause_pause()
@@ -429,7 +433,7 @@ def analyze_dialog(building): #For build sites mainly
     # 1. Open the dialog/window
     CONTEXT['start_pos'] = capture_mouse_pos()
     stable_click()
-    time.sleep(0.12)  # Let it fully render
+    time.sleep(0.03)  # Let it fully render
     build, site, variance = get_screenshot_info(desc=building)
     return build, site
 
@@ -437,8 +441,8 @@ def determine_dialog():# For a built building what is it?
     # 1. Open the dialog/window
     CONTEXT['start_pos'] = capture_mouse_pos()
     stable_click()
-    time.sleep(0.12)  # Let it fully render
-    build,site,var = get_screenshot_info(x=-68,y=-35,size=21,
+    time.sleep(0.03)  # Let it fully render
+    build,site,var = get_screenshot_info(x=-68,y=-35,size=17,
                                          method='building')
     if site == 'Standard_brown':
         build,site,var = get_screenshot_info(x=-327,y=-67,size=21,
@@ -473,6 +477,8 @@ def get_screenshot_info(x=0,y=0,desc='n-a',size=29,method='general'):
         build, site = classify_tab_color(r, g, b, variance)
     elif method == 'building':
         build, site = classify_building(r, g, b, variance)
+    elif method == 'modify':
+        build, site = classify_dialog(r, g, b, variance)
     else:
         build, site = "None"
     timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
@@ -523,13 +529,18 @@ def classify_dialog(r, g, b, variance):
             and variance < 6000):
             return (False, 'remove_worker')
 
+        if (abs(r - 104) <= 5 and abs(g - 82) <= 5 and abs(b - 55) <= 5
+            and variance < 800):
+            return (False, 'upgrade_icon')
+
         if (abs(r - 97) <= 5 and abs(g - 77) <= 5 and abs(b - 47) <= 5
             and variance < 700):
-            return (False, 'upgrade_building')
+            return (False, 'upgrade_icon')
+
 
         if (abs(r - 85) <= 2 and abs(g - 76) <= 2 and abs(b - 15) <= 2
             and 12000 < variance < 13500):
-            return (False, 'woodcutter_built')
+            return (False, 'building_built')#is a woodcutter or Jungle preserve
 
 
 
@@ -552,13 +563,17 @@ def classify_building(r, g, b, variance):
     # Built Building Dialogs
     race = CONTEXT['race']
     if race == 'Amazon':
-        if (abs(r - 110) <= 10 and abs(g - 95) <= 10 and abs(b - 31) <= 6
-            and 8000 < variance < 10000):# Ga image
+        if (abs(r - 120) <= 10 and abs(g - 110) <= 10 and abs(b - 31) <= 10
+            and 10000 < variance < 12500):# Ga image
             return (False, 'Garrison')
         
-        if (abs(r - 86) <= 6 and abs(g - 66) <= 6 and abs(b - 38) <= 6
-            and 250 < variance < 600):# Blank brown image
+        if (abs(r - 86) <= 5 and abs(g - 66) <= 5 and abs(b - 38) <= 5
+            and 250 < variance < 500):# Blank brown image
             return (False, 'Standard_brown')
+        
+        if (abs(r - 96) <= 3 and abs(g - 76) <= 3 and abs(b - 45) <= 3
+            and 250 < variance < 450):# Blank brown image
+            return (False, 'Lighter_brown')
         
         if (abs(r - 67) <= 5 and abs(g - 51) <= 5 and abs(b - 25) <= 5
             and 1000 < variance < 2000):# Tiny Liana icon
@@ -616,7 +631,6 @@ def Amazon_F2(keyboard):
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     if build:
         item_pos = (60, 45) 
         if site == 'red':
@@ -626,19 +640,16 @@ def Amazon_F2(keyboard):
         elif site == 'green':
             build_item_L_S(*item_pos)
         return
+    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
+
+    
     _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
-    if built == 'woodcutter_built':
-        if site == 'swirl':
-            if toggle_tab:  
-                in_building_dialog(-234, 0,'upgrade_built_building')
-                return
-            else:
-                in_building_dialog(68, -34, 'remove_worker')
-                return
-    else:
-        if site == 'swirl': # 'Upgrade_to_Rare_unbuilt'
-                in_building_dialog(-210, 0,'upgrade_unbuilt_building')
-                return
+
+    if site == 'swirl':
+        if built == 'building_built':#, 'remove_worker'
+            in_building_dialog(68, -34)
+            return
+            
   
     err_no_col(f'{built} toggled-{toggle_tab}')
 
@@ -658,8 +669,9 @@ def Amazon_F3(keyboard):
         else:
             err_no_col()
         return
-    
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
     if site == 'swirl': # remove worker
+        
         in_building_dialog(68, -34, 'remove_worker')
         
     
@@ -857,11 +869,7 @@ def Amazon_hyphen(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     
     if toggle_tab:  # Upgrade_to_Rare — special case (dismantle + right-click)
-        _set_io(keyboard, 'Upgrade_to_Rare', 'none')
-        start_pos = capture_mouse_pos()
-        in_building_dialog(-210, 0)
-        stable_click(3)  # right-click
-        restore_mouse_pos(start_pos)
+        pass
     else:  # Patrol_Post — normal build
         btype = 'Patrol-Post'
         build, site = analyze_dialog(btype)
@@ -909,12 +917,8 @@ def Amazon_backslash(keyboard):
         in_building_dialog(-165, 0)
     
 def Amazon_rightbracket(keyboard):
-    pass
-
-
-def Amazon_leftbracket(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    _set_io(keyboard, 'Amazon_rightbracket', 'none')
     if toggle_tab:  # 
         pass
     else:
@@ -923,6 +927,35 @@ def Amazon_leftbracket(keyboard):
         time.sleep(0.1)
         stable_click()
         unpause_pause(0.1)
+
+def Amazon_leftbracket(keyboard):
+    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0,
+                                         method='modify')
+        if usite == 'upgrade_icon':
+            in_building_dialog(-188,0)
+    if site == 'Woodcutter':
+        in_building_dialog(-234, 0)
+    if site == 'Lighter_brown':
+        in_building_dialog(-206, 0)
+        
+
+    return
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
+    if built == 'woodcutter_built':
+        if site == 'swirl':
+            if toggle_tab:  
+                in_building_dialog(-234, 0,'upgrade_built_building')
+                return
+            else:
+                in_building_dialog(68, -34, 'remove_worker')
+                return
+    else:
+        if site == 'swirl': # 'Upgrade_to_Rare_unbuilt'
+                in_building_dialog(-210, 0,'upgrade_unbuilt_building')
+                return
 
 
 
