@@ -2,6 +2,7 @@
 # A module for Widelands.
 #
 # widelands.py  –  Widelands-specific functions only
+
 #
 
 import os
