@@ -456,7 +456,7 @@ def get_screenshot_info(x=0, y=0, desc='n-a', area=(29, 29), method='general'):
         build, site = id_site_tab_color(r, g, b, variance)
     elif method == 'building':
         build, site = id_building_via_dialog_tells(r, g, b, variance)
-    elif method == 'modify':
+    elif method == 'id_dialog_icon':
         build, site = id_dialog_icon(r, g, b, variance)
     else:
         build, site = False, "None"
@@ -527,7 +527,14 @@ def id_dialog_icon(r, g, b, variance):
             return (False, 'building_built')#is a woodcutter or Jungle preserve
        
     elif race == 'Atlantean':
-        pass
+        if (abs(r - 97) <= 5 and abs(g - 81) <= 5 and abs(b - 54) <= 5
+            and 1000 < variance < 2000):
+            return (False, 'upgrade_tower')
+        if (abs(r - 104) <= 10 and abs(g - 83) <= 5 and abs(b - 51) <= 10
+            and 1800 < variance < 2500):# Charcoal Kiln wares indicator..
+            return (False, 'Charcoal_kiln')
+
+       
     elif race == 'Barbarian':
         pass
     elif race == 'Empire':
@@ -573,10 +580,39 @@ def id_building_via_dialog_tells(r, g, b, variance):
         
         if (abs(r - 88) <= 3 and abs(g - 68) <= 3 and abs(b - 40) <= 3
             and 250 < variance < 500):# Blank brown image
-            return (False, 'standard_brown')
+            return (False, 'Standard_brown')
+
+        if (abs(r - 87) <= 5 and abs(g - 68) <= 5 and abs(b - 37) <= 5
+            and 6000 < variance < 7000):# Tiny Woodcutter icon
+            return (False, 'Woodcutter')
+        
+        if (abs(r - 75) <= 5 and abs(g - 66) <= 5 and abs(b - 36) <= 5
+            and 6000 < variance < 7000):# Tiny Forester icon
+            return (False, 'Forester')
+
+        if (abs(r - 83) <= 5 and abs(g - 69) <= 5 and abs(b - 46) <= 5
+            and 7500 < variance < 8500):# Tiny Quary icon
+            return (False, 'Quary')
 
         
+        if (abs(r - 76) <= 5 and abs(g - 63) <= 5 and abs(b - 41) <= 3
+            and 5250 < variance < 5600):# Tiny Fishbreeder icon
+            return (False, 'Fishbreeder')
+        
+        if (abs(r - 75) <= 5 and abs(g - 61) <= 5 and abs(b - 37) <= 3
+            and 5000 < variance < 5400):# Tiny Fish icon
+            return (False, 'Fish')
 
+        if (abs(r - 76) <= 5 and abs(g - 58) <= 5 and abs(b - 32) <= 3
+            and 3500 < variance < 4400):# Tiny Well icon
+            return (False, 'Well')
+
+        if (abs(r - 108) <= 10 and abs(g - 76) <= 5 and abs(b - 42) <= 10
+            and 3000 < variance < 5000):#  Scout arrow near fish...
+            return (False, 'Scout')
+
+
+        
         
     elif race == 'Barbarian':
         pass
@@ -714,10 +750,9 @@ def Amazon_F7(keyboard):
         else:
             output_error()
     if site == 'Charcoal_Kiln':
-        start_pos = capture_mouse_pos()
-        in_building_dialog(-175, 20)
+        in_building_dialog(-174, 20)
         stable_click(3) 
-        restore_mouse_pos(start_pos)
+        restore_mouse_pos(CONTEXT['start_pos'])
 
 
 
@@ -758,10 +793,9 @@ def Amazon_F10(keyboard):
         else:
             output_error()
     if site == 'swirl':
-        start_pos = capture_mouse_pos()
         in_building_dialog(-285, 0) 
         stable_click(3)
-        restore_mouse_pos(start_pos)
+        restore_mouse_pos(CONTEXT['start_pos'])
 
         
 
@@ -856,7 +890,6 @@ def Amazon_hyphen(keyboard):
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
     item_pos = (160, 95)
-
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -865,8 +898,6 @@ def Amazon_hyphen(keyboard):
         build_item_L_S(*item_pos)
     else:
         output_error()
-
-
     
 def Amazon_backslash(keyboard):
     # Dismantle Sites..
@@ -882,19 +913,19 @@ def Amazon_backslash(keyboard):
         in_building_dialog(-165, 0)
     
 def Amazon_rightbracket(keyboard):
-    _set_io(keyboard, 'Amazon_rightbracket', 'none')
     # Double Click
+    _set_io(keyboard, 'Amazon_rightbracket', 'none')
     stable_click()
     time.sleep(0.1)
     stable_click()
     unpause_pause(0.08)
 
 def Amazon_leftbracket(keyboard):
+    # UPGRADING
     _set_io(keyboard, 'Amazon_leftbracket', 'none')
     site = determine_dialog()
     if site == 'Garrison':
-        _, usite, var = get_screenshot_info(x=-188,y=0,
-                                         method='modify')
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
         if usite == 'upgrade_icon':
             in_building_dialog(-188,0)
     if site == 'Woodcutter':
@@ -1119,53 +1150,61 @@ def Atlantean_equal(keyboard):
     else:
         output_error()
 
-def Atlantean_backslash(keyboard):
-    # Dismantle Guardhouse, Tower, Castle
-    _set_io(keyboard, 'Dismantle', 'none')
-    site = determine_dialog()
-
-    
-    if site == 'Garrison':
-        pass
-    elif site == '':
-        pass
-    #in_building_dialog(-130, 0)
-
+def Atlantean_plus(keyboard):
+    btype = 'Charcoal Kiln'
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if build:
+        item_pos = (-25, 95)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()   
+    if site == 'Charcoal_kiln':
+        in_building_dialog(-174, 20) 
+        stable_click(3)
+        restore_mouse_pos(CONTEXT['start_pos'])
 
 def Atlantean_leftbracket(keyboard):
+    # UPGRADING
     _set_io(keyboard, 'Amazon_leftbracket', 'none')
     site = determine_dialog()
     if site == 'Garrison':
-        _, usite, var = get_screenshot_info(x=-188,y=0,
-                                         method='modify')
-        if usite == 'upgrade_icon':
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
+        if usite == 'upgrade_tower':
             in_building_dialog(-188,0)
-    if site == 'Woodcutter':
-        in_building_dialog(-234, 0)
-    if site == 'Lighter_brown':
-        in_building_dialog(-206, 0)
-    
 
 def Atlantean_rightbracket(keyboard):
-    # Dismantle Woodcutter, Quarry
-    _set_io(keyboard, 'TypeB_Dismantle', 'none')
-    in_building_dialog(-235, 0)
+    # Double Click
+    _set_io(keyboard, 'Atlantean_rightbracket', 'none')
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
 
-
-
-    
+def Atlantean_backslash(keyboard):
+    # Dismantle Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-235, 0)
+    elif site == 'Scout':
+        in_building_dialog(-48, 36)
+        
 def Atlantean_scroll_lock(keyboard):
+     # Destroy! Guardhouse, Tower, Castle etc...
     _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-164,0)
-    if site == 'Liana':
-        in_building_dialog(-235,0)
-    if site == 'Stonecutter':
-        in_building_dialog(-275, 0)
-    if site == 'Woodcutter':
-        in_building_dialog(-205, 0)
-
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-265, 0)
+    elif site == 'Scout':
+        in_building_dialog(-84, 36)
 
 # Barbarian
 
@@ -1173,12 +1212,11 @@ def Atlantean_scroll_lock(keyboard):
 # Barbarian  (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
 
-
 def Barbarian_F1(keyboard):
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (5, 40)
+    item_pos = (5, 45)
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -1192,7 +1230,7 @@ def Barbarian_F2(keyboard):
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (60, 45)
+    item_pos = (60, 45)  # standardised Y to match most buildings
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -1220,7 +1258,7 @@ def Barbarian_F4(keyboard):
     btype = 'Well'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (55, 95)
+    item_pos = (60, 95)
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -1360,7 +1398,7 @@ def Barbarian_equal(keyboard):
     btype = 'Tower'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (125, 135)
+    item_pos = (125, 145)
     if site == 'orange':
         build_item(*item_pos)
     elif site == 'green':
@@ -1368,15 +1406,64 @@ def Barbarian_equal(keyboard):
     else:
         output_error()
 
-def Barbarian_backslash(keyboard):
-    # Dismantle Guardhouse, Tower, Castle
-    _set_io(keyboard, 'TypeA_Dismantle', 'none')
-    in_building_dialog(-130, 0)
+def Barbarian_plus(keyboard):
+    btype = 'Charcoal Kiln'
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if build:
+        item_pos = (-25, 95)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()   
+    if site == 'Charcoal_kiln':
+        in_building_dialog(-174, 20) 
+        stable_click(3)
+        restore_mouse_pos(CONTEXT['start_pos'])
+
+def Barbarian_leftbracket(keyboard):
+    # UPGRADING
+    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
+        if usite == 'upgrade_tower':
+            in_building_dialog(-188,0)
 
 def Barbarian_rightbracket(keyboard):
-    # Dismantle Woodcutter, Quarry
-    _set_io(keyboard, 'TypeB_Dismantle', 'none')
-    in_building_dialog(-235, 0)
+    # Double Click
+    _set_io(keyboard, 'Barbarian_rightbracket', 'none')
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
+
+def Barbarian_backslash(keyboard):
+    # Dismantle Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-235, 0)
+    elif site == 'Scout':
+        in_building_dialog(-48, 36)
+        
+def Barbarian_scroll_lock(keyboard):
+     # Destroy! Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-265, 0)
+    elif site == 'Scout':
+        in_building_dialog(-84, 36)
+
+
+
 
 
 
@@ -1390,16 +1477,18 @@ def Barbarian_rightbracket(keyboard):
 # ===============================================
 
 
+
 def Empire_F1(keyboard):
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (5, 45)
     if site == 'red':
-        notepd_strait(5, 40)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, -25, 40)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -60, 40)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1407,12 +1496,13 @@ def Empire_F2(keyboard):
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (60, 45)  # standardised Y to match most buildings
     if site == 'red':
-        notepd_strait(60, 40)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 20, 55)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -10, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1420,12 +1510,13 @@ def Empire_F3(keyboard):
     btype = 'Forester'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (105, 45)
     if site == 'red':
-        notepd_strait(105, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 80, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 40, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1433,12 +1524,13 @@ def Empire_F4(keyboard):
     btype = 'Well'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (60, 95)
     if site == 'red':
-        notepd_strait(55, 95)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 25, 95)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -15, 95)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1446,10 +1538,11 @@ def Empire_F5(keyboard):
     btype = 'Bakery'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (175, 50)
     if site == 'orange':
-        notepd_strait(175, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 140, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1457,10 +1550,11 @@ def Empire_F6(keyboard):
     btype = 'Smokery'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (75, 50)
     if site == 'orange':
-        notepd_strait(75, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 40, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1468,10 +1562,11 @@ def Empire_F7(keyboard):
     btype = 'Mill'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 50)
     if site == 'orange':
-        notepd_strait(125, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1479,10 +1574,11 @@ def Empire_F8(keyboard):
     btype = 'Smelter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (20, 95)
     if site == 'orange':
-        notepd_strait(20, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, -15, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1490,10 +1586,11 @@ def Empire_F9(keyboard):
     btype = 'Weaponsmith'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 95)
     if site == 'orange':
-        notepd_strait(125, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1501,10 +1598,11 @@ def Empire_F10(keyboard):
     btype = 'Armoursmith'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (175, 95)
     if site == 'orange':
-        notepd_strait(175, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 140, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1512,12 +1610,13 @@ def Empire_F11(keyboard):
     btype = 'Fish'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (155, 45)
     if site == 'red':
-        notepd_strait(155, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 120, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 85, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1525,12 +1624,13 @@ def Empire_F12(keyboard):
     btype = 'Fishbreader'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (205, 45)
     if site == 'red':
-        notepd_strait(205, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 170, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 140, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1538,10 +1638,11 @@ def Empire_end(keyboard):
     btype = 'SawMill'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (25, 50)
     if site == 'orange':
-        notepd_strait(25, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, -15, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1549,12 +1650,13 @@ def Empire_hyphen(keyboard):
     btype = 'Guardhouse'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (200, 100)
     if site == 'red':
-        notepd_strait(200, 100)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 170, 100)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 140, 100)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1562,24 +1664,72 @@ def Empire_equal(keyboard):
     btype = 'Tower'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 145)
     if site == 'orange':
-        notepd_strait(125, 135)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 135)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
-def Empire_backslash(keyboard):
-    # Dismantle  Gaurdhouse, Tower, Castle
-    _set_io(keyboard, 'TypeA_Dismantle', 'none')
-    in_building_dialog(-130, 0)
+def Empire_plus(keyboard):
+    btype = 'Charcoal Kiln'
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if build:
+        item_pos = (-25, 95)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()   
+    if site == 'Charcoal_kiln':
+        in_building_dialog(-174, 20) 
+        stable_click(3)
+        restore_mouse_pos(CONTEXT['start_pos'])
+
+def Empire_leftbracket(keyboard):
+    # UPGRADING
+    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
+        if usite == 'upgrade_tower':
+            in_building_dialog(-188,0)
 
 def Empire_rightbracket(keyboard):
-    # Dismantle Woodcutter, Quarry.
-    _set_io(keyboard, 'TypeB_Dismantle', 'none')
-    in_building_dialog(-235, 0)
- 
-    
+    # Double Click
+    _set_io(keyboard, 'Empire_rightbracket', 'none')
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
+
+def Empire_backslash(keyboard):
+    # Dismantle Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-235, 0)
+    elif site == 'Scout':
+        in_building_dialog(-48, 36)
+        
+def Empire_scroll_lock(keyboard):
+     # Destroy! Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-265, 0)
+    elif site == 'Scout':
+        in_building_dialog(-84, 36)
+
+
+
 
 # Frisian
 
@@ -1588,16 +1738,19 @@ def Empire_rightbracket(keyboard):
 # FRISIAN FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
 
+
+
 def Frisian_F1(keyboard):
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (5, 45)
     if site == 'red':
-        notepd_strait(5, 40)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, -25, 40)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -60, 40)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1605,12 +1758,13 @@ def Frisian_F2(keyboard):
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (60, 45)  # standardised Y to match most buildings
     if site == 'red':
-        notepd_strait(60, 40)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 20, 55)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -10, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1618,12 +1772,13 @@ def Frisian_F3(keyboard):
     btype = 'Forester'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (105, 45)
     if site == 'red':
-        notepd_strait(105, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 80, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 40, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1631,12 +1786,13 @@ def Frisian_F4(keyboard):
     btype = 'Well'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (60, 95)
     if site == 'red':
-        notepd_strait(55, 95)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 25, 95)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, -15, 95)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1644,10 +1800,11 @@ def Frisian_F5(keyboard):
     btype = 'Bakery'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (175, 50)
     if site == 'orange':
-        notepd_strait(175, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 140, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1655,10 +1812,11 @@ def Frisian_F6(keyboard):
     btype = 'Smokery'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (75, 50)
     if site == 'orange':
-        notepd_strait(75, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 40, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1666,10 +1824,11 @@ def Frisian_F7(keyboard):
     btype = 'Mill'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 50)
     if site == 'orange':
-        notepd_strait(125, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1677,10 +1836,11 @@ def Frisian_F8(keyboard):
     btype = 'Smelter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (20, 95)
     if site == 'orange':
-        notepd_strait(20, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, -15, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1688,10 +1848,11 @@ def Frisian_F9(keyboard):
     btype = 'Weaponsmith'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 95)
     if site == 'orange':
-        notepd_strait(125, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1699,10 +1860,11 @@ def Frisian_F10(keyboard):
     btype = 'Armoursmith'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (175, 95)
     if site == 'orange':
-        notepd_strait(175, 95)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 140, 95)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1710,12 +1872,13 @@ def Frisian_F11(keyboard):
     btype = 'Fish'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (155, 45)
     if site == 'red':
-        notepd_strait(155, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 120, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 85, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1723,12 +1886,13 @@ def Frisian_F12(keyboard):
     btype = 'Fishbreader'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (205, 45)
     if site == 'red':
-        notepd_strait(205, 45)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 170, 45)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 140, 45)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1736,10 +1900,11 @@ def Frisian_end(keyboard):
     btype = 'SawMill'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (25, 50)
     if site == 'orange':
-        notepd_strait(25, 50)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, -15, 50)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
@@ -1747,12 +1912,13 @@ def Frisian_hyphen(keyboard):
     btype = 'Guardhouse'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (200, 100)
     if site == 'red':
-        notepd_strait(200, 100)
+        build_item(*item_pos)
     elif site == 'orange':
-        notepd_tab_select(-35, 0, 170, 100)
+        build_item_M_S(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-65, 0, 140, 100)
+        build_item_L_S(*item_pos)
     else:
         output_error()
 
@@ -1760,21 +1926,70 @@ def Frisian_equal(keyboard):
     btype = 'Tower'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
+    item_pos = (125, 145)
     if site == 'orange':
-        notepd_strait(125, 135)
+        build_item(*item_pos)
     elif site == 'green':
-        notepd_tab_select(-35, 0, 95, 135)
+        build_item_M_S(*item_pos)
     else:
         output_error()
 
-def Frisian_backslash(keyboard):
-    # Dismantle  Gaurdhouse, Tower, Castle
-    _set_io(keyboard, 'TypeA_Dismantle', 'none')
-    in_building_dialog(-130, 0)
+def Frisian_plus(keyboard):
+    btype = 'Charcoal Kiln'
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    if build:
+        item_pos = (-25, 95)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()   
+    if site == 'Charcoal_kiln':
+        in_building_dialog(-174, 20) 
+        stable_click(3)
+        restore_mouse_pos(CONTEXT['start_pos'])
+
+def Frisian_leftbracket(keyboard):
+    # UPGRADING
+    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
+        if usite == 'upgrade_tower':
+            in_building_dialog(-188,0)
 
 def Frisian_rightbracket(keyboard):
-    # Dismantle Woodcutter, Quarry.
-    _set_io(keyboard, 'TypeB_Dismantle', 'none')
-    in_building_dialog(-235, 0)
- 
-    
+    # Double Click
+    _set_io(keyboard, 'Frisian_rightbracket', 'none')
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
+
+def Frisian_backslash(keyboard):
+    # Dismantle Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-235, 0)
+    elif site == 'Scout':
+        in_building_dialog(-48, 36)
+        
+def Frisian_scroll_lock(keyboard):
+     # Destroy! Guardhouse, Tower, Castle etc...
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    elif site in ['Woodcutter','Forester','Quary','Fishbreeder','Fish','Well']:
+        in_building_dialog(-265, 0)
+    elif site == 'Scout':
+        in_building_dialog(-84, 36)
+
+
+
+
