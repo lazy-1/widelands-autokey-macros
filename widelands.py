@@ -20,7 +20,8 @@ from Xlib import display, X
 from Xlib.ext import xtest
 from mss import mss
 
-# My personal stuff, comment it out and use your own feedback
+disp = display.Display()
+root = disp.screen().root
 
 try:# My personal stuff autokey module.
     import p2autokeym
@@ -29,18 +30,38 @@ except ImportError:
     HAS_P2AUTOKEYM = False
 
 DEBUG = True
-DEBUG = False
+#DEBUG = False
 
+CONTEXT = {
+    'race': None,
+    'keyboard': None,
+    'building': None,
+    'icon': None,
+    'start_pos': None,
+}
+
+def race():
+    num,race = 1,''
+    if num == 0:race = 'Amazon'
+    elif num == 1:race = 'Atlantean'
+    elif num == 2:race = 'Barbarian'
+    elif num == 3:race = 'Empire'
+    elif num == 4:race = 'Frisian'
+    CONTEXT['race'] = race
+    return race
+
+def _set_io(keyboard, building, icon):
+    global CONTEXT
+    CONTEXT['keyboard'] = keyboard
+    CONTEXT['building'] = building
+    CONTEXT['icon'] = icon
 
     
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
 NOTIFICATIONS_DIR = os.path.normpath(
     os.path.join(MODULE_DIR, '..', 'Sounds', 'Application', 'Notification')
 )+'/'
-
-
 
 PLAY_SOUND = {'red':NOTIFICATIONS_DIR+'bell.oga',
               'orange':NOTIFICATIONS_DIR+'complete.oga',
@@ -56,72 +77,25 @@ PLAY_SOUND = {'red':NOTIFICATIONS_DIR+'bell.oga',
               'sharpstrum1':NOTIFICATIONS_DIR+'sharp_organ.ogg',
               }
 
-
-
-
 def _play_sound(result):
     try:
         path = PLAY_SOUND.get(result, PLAY_SOUND['sharpstrum1'])
         subprocess.Popen(["paplay", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
-        print('sound issues?')  # fail — no sound
-
-
-
-CONTEXT = {
-    'race': None,
-    'keyboard': None,
-    'building': None,
-    'icon': None,
-    'start_pos': None,
-    # Add more later if needed
-}
-
-
+        print(f'sound issues? {result}')  # fail — no sound
 
 
 WORK_PATH = '/dev/shm/Widelands/'
 
 if not os.path.exists(WORK_PATH):
     os.mkdir(WORK_PATH)
-
-
+    
 AUTOKEY_TOGGLE_FILE = WORK_PATH+'autokey_transient_store.json'
 
-
-
-def _set_io(keyboard, building, icon):
-    global CONTEXT
-    CONTEXT['keyboard'] = keyboard
-    CONTEXT['building'] = building
-    CONTEXT['icon'] = icon
-
-
-    
-def race():
-    num,race = 0,''
-    if num == 0:race = 'Amazon'
-    elif num == 1:race = 'Atlantean'
-    elif num == 2:race = 'Barbarian'
-    elif num == 3:race = 'Empire'
-    elif num == 4:race = 'Frisian'
-    CONTEXT['race'] = race
-    return race
-
 def debug_save_shm_append(text):
-    with open(WORK_PATH+'debug_building_col.txt', "a") as file:
+    with open(WORK_PATH+f"{CONTEXT['race']}_debug.txt", "a") as file:
         file.write(text)
 
-
-
-
-
-
-
-
-# These should already be in your script — keep them at the very top
-disp = display.Display()
-root = disp.screen().root
 
 def stable_click(button=1):
     """
@@ -141,7 +115,9 @@ def stable_click(button=1):
     # Warp to exact same position — stabilizes SDL2 multi-polls
     root.warp_pointer(x, y)
     disp.sync()
-    time.sleep(0.04)  # Minimal reliable settle — tune once per system (0.05–0.1 safe range)
+    
+    # Minimal reliable settle — tune once per system (0.05–0.1 safe range)
+    time.sleep(0.04)
     
     # Send clean press
     xtest.fake_input(disp, X.ButtonPress, button)
@@ -178,12 +154,6 @@ def stable_click_relative(dx=0, dy=0, button=1):
     time.sleep(0.03)
     xtest.fake_input(disp, X.ButtonRelease, button)
     disp.sync()
-    
-    # OPTIONAL: warp back to original position if desired
-    # (Usually not needed — mouse stays where user expects: on the menu item)
-    # root.warp_pointer(current_x, current_y)
-    # disp.sync()
-
 
 def capture_mouse_pos():
     """Returns current mouse position as (x, y) tuple"""
@@ -198,14 +168,8 @@ def restore_mouse_pos(pos):
     time.sleep(0.02)  # Tiny settle
 
 
-
-        
-
-
-
-
-
 def transient_store_get(tag, default=None):
+    # A json containing True False vars nessisary for road building 
     data = {}
     # Read existing data
     try:
@@ -219,10 +183,10 @@ def transient_store_get(tag, default=None):
         try:
             with open(AUTOKEY_TOGGLE_FILE, 'w') as f:
                 json.dump(data, f)
-                #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Initialized {} = {}'.format(tag, default)])
+                #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Initialized {} = {}'.format(tag, default)]) # for debugging
         except Exception as e:
             pass
-        #subprocess.call(['notify-send', '-t', '2000', 'Get Error', 'Failed to write {} = {}: {}'.format(tag, default, str(e))])
+        #subprocess.call(['notify-send', '-t', '2000', 'Get Error', 'Failed to write {} = {}: {}'.format(tag, default, str(e))]) # for debugging
     return data.get(tag, default)
 
 def transient_store_set(tag, value):
@@ -238,10 +202,10 @@ def transient_store_set(tag, value):
     try:
         with open(AUTOKEY_TOGGLE_FILE, 'w') as f:
             json.dump(data, f)
-            #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Set {} = {}'.format(tag, value)])
+            #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Set {} = {}'.format(tag, value)]) # for debugging
     except Exception as e:
         pass
-    #subprocess.call(['notify-send', '-t', '2000', 'Set Error', 'Failed to write {} = {}: {}'.format(tag, value, str(e))])
+    #subprocess.call(['notify-send', '-t', '2000', 'Set Error', 'Failed to write {} = {}: {}'.format(tag, value, str(e))]) # for debugging
 
 
 def get_mouse_position():
@@ -256,53 +220,7 @@ def get_mouse_position():
     y = parts[1].split(":")[1]
     return x, y
 
-
-
-
-#
-#  For Notepad icons example
-#
-# eg (40,80) = (+40pxls across, +80pxls down)
-#
-#
-
-
-def build_item(x=0, y=0):# Current Tab
-    if DEBUG:
-        get_screenshot_info(desc='mouse_open_pos',size=50)
-        get_screenshot_info(x=x,y=y,desc='destination_click',size=50)
-    stable_click_relative(x, y)
-    stable_click(3)
-    unpause_pause(0.15)
-
-def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
-    if DEBUG:
-        get_screenshot_info(desc='mouse_open_pos',size=50)
-        get_screenshot_info(x=x_tab,y=y_tab,desc='tab_selection',size=50)
-    stable_click_relative(x_tab,y_tab)
-    time.sleep(0.02)
-    if DEBUG:
-        get_screenshot_info(x=x_bldg,y=y_bldg,desc='build_selection',size=60)
-    stable_click_relative(x_bldg, y_bldg)
-    unpause_pause(0.15)
-    stable_click(3)
-    
-def build_item_M_S(x_bldg, y_bldg): # Move Medium to Small Tab
-    x_tab, y_tab = (-35, 0)
-    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
-    
-def build_item_L_S(x_bldg, y_bldg): # Move Large to Small Tab
-    x_tab, y_tab = (-70, 0)
-    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
-
-def build_item_L_M(x_bldg, y_bldg): # Move Large to Medium Tab
-    x_tab, y_tab = (-35, 0)
-    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
-
-
-
-
-def err_no_col(message="Unknown error"):
+def output_error(message="Unknown error"):
     """
     Error handler: uses p2autokeym dbus if available, else simple print.
     """
@@ -317,25 +235,6 @@ def err_no_col(message="Unknown error"):
         _play_sound('big_error')
     
 
-
-def in_building_dialog(x,y):# For Dismantles & Upgrades
-    ctrl_press()#ctrl_on()'
-    if DEBUG:
-        get_screenshot_info(x=x,y=y,desc='in_building_dialog',size=21)
-    stable_click_relative(x, y) 
-    time.sleep(0.05)
-    ctrl_release()#ctrl_off()
-    unpause_pause()
-    stable_click(3)
-    restore_mouse_pos(CONTEXT['start_pos'])
-
-
-
-
-
-
-
-    
 def unpause_pause(delay=0.2):
     CONTEXT['keyboard'].send_keys("<pause>")
     time.sleep(delay)
@@ -429,7 +328,64 @@ def call_shortcut(key, keyboard):
             print(f"Missing {func_name}")
 
 
-            
+     #
+#  For build_item icons example
+#
+# eg (40,80) = (+40pxls across, +80pxls down) from mouse location.
+#
+#
+
+def in_building_dialog(x,y):# For Dismantles & Upgrades etc
+    ctrl_press()#ctrl_on()'
+    if DEBUG:
+        time.sleep(0.02)
+        get_screenshot_info(x=x,y=y,desc='in_building_dialog',area=(25,25))
+        time.sleep(0.05)
+    stable_click_relative(x, y) 
+    time.sleep(0.05)
+    ctrl_release()#ctrl_off()
+    unpause_pause()
+    stable_click(3)
+    restore_mouse_pos(CONTEXT['start_pos'])
+
+
+def build_item(x=0, y=0):# Current Tab
+    if DEBUG:
+        time.sleep(0.02)# race issues, mss is so fast....
+        get_screenshot_info(x=x,y=y,desc='destination_click',area=(60,60))
+        time.sleep(0.03)# race issues, mss is so fast....
+    stable_click_relative(x, y)
+    stable_click(3)
+    unpause_pause(0.15)
+
+def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
+    if DEBUG:
+        time.sleep(0.02)# race issues, mss is so fast....
+        get_screenshot_info(x=x_tab,y=y_tab,desc='tab_selection',area=(40,40))
+        time.sleep(0.03)# race issues, mss is so fast....
+    stable_click_relative(x_tab,y_tab)
+    time.sleep(0.02)
+    if DEBUG:
+        time.sleep(0.02)# race issues, mss is so fast....
+        get_screenshot_info(x=x_bldg,y=y_bldg,desc='build_selection',area=(60,60))
+        time.sleep(0.03)# race issues, mss is so fast....
+    stable_click_relative(x_bldg, y_bldg)
+    unpause_pause(0.15)
+    stable_click(3)
+    
+def build_item_M_S(x_bldg, y_bldg): # Move Medium to Small Tab
+    x_tab, y_tab = (-35, 0)
+    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
+    
+def build_item_L_S(x_bldg, y_bldg): # Move Large to Small Tab
+    x_tab, y_tab = (-70, 0)
+    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
+
+def build_item_L_M(x_bldg, y_bldg): # Move Large to Medium Tab
+    x_tab, y_tab = (-35, 0)
+    build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg)
+
+       
 def analyze_dialog(building): #For build sites mainly
     # 1. Open the dialog/window
     CONTEXT['start_pos'] = capture_mouse_pos()
@@ -442,29 +398,39 @@ def determine_dialog():# For a built building what is it?
     # 1. Open the dialog/window
     CONTEXT['start_pos'] = capture_mouse_pos()
     stable_click()
-    time.sleep(0.03)  # Let it fully render
-    build,site,var = get_screenshot_info(x=-68,y=-35,size=17,
+    time.sleep(0.09)  # Let it fully render
+    build,site,var = get_screenshot_info(x=-62,y=-35,area=(30,17),
                                          method='building')
     if site == 'Standard_brown':
-        build,site,var = get_screenshot_info(x=-327,y=-67,size=21,
+        build,site,var = get_screenshot_info(x=-327,y=-67,area=(22,22),
                                              method='building')
+    #if site == 'none':
+        
     return site
 
-
-
-
-
-def get_screenshot_info(x=0, y=0, desc='n-a', size=29, method='general'):
+def get_screenshot_info(x=0, y=0, desc='n-a', area=(29, 29), method='general'):
+    # Unpack width/height
+    width, height = area
+    half_w = width // 2
+    half_h = height // 2
+    
     # Get current mouse position
-    x_str, y_str = get_mouse_position() 
-    x, y = int(x_str) + x, int(y_str) + y
-    half = size // 2
+    x_str, y_str = get_mouse_position()
+    mouse_x, mouse_y = int(x_str), int(y_str)
+
+    # Apply offset
+    capture_x = mouse_x + x - half_w
+    capture_y = mouse_y + y - half_h
 
     try:
         with mss() as sct:
-            monitor = {"left": x - half, "top": y - half, "width": size, "height": size}
+            monitor = {
+                "left": capture_x,
+                "top": capture_y,
+                "width": width,
+                "height": height
+            }
             sct_img = sct.grab(monitor)
-            # Convert to PIL Image (RGB)
             img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
 
     except Exception as e:
@@ -472,7 +438,7 @@ def get_screenshot_info(x=0, y=0, desc='n-a', size=29, method='general'):
         _play_sound('big_error')
         return False, 'none', 0
 
-    # Calculate average RGB
+    # Rest of your code remains identical
     pixels = [p[:3] for p in img.getdata()]
     n = len(pixels)
     if n == 0:
@@ -485,17 +451,17 @@ def get_screenshot_info(x=0, y=0, desc='n-a', size=29, method='general'):
 
     variance = sum((p[0]-r)**2 + (p[1]-g)**2 + (p[2]-b)**2 for p in pixels) / n
 
-    # Call the appropriate classifier (exactly as original)
+    # Call the appropriate classifier
     if method == 'general':
-        build, site = classify_tab_color(r, g, b, variance)
+        build, site = id_site_tab_color(r, g, b, variance)
     elif method == 'building':
-        build, site = classify_building(r, g, b, variance)
+        build, site = id_building_via_dialog_tells(r, g, b, variance)
     elif method == 'modify':
-        build, site = classify_dialog(r, g, b, variance)
+        build, site = id_dialog_icon(r, g, b, variance)
     else:
         build, site = False, "None"
 
-    # Timestamp and info string (exactly as original)
+    # Timestamp and info string 
     timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
     info = f"{timestamp}_{desc}-{ 'T' if build else 'F' }-{site}-{str(int(variance))}_RGB{r:03d}_{g:03d}_{b:03d}"
 
@@ -508,66 +474,7 @@ def get_screenshot_info(x=0, y=0, desc='n-a', size=29, method='general'):
     return build, site, variance
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def OLDget_screenshot_info(x=0,y=0,desc='n-a',size=29,method='general'):
-    #  Get current mouse position
-    x_str, y_str = get_mouse_position() 
-    x, y = int(x_str)+x, int(y_str)+y
-    half = size // 2
-    try:
-        img = pyautogui.screenshot(region=(x - half, y - half, size, size))
-    except Exception as e:
-        print(f"Screenshot failed: {e}")
-        _play_sound('big_error')
-        return False, 'none', 0
-    
-    #  Calculate average RGB
-    pixels = [p[:3] for p in img.getdata()]
-    n = len(pixels)
-    if n == 0:
-        print("No pixels in snapshot")
-        return
-
-    r = sum(p[0] for p in pixels) // n
-    g = sum(p[1] for p in pixels) // n
-    b = sum(p[2] for p in pixels) // n
-
-    variance = sum((p[0]-r)**2 + (p[1]-g)**2 + (p[2]-b)**2 for p in pixels) / n
-    if method == 'general':
-        build, site = classify_tab_color(r, g, b, variance)
-    elif method == 'building':
-        build, site = classify_building(r, g, b, variance)
-    elif method == 'modify':
-        build, site = classify_dialog(r, g, b, variance)
-    else:
-        build, site = "None"
-    timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
-    info = f"{timestamp}_{desc}-{ 'T' if build else 'F' }-{site}-{str(int(variance))}_RGB{r:03d}_{g:03d}_{b:03d}"
-    if DEBUG:
-        # Save snapshot with timestamp + RGB in filename
-        filename = f"{WORK_PATH}{info}.png"
-        img.save(filename)
-
-    debug_save_shm_append(info+'\n')
-    return build, site, variance
-    
-
-
-def classify_tab_color(r, g, b, variance):
+def id_site_tab_color(r, g, b, variance):
     # IF you need more tests brightness is an option..
     # brightness = (r + g + b) // 3
 
@@ -585,10 +492,14 @@ def classify_tab_color(r, g, b, variance):
     if (abs(r - 18) <= 5 and abs(g - 87) <= 5 and abs(b - 8) <= 5
         and variance < 6000):
         return (True, 'green')
-    
-    return classify_dialog(r, g, b, variance)
 
-def classify_dialog(r, g, b, variance):
+    if (abs(r - 27) <= 5 and abs(g - 68) <= 5 and abs(b - 95) <= 5
+        and variance < 8500):
+        return (True, 'blue')# Seafaring 
+
+    return id_dialog_icon(r, g, b, variance)
+
+def id_dialog_icon(r, g, b, variance):
     # Built Building Dialogs
     race = CONTEXT['race']
     if race == 'Amazon':
@@ -597,7 +508,7 @@ def classify_dialog(r, g, b, variance):
             return (False, 'swirl')
         if (abs(r - 113) <= 5 and abs(g - 84) <= 5 and abs(b - 45) <= 5
             and variance < 3500):
-            return (False, 'Charcoal')
+            return (False, 'Charcoal_Kiln')
 
         if (abs(r - 98) <= 5 and abs(g - 72) <= 5 and abs(b - 55) <= 5
             and variance < 6000):
@@ -611,18 +522,12 @@ def classify_dialog(r, g, b, variance):
             and variance < 700):
             return (False, 'upgrade_icon')
 
-
         if (abs(r - 85) <= 2 and abs(g - 76) <= 2 and abs(b - 15) <= 2
             and 12000 < variance < 13500):
             return (False, 'building_built')#is a woodcutter or Jungle preserve
-
-
-
-        
-
+       
     elif race == 'Atlantean':
         pass
-
     elif race == 'Barbarian':
         pass
     elif race == 'Empire':
@@ -633,37 +538,46 @@ def classify_dialog(r, g, b, variance):
     return (False, f"({r}, {g}, {b}, {int(variance)})")  
     
  
-def classify_building(r, g, b, variance):
+def id_building_via_dialog_tells(r, g, b, variance):
     # Built Building Dialogs
     race = CONTEXT['race']
     if race == 'Amazon':
-        if (abs(r - 120) <= 10 and abs(g - 110) <= 10 and abs(b - 31) <= 10
-            and 10000 < variance < 12500):# Ga image
+        if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
+            and 10000 < variance < 12500):# 'Gar' image
             return (False, 'Garrison')
         
-        if (abs(r - 86) <= 5 and abs(g - 66) <= 5 and abs(b - 38) <= 5
+        if (abs(r - 88) <= 3 and abs(g - 68) <= 3 and abs(b - 40) <= 3
             and 250 < variance < 500):# Blank brown image
             return (False, 'Standard_brown')
         
         if (abs(r - 96) <= 3 and abs(g - 76) <= 3 and abs(b - 45) <= 3
-            and 250 < variance < 450):# Blank brown image
+            and 250 < variance < 450):# Blank brown image Woodcutter is building dialog
             return (False, 'Lighter_brown')
         
-        if (abs(r - 67) <= 5 and abs(g - 51) <= 5 and abs(b - 25) <= 5
-            and 1000 < variance < 2000):# Tiny Liana icon
+        if (abs(r - 67) <= 5 and abs(g - 52) <= 5 and abs(b - 27) <= 5
+            and 1800 < variance < 2500):# Tiny Liana icon
             return (False, 'Liana')
 
         if (abs(r - 70) <= 5 and abs(g - 58) <= 5 and abs(b - 40) <= 5
             and 3000 < variance < 4000):# Tiny StoneCutter icon
             return (False, 'Stonecutter')
 
-        if (abs(r - 112) <= 5 and abs(g - 87) <= 5 and abs(b - 60) <= 5
-            and 9000 < variance < 10500):# Tiny Woodcutter icon
+        if (abs(r - 105) <= 5 and abs(g - 81) <= 5 and abs(b - 56) <= 5
+            and 9000 < variance < 11500):# Tiny Woodcutter icon
             return (False, 'Woodcutter')
         
     elif race == 'Atlantean':
-        pass
+        if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
+            and 10000 < variance < 12500):# 'Gar' image
+            return (False, 'Garrison')
+        
+        if (abs(r - 88) <= 3 and abs(g - 68) <= 3 and abs(b - 40) <= 3
+            and 250 < variance < 500):# Blank brown image
+            return (False, 'standard_brown')
 
+        
+
+        
     elif race == 'Barbarian':
         pass
     elif race == 'Empire':
@@ -683,26 +597,13 @@ def classify_building(r, g, b, variance):
 # Amazon — FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
 
-"""
-
-# pip install mss
-from mss import mss
-with mss() as sct:
-    img = sct.grab({"left": x-half, "top": y-half, "width": size, "height": size})
-    img = Image.frombytes("RGB", img.size, img.bgra, "raw", "BGRX")
-
-
-
-
-"""
-
 
 
 def Amazon_F1(keyboard):
     btype = 'Stonecutter'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (10, 45)
+    item_pos = (10, 50)
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -710,7 +611,7 @@ def Amazon_F1(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F2(keyboard):
     btype = 'Woodcutter'
@@ -728,7 +629,7 @@ def Amazon_F2(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
 
     
-    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
 
     if site == 'swirl':
         if built == 'building_built':#, 'remove_worker'
@@ -736,7 +637,7 @@ def Amazon_F2(keyboard):
             return
             
   
-    err_no_col(f'{built} toggled-{toggle_tab}')
+    output_error(f'{built} toggled-{toggle_tab}')
 
 
 def Amazon_F3(keyboard):
@@ -752,9 +653,9 @@ def Amazon_F3(keyboard):
         elif site == 'green':
             build_item_L_S(*item_pos)
         else:
-            err_no_col()
+            output_error()
         return
-    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
     if site == 'swirl': # remove worker
         
         in_building_dialog(68, -34, 'remove_worker')
@@ -774,7 +675,7 @@ def Amazon_F4(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F5(keyboard):
     btype = 'Cassava_Root_Cooker'
@@ -786,7 +687,7 @@ def Amazon_F5(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)  # GREEN → medium tab
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F6(keyboard):
     btype = 'Chocolate_Brewery'
@@ -798,27 +699,27 @@ def Amazon_F6(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F7(keyboard):
     btype = 'Charcoal_Kiln'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    if toggle_tab:# infinate Production of charcoal
-        start_pos = capture_mouse_pos()
-        in_building_dialog(-175, 20)
-        stable_click(3)  # right-click
-        restore_mouse_pos(start_pos)
-
-    else:#'Charcoal_Kiln'
+    if build:
         item_pos = (25, 95)
         if site == 'orange':
             build_item(*item_pos)
         elif site == 'green':
             build_item_L_M(*item_pos)
         else:
-            err_no_col()
+            output_error()
+    if site == 'Charcoal_Kiln':
+        start_pos = capture_mouse_pos()
+        in_building_dialog(-175, 20)
+        stable_click(3) 
+        restore_mouse_pos(start_pos)
+
+
 
 def Amazon_F8(keyboard):
     btype = 'Food_Preserver'
@@ -830,7 +731,7 @@ def Amazon_F8(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F9(keyboard):
     btype = 'DressMakery'
@@ -842,27 +743,27 @@ def Amazon_F9(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F10(keyboard):
     btype = 'Rare_Tree_Plantation'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    if toggle_tab:  #  Infinate Rare Tree Production
-        start_pos = capture_mouse_pos()
-        in_building_dialog(-285, 0) 
-        stable_click(3)
-        unpause_pause(0.02)
-        restore_mouse_pos(start_pos)
-    else: #  # Build Site
+    if build:
         item_pos = (125, 50)
         if site == 'orange':
             build_item(*item_pos)
         elif site == 'green':
             build_item_L_M(*item_pos)
         else:
-            err_no_col()
+            output_error()
+    if site == 'swirl':
+        start_pos = capture_mouse_pos()
+        in_building_dialog(-285, 0) 
+        stable_click(3)
+        restore_mouse_pos(start_pos)
+
+        
 
 def Amazon_F11(keyboard):
     btype = 'Hunter_Gatherer'
@@ -876,7 +777,7 @@ def Amazon_F11(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_F12(keyboard):
     btype = 'Wilderness_Keeper'
@@ -890,7 +791,7 @@ def Amazon_F12(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 
 def Amazon_end(keyboard):
@@ -907,7 +808,7 @@ def Amazon_end(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_plus(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
@@ -923,7 +824,7 @@ def Amazon_plus(keyboard):
         elif site == 'green':
             build_item_L_M(*item_pos)
         else:
-            err_no_col()
+            output_error()
     else:#'Liana_Cutter'
         if site == 'red':
             build_item(*item_pos)
@@ -932,7 +833,7 @@ def Amazon_plus(keyboard):
         elif site == 'green':
             build_item_L_S(*item_pos)
         else:
-            err_no_col()
+            output_error()
 
 def Amazon_equal(keyboard):
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
@@ -948,44 +849,23 @@ def Amazon_equal(keyboard):
     elif site == 'green':
         build_item_L_M(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Amazon_hyphen(keyboard):
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-    
-    if toggle_tab:  # Upgrade_to_Rare — special case (dismantle + right-click)
-        pass
-    else:  # Patrol_Post — normal build
-        btype = 'Patrol-Post'
-        build, site = analyze_dialog(btype)
-        _set_io(keyboard, btype, site)
-        item_pos = (160, 95)
+    btype = 'Patrol-Post'
+    build, site = analyze_dialog(btype)
+    _set_io(keyboard, btype, site)
+    item_pos = (160, 95)
 
-        if site == 'red':
-            build_item(*item_pos)
-        elif site == 'orange':
-            build_item_M_S(*item_pos)
-        elif site == 'green':
-            build_item_L_S(*item_pos)
-        else:
-            err_no_col()
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
 
-
-
-
-
-
-def Amazon_scroll_lock(keyboard):
-    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
-    site = determine_dialog()
-    if site == 'Garrison':
-        in_building_dialog(-164,0)
-    if site == 'Liana':
-        in_building_dialog(-235,0)
-    if site == 'Stonecutter':
-        in_building_dialog(-275, 0)
-    if site == 'Woodcutter':
-        in_building_dialog(-205, 0)
 
     
 def Amazon_backslash(keyboard):
@@ -1002,16 +882,12 @@ def Amazon_backslash(keyboard):
         in_building_dialog(-165, 0)
     
 def Amazon_rightbracket(keyboard):
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     _set_io(keyboard, 'Amazon_rightbracket', 'none')
-    if toggle_tab:  # 
-        pass
-    else:
-        # Double Click
-        stable_click()
-        time.sleep(0.1)
-        stable_click()
-        unpause_pause(0.1)
+    # Double Click
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
 
 def Amazon_leftbracket(keyboard):
     _set_io(keyboard, 'Amazon_leftbracket', 'none')
@@ -1025,25 +901,24 @@ def Amazon_leftbracket(keyboard):
         in_building_dialog(-234, 0)
     if site == 'Lighter_brown':
         in_building_dialog(-206, 0)
+    
+
+
+def Amazon_scroll_lock(keyboard):
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    if site == 'Liana':
+        in_building_dialog(-235,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-275, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-205, 0)
+
+
+
         
-
-    return
-    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',size=15)
-    if built == 'woodcutter_built':
-        if site == 'swirl':
-            if toggle_tab:  
-                in_building_dialog(-234, 0,'upgrade_built_building')
-                return
-            else:
-                in_building_dialog(68, -34, 'remove_worker')
-                return
-    else:
-        if site == 'swirl': # 'Upgrade_to_Rare_unbuilt'
-                in_building_dialog(-210, 0,'upgrade_unbuilt_building')
-                return
-
-
-
 # Atlantean
 
 # ===============================================
@@ -1054,7 +929,7 @@ def Atlantean_F1(keyboard):
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (5, 40)
+    item_pos = (5, 45)
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -1062,7 +937,7 @@ def Atlantean_F1(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F2(keyboard):
     btype = 'Woodcutter'
@@ -1076,7 +951,7 @@ def Atlantean_F2(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F3(keyboard):
     btype = 'Forester'
@@ -1090,13 +965,13 @@ def Atlantean_F3(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F4(keyboard):
     btype = 'Well'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (55, 95)
+    item_pos = (60, 95)
     if site == 'red':
         build_item(*item_pos)
     elif site == 'orange':
@@ -1104,7 +979,7 @@ def Atlantean_F4(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F5(keyboard):
     btype = 'Bakery'
@@ -1116,7 +991,7 @@ def Atlantean_F5(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F6(keyboard):
     btype = 'Smokery'
@@ -1128,7 +1003,7 @@ def Atlantean_F6(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F7(keyboard):
     btype = 'Mill'
@@ -1140,7 +1015,7 @@ def Atlantean_F7(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F8(keyboard):
     btype = 'Smelter'
@@ -1152,7 +1027,7 @@ def Atlantean_F8(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F9(keyboard):
     btype = 'Weaponsmith'
@@ -1164,7 +1039,7 @@ def Atlantean_F9(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F10(keyboard):
     btype = 'Armoursmith'
@@ -1176,7 +1051,7 @@ def Atlantean_F10(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F11(keyboard):
     btype = 'Fish'
@@ -1190,7 +1065,7 @@ def Atlantean_F11(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_F12(keyboard):
     btype = 'Fishbreader'
@@ -1204,7 +1079,7 @@ def Atlantean_F12(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_end(keyboard):
     btype = 'SawMill'
@@ -1216,7 +1091,7 @@ def Atlantean_end(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_hyphen(keyboard):
     btype = 'Guardhouse'
@@ -1230,30 +1105,66 @@ def Atlantean_hyphen(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_equal(keyboard):
     btype = 'Tower'
     build, site = analyze_dialog(btype)
     _set_io(keyboard, btype, site)
-    item_pos = (125, 135)
+    item_pos = (125, 145)
     if site == 'orange':
         build_item(*item_pos)
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Atlantean_backslash(keyboard):
     # Dismantle Guardhouse, Tower, Castle
-    _set_io(keyboard, 'TypeA_Dismantle', 'none')
-    in_building_dialog(-130, 0)
+    _set_io(keyboard, 'Dismantle', 'none')
+    site = determine_dialog()
+
+    
+    if site == 'Garrison':
+        pass
+    elif site == '':
+        pass
+    #in_building_dialog(-130, 0)
+
+
+def Atlantean_leftbracket(keyboard):
+    _set_io(keyboard, 'Amazon_leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0,
+                                         method='modify')
+        if usite == 'upgrade_icon':
+            in_building_dialog(-188,0)
+    if site == 'Woodcutter':
+        in_building_dialog(-234, 0)
+    if site == 'Lighter_brown':
+        in_building_dialog(-206, 0)
+    
 
 def Atlantean_rightbracket(keyboard):
     # Dismantle Woodcutter, Quarry
     _set_io(keyboard, 'TypeB_Dismantle', 'none')
     in_building_dialog(-235, 0)
 
+
+
+    
+def Atlantean_scroll_lock(keyboard):
+    _set_io(keyboard, 'Amazon_scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    if site == 'Liana':
+        in_building_dialog(-235,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-275, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-205, 0)
 
 
 # Barbarian
@@ -1275,7 +1186,7 @@ def Barbarian_F1(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F2(keyboard):
     btype = 'Woodcutter'
@@ -1289,7 +1200,7 @@ def Barbarian_F2(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F3(keyboard):
     btype = 'Forester'
@@ -1303,7 +1214,7 @@ def Barbarian_F3(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F4(keyboard):
     btype = 'Well'
@@ -1317,7 +1228,7 @@ def Barbarian_F4(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F5(keyboard):
     btype = 'Bakery'
@@ -1329,7 +1240,7 @@ def Barbarian_F5(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F6(keyboard):
     btype = 'Smokery'
@@ -1341,7 +1252,7 @@ def Barbarian_F6(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F7(keyboard):
     btype = 'Mill'
@@ -1353,7 +1264,7 @@ def Barbarian_F7(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F8(keyboard):
     btype = 'Smelter'
@@ -1365,7 +1276,7 @@ def Barbarian_F8(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F9(keyboard):
     btype = 'Weaponsmith'
@@ -1377,7 +1288,7 @@ def Barbarian_F9(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F10(keyboard):
     btype = 'Armoursmith'
@@ -1389,7 +1300,7 @@ def Barbarian_F10(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F11(keyboard):
     btype = 'Fish'
@@ -1403,7 +1314,7 @@ def Barbarian_F11(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_F12(keyboard):
     btype = 'Fishbreader'
@@ -1417,7 +1328,7 @@ def Barbarian_F12(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_end(keyboard):
     btype = 'SawMill'
@@ -1429,7 +1340,7 @@ def Barbarian_end(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_hyphen(keyboard):
     btype = 'Guardhouse'
@@ -1443,7 +1354,7 @@ def Barbarian_hyphen(keyboard):
     elif site == 'green':
         build_item_L_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_equal(keyboard):
     btype = 'Tower'
@@ -1455,7 +1366,7 @@ def Barbarian_equal(keyboard):
     elif site == 'green':
         build_item_M_S(*item_pos)
     else:
-        err_no_col()
+        output_error()
 
 def Barbarian_backslash(keyboard):
     # Dismantle Guardhouse, Tower, Castle
@@ -1490,7 +1401,7 @@ def Empire_F1(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -60, 40)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F2(keyboard):
     btype = 'Woodcutter'
@@ -1503,7 +1414,7 @@ def Empire_F2(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -10, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F3(keyboard):
     btype = 'Forester'
@@ -1516,7 +1427,7 @@ def Empire_F3(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 40, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F4(keyboard):
     btype = 'Well'
@@ -1529,7 +1440,7 @@ def Empire_F4(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -15, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F5(keyboard):
     btype = 'Bakery'
@@ -1540,7 +1451,7 @@ def Empire_F5(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 140, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F6(keyboard):
     btype = 'Smokery'
@@ -1551,7 +1462,7 @@ def Empire_F6(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 40, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F7(keyboard):
     btype = 'Mill'
@@ -1562,7 +1473,7 @@ def Empire_F7(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F8(keyboard):
     btype = 'Smelter'
@@ -1573,7 +1484,7 @@ def Empire_F8(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, -15, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F9(keyboard):
     btype = 'Weaponsmith'
@@ -1584,7 +1495,7 @@ def Empire_F9(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F10(keyboard):
     btype = 'Armoursmith'
@@ -1595,7 +1506,7 @@ def Empire_F10(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 140, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F11(keyboard):
     btype = 'Fish'
@@ -1608,7 +1519,7 @@ def Empire_F11(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 85, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_F12(keyboard):
     btype = 'Fishbreader'
@@ -1621,7 +1532,7 @@ def Empire_F12(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 140, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_end(keyboard):
     btype = 'SawMill'
@@ -1632,7 +1543,7 @@ def Empire_end(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, -15, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_hyphen(keyboard):
     btype = 'Guardhouse'
@@ -1645,7 +1556,7 @@ def Empire_hyphen(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 140, 100)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_equal(keyboard):
     btype = 'Tower'
@@ -1656,7 +1567,7 @@ def Empire_equal(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 135)
     else:
-        err_no_col()
+        output_error()
 
 def Empire_backslash(keyboard):
     # Dismantle  Gaurdhouse, Tower, Castle
@@ -1688,7 +1599,7 @@ def Frisian_F1(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -60, 40)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F2(keyboard):
     btype = 'Woodcutter'
@@ -1701,7 +1612,7 @@ def Frisian_F2(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -10, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F3(keyboard):
     btype = 'Forester'
@@ -1714,7 +1625,7 @@ def Frisian_F3(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 40, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F4(keyboard):
     btype = 'Well'
@@ -1727,7 +1638,7 @@ def Frisian_F4(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, -15, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F5(keyboard):
     btype = 'Bakery'
@@ -1738,7 +1649,7 @@ def Frisian_F5(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 140, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F6(keyboard):
     btype = 'Smokery'
@@ -1749,7 +1660,7 @@ def Frisian_F6(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 40, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F7(keyboard):
     btype = 'Mill'
@@ -1760,7 +1671,7 @@ def Frisian_F7(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F8(keyboard):
     btype = 'Smelter'
@@ -1771,7 +1682,7 @@ def Frisian_F8(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, -15, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F9(keyboard):
     btype = 'Weaponsmith'
@@ -1782,7 +1693,7 @@ def Frisian_F9(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F10(keyboard):
     btype = 'Armoursmith'
@@ -1793,7 +1704,7 @@ def Frisian_F10(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 140, 95)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F11(keyboard):
     btype = 'Fish'
@@ -1806,7 +1717,7 @@ def Frisian_F11(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 85, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_F12(keyboard):
     btype = 'Fishbreader'
@@ -1819,7 +1730,7 @@ def Frisian_F12(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 140, 45)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_end(keyboard):
     btype = 'SawMill'
@@ -1830,7 +1741,7 @@ def Frisian_end(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, -15, 50)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_hyphen(keyboard):
     btype = 'Guardhouse'
@@ -1843,7 +1754,7 @@ def Frisian_hyphen(keyboard):
     elif site == 'green':
         notepd_tab_select(-65, 0, 140, 100)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_equal(keyboard):
     btype = 'Tower'
@@ -1854,7 +1765,7 @@ def Frisian_equal(keyboard):
     elif site == 'green':
         notepd_tab_select(-35, 0, 95, 135)
     else:
-        err_no_col()
+        output_error()
 
 def Frisian_backslash(keyboard):
     # Dismantle  Gaurdhouse, Tower, Castle
