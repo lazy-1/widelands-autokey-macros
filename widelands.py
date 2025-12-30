@@ -40,15 +40,18 @@ CONTEXT = {
     'start_pos': None,
 }
 
-def race():
-    num,race = 1,''
-    if num == 0:race = 'Amazon'
-    elif num == 1:race = 'Atlantean'
-    elif num == 2:race = 'Barbarian'
-    elif num == 3:race = 'Empire'
-    elif num == 4:race = 'Frisian'
-    CONTEXT['race'] = race
-    return race
+def tribe():
+    # Select tribe you are going to play!
+    # example 3 == Empire
+    number = 0
+    tribe = None
+    if num == 0:tribe = 'Amazon'
+    elif num == 1:tribe = 'Atlantean'
+    elif num == 2:tribe = 'Barbarian'
+    elif num == 3:tribe = 'Empire'
+    elif num == 4:tribe = 'Frisian'
+    CONTEXT['tribe'] = tribe
+    return tribe
 
 def _set_io(keyboard, building, icon):
     global CONTEXT
@@ -313,7 +316,23 @@ def Build_New_Road(keyboard):
         time.sleep(0.05)
         stable_click()              # select the “roads” option
 
-    
+
+def call_shortcut(key, keyboard):
+    func_name = f"{key}"  # e.g., 'F1'
+    func = globals().get(func_name)
+    if func and callable(func):
+        func(keyboard)
+    else:
+        _play_sound('big_error')
+        if HAS_P2AUTOKEYM:
+            p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}"})
+        else:
+            print(f"Missing {func_name}")
+
+
+     #
+
+        
 def call_shortcut(key, keyboard):
     race_str = race()
     func_name = f"{race_str}_{key}"  # e.g., 'Atlantean_F1'
