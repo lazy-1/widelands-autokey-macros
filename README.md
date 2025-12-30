@@ -3,20 +3,20 @@
 
 Macros for faster building, road laying, and common actions in **Widelands 1.3+** (Linux only).
 
-Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as you'll need to modify the module and work a little on autokey. I've made a comprehensive Guide so it shouldn't be that hard. 
+Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as you'll need to modify the module and work a little on autokey. I've made  comprehensive Guides so it shouldn't be that hard. 
 
 ### Quick Start
 
 1. Install required Python packages:
 pip3 install python-xlib pyautogui pillow mss
  
-2. Copy `widelands.py` to your AutoKey Module folder (or create a new script and paste the content).
+2. Copy `widelands` directory to your AutoKey Module folder.
 
-3. Set hotkeys in AutoKey AutoKey_data/Widelands supplied, put it in your autokey/data/Scripts/ directory.
+3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory  in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see Tutorials Directory
 
-4. **Important**: Personalise coordinates and paths in the file — these are tuned to my screen/resolution 1920x1080.
+4. **Important**: Personalise coordinates and paths in the file — these are tuned to my cpu etc.
 
-5. Race selection: Edit `def race()` at the top to match your current game (0=Amazon, 1=Atlantean, etc.).
+5. Tribe selection: Edit current_tribe.py and Put the correct number in (help is provided)
 
 ### Features
 
@@ -28,7 +28,7 @@ pip3 install python-xlib pyautogui pillow mss
 
 ### Detailed Guide
 
-See [GUIDE.md](GUIDE.md) for full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanation.
+See Tutorials [GUIDE.md](GUIDE.md) for full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanation.
 
 ### Warnings
 

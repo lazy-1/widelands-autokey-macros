@@ -113,22 +113,6 @@ def import_tribe_rgbv():
         print(f"Unexpected error loading tribe: {e}", file=sys.stderr)
 
 import_tribe_rgbv()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
 def call_shortcut(key, keyboard):
     CONTEXT['keyboard'] = keyboard
