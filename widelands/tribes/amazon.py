@@ -1,0 +1,372 @@
+        
+# Amazon
+# ===============================================
+# Amazon — FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
+# ===============================================
+def id_dialog_icon(r, g, b, variance):
+    if (abs(r - 107) <= 5 and abs(g - 76) <= 5 and abs(b - 48) <= 5
+        and variance < 11000):
+        return (False, 'swirl')
+    if (abs(r - 113) <= 5 and abs(g - 84) <= 5 and abs(b - 45) <= 5
+        and variance < 3500):
+        return (False, 'Charcoal_Kiln')
+    
+    if (abs(r - 98) <= 5 and abs(g - 72) <= 5 and abs(b - 55) <= 5
+        and variance < 6000):
+        return (False, 'remove_worker')
+
+    if (abs(r - 104) <= 5 and abs(g - 82) <= 5 and abs(b - 55) <= 5
+        and variance < 800):
+        return (False, 'upgrade_icon')
+
+    if (abs(r - 97) <= 5 and abs(g - 77) <= 5 and abs(b - 47) <= 5
+        and variance < 700):
+        return (False, 'upgrade_icon')
+    
+    if (abs(r - 85) <= 2 and abs(g - 76) <= 2 and abs(b - 15) <= 2
+        and 12000 < variance < 13500):
+        return (False, 'building_built')#is a woodcutter or Jungle preserve
+
+    return (False, f"({r}, {g}, {b}, {int(variance)})") 
+
+def id_building_via_dialog_tells(r, g, b, variance):
+    if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
+        and 10000 < variance < 12500):# 'Gar' image
+        return (False, 'Garrison')
+    
+    if (abs(r - 88) <= 3 and abs(g - 68) <= 3 and abs(b - 40) <= 3
+        and 250 < variance < 500):# Blank brown image
+        return (False, 'Standard_brown')
+        
+    if (abs(r - 96) <= 3 and abs(g - 76) <= 3 and abs(b - 45) <= 3
+        and 250 < variance < 450):#Blank brown image Woodcutter is building dialog
+        return (False, 'Lighter_brown')
+        
+    if (abs(r - 67) <= 5 and abs(g - 52) <= 5 and abs(b - 27) <= 5
+        and 1800 < variance < 2500):# Tiny Liana icon
+        return (False, 'Liana')
+
+    if (abs(r - 70) <= 5 and abs(g - 58) <= 5 and abs(b - 40) <= 5
+        and 3000 < variance < 4000):# Tiny StoneCutter icon
+        return (False, 'Stonecutter')
+
+    if (abs(r - 105) <= 5 and abs(g - 81) <= 5 and abs(b - 56) <= 5
+        and 9000 < variance < 11500):# Tiny Woodcutter icon
+        return (False, 'Woodcutter')
+    
+    return (False, f"({r}, {g}, {b}, {int(variance)})")  
+    
+
+
+    
+def F1():
+    btype = 'Stonecutter'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (10, 50)
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
+
+def F2():
+    btype = 'Woodcutter'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    if build:
+        item_pos = (60, 45) 
+        if site == 'red':
+            build_item(*item_pos)
+        elif site == 'orange':
+            build_item_M_S(*item_pos)
+        elif site == 'green':
+            build_item_L_S(*item_pos)
+        return
+    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
+
+    
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
+
+    if site == 'swirl':
+        if built == 'building_built':#, 'remove_worker'
+            in_building_dialog(68, -34)
+            return
+            
+  
+    output_error(f'{built} toggled-{toggle_tab}')
+
+
+def F3():
+    btype = 'Jungle_Preserve'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    if build:
+        item_pos = (105, 45)
+        if site == 'red':
+            build_item(*item_pos)
+        elif site == 'orange':
+            build_item_M_S(*item_pos)
+        elif site == 'green':
+            build_item_L_S(*item_pos)
+        else:
+            output_error()
+        return
+    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
+    if site == 'swirl': # remove worker
+        
+        in_building_dialog(68, -34, 'remove_worker')
+        
+    
+
+
+def F4():
+    btype = 'Water_Gatherer'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (10, 95)
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
+
+def F5():
+    btype = 'Cassava_Root_Cooker'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (75, 95)
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)  # GREEN → medium tab
+    else:
+        output_error()
+
+def F6():
+    btype = 'Chocolate_Brewery'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (125, 95)  # corrected from 125 → 95 to match actual position
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)
+    else:
+        output_error()
+
+def F7():
+    btype = 'Charcoal_Kiln'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    if build:
+        item_pos = (25, 95)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()
+    if site == 'Charcoal_Kiln':
+        in_building_dialog(-174, 20)
+        stable_click(3) 
+        restore_mouse_pos(CONTEXT['start_pos'])
+
+
+
+def F8():
+    btype = 'Food_Preserver'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (175, 95)
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)
+    else:
+        output_error()
+
+def F9():
+    btype = 'DressMakery'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (-25, 95)
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)
+    else:
+        output_error()
+
+def F10():
+    btype = 'Rare_Tree_Plantation'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    if build:
+        item_pos = (125, 50)
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()
+    if site == 'swirl':
+        in_building_dialog(-285, 0) 
+        stable_click(3)
+        restore_mouse_pos(CONTEXT['start_pos'])
+
+        
+
+def F11():
+    btype = 'Hunter_Gatherer'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (160, 45)
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
+
+def F12():
+    btype = 'Wilderness_Keeper'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (60, 95)
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
+
+
+def end():
+    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
+    btype = 'Furnace' if toggle_tab else 'Stone_Workshop'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+
+    # Toggle changes only the item position
+    item_pos = (75, 50) if toggle_tab else (175, 45)
+
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)
+    else:
+        output_error()
+
+def plus():
+    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
+    btype = 'Rope_Weaver' if toggle_tab else 'Liana_Cutter'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+
+    # Toggle changes only the item position
+    item_pos = (25, 45) if toggle_tab else (205, 45)
+    if toggle_tab:#'Rope_Weaver'
+        if site == 'orange':
+            build_item(*item_pos)
+        elif site == 'green':
+            build_item_L_M(*item_pos)
+        else:
+            output_error()
+    else:#'Liana_Cutter'
+        if site == 'red':
+            build_item(*item_pos)
+        elif site == 'orange':
+            build_item_M_S(*item_pos)
+        elif site == 'green':
+            build_item_L_S(*item_pos)
+        else:
+            output_error()
+
+def equal():
+    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
+    btype = 'Warriors_Dwelling' if toggle_tab else 'Tower'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+
+    # Toggle changes only the item position
+    #      'Warriors_Dwelling'     else     'Tower' (default)
+    item_pos = (125, 145) if toggle_tab else (175, 145)
+    if site == 'orange':
+        build_item(*item_pos)
+    elif site == 'green':
+        build_item_L_M(*item_pos)
+    else:
+        output_error()
+
+def hyphen():
+    btype = 'Patrol-Post'
+    build, site = analyze_dialog(btype)
+    _set_io(btype, site)
+    item_pos = (160, 95)
+    if site == 'red':
+        build_item(*item_pos)
+    elif site == 'orange':
+        build_item_M_S(*item_pos)
+    elif site == 'green':
+        build_item_L_S(*item_pos)
+    else:
+        output_error()
+    
+def backslash():
+    # Dismantle Sites..
+    _set_io('backslash_Dismantle', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-124,0)
+    if site == 'Liana':
+        in_building_dialog(-195,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-235, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-165, 0)
+    
+def rightbracket():
+    # Double Click
+    _set_io('rightbracket', 'none')
+    stable_click()
+    time.sleep(0.1)
+    stable_click()
+    unpause_pause(0.08)
+
+def leftbracket():
+    # UPGRADING
+    _set_io('leftbracket', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
+        if usite == 'upgrade_icon':
+            in_building_dialog(-188,0)
+    if site == 'Woodcutter':
+        in_building_dialog(-234, 0)
+    if site == 'Lighter_brown':
+        in_building_dialog(-206, 0)
+    
+
+
+def scroll_lock():
+    _set_io('scroll_lock_Destroy', 'none')
+    site = determine_dialog()
+    if site == 'Garrison':
+        in_building_dialog(-164,0)
+    if site == 'Liana':
+        in_building_dialog(-235,0)
+    if site == 'Stonecutter':
+        in_building_dialog(-275, 0)
+    if site == 'Woodcutter':
+        in_building_dialog(-205, 0)
