@@ -26,9 +26,12 @@ pip3 install python-xlib pyautogui pillow mss
 - Dismantle/upgrade shortcuts
 - Visual/audio feedback (pause-unpause, optional sounds)
 
-### Detailed Guide
+### Detailed Guides
 
-See Tutorials [Tutorials/GUIDE.md](GUIDE.md) for full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanation.
+See Tutorials Directory for  [Tutorials](Tutorials/)
+This has the full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanations and should be helpful even for newbies.
+
+
 
 ### Warnings
 
