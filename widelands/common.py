@@ -254,6 +254,7 @@ def output_error(message="Unknown error"):
     
 
 def unpause_pause(delay=0.2):
+    #return
     CONTEXT['keyboard'].send_keys("<pause>")
     time.sleep(delay)
     CONTEXT['keyboard'].send_keys("<pause>")

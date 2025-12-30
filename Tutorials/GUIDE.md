@@ -1,7 +1,7 @@
 # Detailed Guide - Widelands AutoKey Macros
 
 ## Background
-Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover Mouse over site and hit the keyboard shortcut and the building is built. This is a far better improvement on that simplistic version with more features.
+Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry etc. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover Mouse over site and hit the keyboard shortcut and the building is built. This is a far better improvement on that simplistic version with more features.
 - This Guide is meant to help you through the hardest parts and show you the way to your own edits. Even if your new to python it should be simple enough to understand what and why. 
 
 ## Environment it was Tested on.
@@ -9,6 +9,7 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
   Run command: `flatpak run org.widelands.Widelands` 
 - **OS**: Current upgraded Linux Mint 2025
 - **Screen** 1920x1080
+- **CPU** i7-13700
 - **AutoKey**: Natively installed from repo (v 0.95.10)
 - **Note**: This is a Linux setup. If anyone ever wishes to use Microsoft and this stuff, go right ahead — I doubt it will translate directly, but at least the general idea may help.
 
@@ -16,7 +17,7 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
 In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the game, but crying about it doesn't help.
 
 ## Contents of repo.
-- AutoKey_data : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands, this is done by clicking `set` and then on the widelands window. 
+- widelands-autokey.zip : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands see [Autokey_GUIDE.md](Autokey_GUIDE.md) for details
 - AutoKey_data individual files : fore each in autokey select them and click `Hotkey`, then define it by clicking `set` in the dialog and then press the actual keyboard key such as F1. make sure you save. This is not a tutorial on autokey, passed this do your own research if your stumped, tell grok it'll help.
 - Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. I have it as the dir above the current module directory and then into Sounds blah blah.
 
