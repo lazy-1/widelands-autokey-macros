@@ -4,57 +4,7 @@
 # ===============================================
 # Atlantean FUNCTIONS (F1–F12 + end + hyphen + equal + backslash + rightbracket)
 # ===============================================
-def id_dialog_icon(r, g, b, variance):
-    if (abs(r - 97) <= 5 and abs(g - 81) <= 5 and abs(b - 54) <= 5
-        and 1000 < variance < 2000):
-        return (False, 'upgrade_tower')
-    
-    if (abs(r - 104) <= 10 and abs(g - 83) <= 5 and abs(b - 51) <= 10
-        and 1800 < variance < 2500):# Charcoal Kiln wares indicator..
-        return (False, 'Charcoal_kiln')
 
-
-    return (False, f"({r}, {g}, {b}, {int(variance)})")
-
-    
-def id_building_via_dialog_tells(r, g, b, variance):
-    if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
-        and 10000 < variance < 12500):# 'Gar' image
-        return (False, 'Garrison')
-        
-    if (abs(r - 88) <= 3 and abs(g - 68) <= 3 and abs(b - 40) <= 3
-        and 250 < variance < 500):# Blank brown image
-        return (False, 'Standard_brown')
-
-    if (abs(r - 87) <= 5 and abs(g - 68) <= 5 and abs(b - 37) <= 5
-        and 6000 < variance < 7000):# Tiny Woodcutter icon
-        return (False, 'Woodcutter')
-        
-    if (abs(r - 75) <= 5 and abs(g - 66) <= 5 and abs(b - 36) <= 5
-        and 6000 < variance < 7000):# Tiny Forester icon
-        return (False, 'Forester')
-
-    if (abs(r - 83) <= 5 and abs(g - 69) <= 5 and abs(b - 46) <= 5
-        and 7500 < variance < 8500):# Tiny Quary icon
-        return (False, 'Quary')
-
-    if (abs(r - 76) <= 5 and abs(g - 63) <= 5 and abs(b - 41) <= 3
-        and 5250 < variance < 5600):# Tiny Fishbreeder icon
-        return (False, 'Fishbreeder')
-        
-    if (abs(r - 75) <= 5 and abs(g - 61) <= 5 and abs(b - 37) <= 3
-        and 5000 < variance < 5400):# Tiny Fish icon
-        return (False, 'Fish')
-
-    if (abs(r - 76) <= 5 and abs(g - 58) <= 5 and abs(b - 32) <= 3
-        and 3500 < variance < 4400):# Tiny Well icon
-        return (False, 'Well')
-
-    if (abs(r - 108) <= 10 and abs(g - 76) <= 5 and abs(b - 42) <= 10
-        and 3000 < variance < 5000):#  Scout arrow near fish...
-        return (False, 'Scout')
-    
-    return (False, f"({r}, {g}, {b}, {int(variance)})") 
 
 def F1():
     btype = 'Quarry'

@@ -14,7 +14,6 @@ import importlib
 import json
 import subprocess
 import time
-import pyautogui
 from statistics import mean
 from math import sqrt
 import io
@@ -71,7 +70,7 @@ def _play_sound(result):
     except:
         print(f'sound issues? {result}')  # fail — no sound
 
-WORK_PATH = '/dev/shm/Widelands/'
+WORK_PATH = '/dev/shm/Widelands/' # temp dir 
 
 if not os.path.exists(WORK_PATH):
     os.mkdir(WORK_PATH)
@@ -114,20 +113,6 @@ def import_tribe_rgbv():
 
 import_tribe_rgbv()
         
-def call_shortcut(key, keyboard):
-    CONTEXT['keyboard'] = keyboard
-    func_name = f"{key}"  # e.g., 'F1'
-    func = globals().get(func_name)
-
-    
-    if func and callable(func):
-        func()
-    else:
-        _play_sound('big_error')
-        if HAS_P2AUTOKEYM:
-            p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}","tribe": CONTEXT['tribe']})
-        else:
-            print(f"Missing {func_name}  {CONTEXT['tribe']}")
             
 
 def stable_click(button=1):
