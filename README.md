@@ -10,11 +10,11 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as
 1. Install required Python packages:
 pip3 install python-xlib pyautogui pillow mss
  
-2. Copy `widelands` directory to your AutoKey Module folder.
+2. Copy `widelands` directory(package) to your AutoKey Module folder.
 
 3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory  in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see Tutorials Directory
 
-4. **Important**: Personalise coordinates and paths in the file — these are tuned to my cpu etc.
+4. **Important**: Personalise coordinates and paths in the common.py file — these are tuned to my file system cpu etc (help provided).
 
 5. Tribe selection: Edit current_tribe.py and Put the correct number in (help is provided)
 
@@ -28,7 +28,7 @@ pip3 install python-xlib pyautogui pillow mss
 
 ### Detailed Guide
 
-See Tutorials [GUIDE.md](GUIDE.md) for full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanation.
+See Tutorials [Tutorials/GUIDE.md](GUIDE.md) for full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanation.
 
 ### Warnings
 
