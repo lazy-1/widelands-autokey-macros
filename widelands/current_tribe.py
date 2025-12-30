@@ -8,7 +8,7 @@
 #   4 = Frisian
 # ────────────────────────────────────────────────────────────────
 
-CURRENT_TRIBE_NUMBER = 1          # ← change this number ←
+CURRENT_TRIBE_NUMBER = 0          # ← change this number ←
 
 # ────────────────────────────────────────────────────────────────
 #   You don't need to touch anything below this line
