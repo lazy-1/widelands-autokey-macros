@@ -134,7 +134,11 @@ def call_shortcut(key, keyboard):
             p2autokeym.dbus_send_FM('Widelands','TEXT',{'Error': f"Missing {func_name}","tribe": CONTEXT['tribe']})
         else:
             print(f"Missing {func_name}  {CONTEXT['tribe']}")
-
+            
+def _set_io(keyboard, building, icon):
+    global CONTEXT
+    CONTEXT['building'] = building
+    CONTEXT['icon'] = icon
 
 def stable_click(button=1):
     """
