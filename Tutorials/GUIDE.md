@@ -18,8 +18,8 @@ In the end, with the help of Grok, I got a fairly efficient system setup. Unfort
 
 ## Contents of repo.
 - widelands-autokey.zip : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands see [Autokey_GUIDE.md](Autokey_GUIDE.md) for details
-- AutoKey_data individual files : fore each in autokey select them and click `Hotkey`, then define it by clicking `set` in the dialog and then press the actual keyboard key such as F1. make sure you save. This is not a tutorial on autokey, passed this do your own research if your stumped, tell grok it'll help.
-- Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. I have it as the dir above the current module directory and then into Sounds blah blah.
+- Tutorials : Here you will find this GUIDE.md along with other files that should help in getting this to work in your linux system. Along with comprhensive info that should help you modify the code.
+- Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. 
 
 ## General Shortcuts (set in AutoKey)
 I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual buildings and some functions. The feedback is a quick **pause-unpause**. So you can build during a game pause. This obviously, like all code, can be modified. I've labeled all functions as friendly as possible.
