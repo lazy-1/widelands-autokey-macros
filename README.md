@@ -12,18 +12,18 @@ pip3 install python-xlib pyautogui pillow mss
  
 2. Copy `widelands` directory(package) to your AutoKey Module folder.
 
-3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory  in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see Tutorials Directory
+3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory  in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
 
-4. **Important**: Personalise coordinates and paths in the common.py file — these are tuned to my file system cpu etc (help provided).
+4. **Important**: Personalise coordinates and paths in the user_settings.py file — these are tuned to my file system cpu etc (help provided).
 
-5. Tribe selection: Edit current_tribe.py and Put the correct number in (help is provided)
+5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_settings.py module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience.
 
 ### Features
 
 - One-key building placement (hover mouse + F-key)
 - Road helpers: zigzag, connect, long roads
 - Tab switching as a fake Shiftlock key to double potential key uses.
-- Dismantle/upgrade shortcuts
+- Dismantle/Distroy/Upgrade shortcuts
 - Visual/audio feedback (pause-unpause, optional sounds)
 
 ### Detailed Guides

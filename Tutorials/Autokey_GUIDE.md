@@ -8,32 +8,35 @@
 
 ## First
 - Install autokey if you haven't got it. I have version 0.95.10 so that version and higher should work.
-- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `apt-get install autokey` if your on a ubuntu based system. As for the rest do a little research on how to install apps.
+- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `apt-get install autokey` if your on a ubuntu based system. As for other O.S. do a little research on how to install apps. autokey or autokey-gtk or autokey-kde 
 
 ## Next
-Once installed, as stated above, unzip the widelands-autokey.zip somewhere and move the Widelands directory it created into the ~/.config/autokey/data/Scripts/
+- Once autokey is installed run it once to start so that it defines its' .config/autokey directory. Then close the autokey app.
+
+- Then as stated above, unzip the widelands-autokey.zip somewhere and move the Widelands directory it created into the ~/.config/autokey/data/Scripts/ so that it is ready for autokey to load when it starts up.
 
 ## Then Run autokey
-If you use autokey for other stuff like I do then you will already have it running on startup, so reboot it so it can load the Widelands folder. If not you either manually start autokey every time you want to play the Widelands game or set it to be on all the time..
+This will load the macros that you installed into autokey via copying the Widelands directory into it.
 
 ## First Time Autokey Run.
 - Open autokey and see 'Scripts', left side, it's a directory structure. If you successfully moved the Widelands into the directory above it should be seen inside the Scripts tree. If not check the path etc.
 - Now click on the Widelands fold in the Scripts directory. On the right side there should be three `set` options. Abbreviations:, Hotkey: and Window Filter:
-- Window Filter should state "widelands.widelands'. If this is not so, then make sure widelands is running , not full screen mode for this unless you have more than one monitor. Click the set button next to window filter and it will give you a dialog , click "Detect Window Properties" and then click on the game window.  This should set the Window Filter to the "widelands.widelands' window.
+- Window Filter should state "widelands.widelands'. If this is not so, then make sure widelands is running , not full screen mode for this unless you have more than one monitor. Click the set button next to window filter and it will give you a dialog , click "Detect Window Properties" and then click on the game window.  This should set the Window Filter to the "widelands.widelands' window. This is an autokey essencial so it knows these macros are for the widelands game ONLY!
 
-## Individual autokey scripts. There should be
-The following files should be available: 
-00-Reload_module
-00-Test_script
-00-Toggle_tab
-Build-long-road-1-New
-Build-long-road-2-Connect
-Build-road-3-zigzag
-Building_end_Sawmill1
-Building_equal_Tower
-Building_F01_Stone
-Building_F02_Woodcutter
-Building_F03_Forester
+## Individual autokey scripts.
+- You will find the following scripts inside the Widelands directory:
+
+*00-Reload_module
+*00-Test_script
+*00-Toggle_tab
+*Build-long-road-1-New
+*Build-long-road-2-Connect
+*Build-road-3-zigzag
+*Building_end_Sawmill1
++Building_equal_Tower
++Building_F01_Stone
++Building_F02_Woodcutter
++Building_F03_Forester
 Building_F04_Well
 Building_F05_Baker
 Building_F06_Smoke
