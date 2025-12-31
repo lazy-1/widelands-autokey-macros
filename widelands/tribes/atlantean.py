@@ -1,4 +1,5 @@
-      
+from ..sharedic import USR, update_USR
+from ..common import *      
 # Atlantean
 
 # ===============================================
@@ -10,7 +11,7 @@ def F1():
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
     #build, site = analyze_dialog(btype,func1=id_dialog_icon2)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (5, 45)
     if site == 'red':
         build_item(*item_pos)
@@ -24,7 +25,7 @@ def F1():
 def F2():
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (60, 45)  # standardised Y to match most buildings
     if site == 'red':
         build_item(*item_pos)
@@ -38,7 +39,7 @@ def F2():
 def F3():
     btype = 'Forester'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (105, 45)
     if site == 'red':
         build_item(*item_pos)
@@ -52,7 +53,7 @@ def F3():
 def F4():
     btype = 'Well'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (60, 95)
     if site == 'red':
         build_item(*item_pos)
@@ -66,7 +67,7 @@ def F4():
 def F5():
     btype = 'Bakery'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (175, 50)
     if site == 'orange':
         build_item(*item_pos)
@@ -78,7 +79,7 @@ def F5():
 def F6():
     btype = 'Smokery'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (75, 50)
     if site == 'orange':
         build_item(*item_pos)
@@ -90,7 +91,7 @@ def F6():
 def F7():
     btype = 'Mill'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (125, 50)
     if site == 'orange':
         build_item(*item_pos)
@@ -102,7 +103,7 @@ def F7():
 def F8():
     btype = 'Smelter'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (20, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -114,7 +115,7 @@ def F8():
 def F9():
     btype = 'Weaponsmith'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (125, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -126,7 +127,7 @@ def F9():
 def F10():
     btype = 'Armoursmith'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (175, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -138,7 +139,7 @@ def F10():
 def F11():
     btype = 'Fish'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (155, 45)
     if site == 'red':
         build_item(*item_pos)
@@ -152,7 +153,7 @@ def F11():
 def F12():
     btype = 'Fishbreader'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (205, 45)
     if site == 'red':
         build_item(*item_pos)
@@ -166,7 +167,7 @@ def F12():
 def end():
     btype = 'SawMill'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (25, 50)
     if site == 'orange':
         build_item(*item_pos)
@@ -178,7 +179,7 @@ def end():
 def hyphen():
     btype = 'Guardhouse'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (200, 100)
     if site == 'red':
         build_item(*item_pos)
@@ -192,7 +193,7 @@ def hyphen():
 def equal():
     btype = 'Tower'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (125, 145)
     if site == 'orange':
         build_item(*item_pos)
@@ -204,7 +205,7 @@ def equal():
 def plus():
     btype = 'Charcoal Kiln'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     if build:
         item_pos = (-25, 95)
         if site == 'orange':
@@ -216,11 +217,11 @@ def plus():
     if site == 'Charcoal_kiln':
         in_building_dialog(-174, 20) 
         stable_click(3)
-        restore_mouse_pos(CONTEXT['start_pos'])
+        restore_mouse_pos(USR['start_pos'])
 
 def leftbracket():
     # UPGRADING
-    _set_io('Amazon_leftbracket', 'none')
+    update_USR('Amazon_leftbracket', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
@@ -229,7 +230,7 @@ def leftbracket():
 
 def rightbracket():
     # Double Click
-    _set_io('rightbracket', 'none')
+    update_USR('rightbracket', 'none')
     stable_click()
     time.sleep(0.1)
     stable_click()
@@ -237,7 +238,7 @@ def rightbracket():
 
 def backslash():
     # Dismantle Guardhouse, Tower, Castle etc...
-    _set_io('Dismantle', 'none')
+    update_USR('Dismantle', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-124,0)
@@ -248,7 +249,7 @@ def backslash():
         
 def scroll_lock():
      # Destroy! Guardhouse, Tower, Castle etc...
-    _set_io('Amazon_scroll_lock_Destroy', 'none')
+    update_USR('Amazon_scroll_lock_Destroy', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-164,0)

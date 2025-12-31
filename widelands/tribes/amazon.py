@@ -1,4 +1,4 @@
-from ..sharedic import CONTEXT, _set_io
+from ..sharedic import USR, update_USR
 from ..common import *
 
 # Amazon
@@ -11,7 +11,7 @@ from ..common import *
 def F1():
     btype = 'Stonecutter'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (10, 50)
     if site == 'red':
         build_item(*item_pos)
@@ -25,7 +25,7 @@ def F1():
 def F2():
     btype = 'Woodcutter'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     if build:
         item_pos = (60, 45) 
         if site == 'red':
@@ -52,7 +52,7 @@ def F2():
 def F3():
     btype = 'Jungle_Preserve'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     if build:
         item_pos = (105, 45)
         if site == 'red':
@@ -75,7 +75,7 @@ def F3():
 def F4():
     btype = 'Water_Gatherer'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (10, 95)
     if site == 'red':
         build_item(*item_pos)
@@ -89,7 +89,7 @@ def F4():
 def F5():
     btype = 'Cassava_Root_Cooker'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (75, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -101,7 +101,7 @@ def F5():
 def F6():
     btype = 'Chocolate_Brewery'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (125, 95)  # corrected from 125 → 95 to match actual position
     if site == 'orange':
         build_item(*item_pos)
@@ -113,7 +113,7 @@ def F6():
 def F7():
     btype = 'Charcoal_Kiln'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     if build:
         item_pos = (25, 95)
         if site == 'orange':
@@ -125,14 +125,14 @@ def F7():
     if site == 'Charcoal_Kiln':
         in_building_dialog(-174, 20)
         stable_click(3) 
-        restore_mouse_pos(CONTEXT['start_pos'])
+        restore_mouse_pos(USR['start_pos'])
 
 
 
 def F8():
     btype = 'Food_Preserver'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (175, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -144,7 +144,7 @@ def F8():
 def F9():
     btype = 'DressMakery'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (-25, 95)
     if site == 'orange':
         build_item(*item_pos)
@@ -156,7 +156,7 @@ def F9():
 def F10():
     btype = 'Rare_Tree_Plantation'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     if build:
         item_pos = (125, 50)
         if site == 'orange':
@@ -168,14 +168,14 @@ def F10():
     if site == 'swirl':
         in_building_dialog(-285, 0) 
         stable_click(3)
-        restore_mouse_pos(CONTEXT['start_pos'])
+        restore_mouse_pos(USR['start_pos'])
 
         
 
 def F11():
     btype = 'Hunter_Gatherer'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (160, 45)
     if site == 'red':
         build_item(*item_pos)
@@ -189,7 +189,7 @@ def F11():
 def F12():
     btype = 'Wilderness_Keeper'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (60, 95)
     if site == 'red':
         build_item(*item_pos)
@@ -205,7 +205,7 @@ def end():
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Furnace' if toggle_tab else 'Stone_Workshop'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
 
     # Toggle changes only the item position
     item_pos = (75, 50) if toggle_tab else (175, 45)
@@ -221,7 +221,7 @@ def plus():
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Rope_Weaver' if toggle_tab else 'Liana_Cutter'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
 
     # Toggle changes only the item position
     item_pos = (25, 45) if toggle_tab else (205, 45)
@@ -246,7 +246,7 @@ def equal():
     toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
     btype = 'Warriors_Dwelling' if toggle_tab else 'Tower'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
 
     # Toggle changes only the item position
     #      'Warriors_Dwelling'     else     'Tower' (default)
@@ -261,7 +261,7 @@ def equal():
 def hyphen():
     btype = 'Patrol-Post'
     build, site = analyze_dialog(btype)
-    _set_io(btype, site)
+    update_USR(btype, site)
     item_pos = (160, 95)
     if site == 'red':
         build_item(*item_pos)
@@ -274,7 +274,7 @@ def hyphen():
     
 def backslash():
     # Dismantle Sites..
-    _set_io('backslash_Dismantle', 'none')
+    update_USR('backslash_Dismantle', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-124,0)
@@ -287,7 +287,7 @@ def backslash():
     
 def rightbracket():
     # Double Click
-    _set_io('rightbracket', 'none')
+    update_USR('rightbracket', 'none')
     stable_click()
     time.sleep(0.1)
     stable_click()
@@ -295,7 +295,7 @@ def rightbracket():
 
 def leftbracket():
     # UPGRADING
-    _set_io('leftbracket', 'none')
+    update_USR('leftbracket', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
@@ -309,7 +309,7 @@ def leftbracket():
 
 
 def scroll_lock():
-    _set_io('scroll_lock_Destroy', 'none')
+    update_USR('scroll_lock_Destroy', 'none')
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-164,0)

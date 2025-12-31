@@ -1,0 +1,103 @@
+# widelands/current_tribe.py
+# ────────────────────────────────────────────────────────────────
+#   Edit ONLY the number below to change your current tribe.
+#   0 = Amazon
+#   1 = Atlantean
+#   2 = Barbarian
+#   3 = Empire
+#   4 = Frisian
+# ────────────────────────────────────────────────────────────────
+
+CURRENT_TRIBE_NUMBER = 0          # ← change this number ←
+
+# ────────────────────────────────────────────────────────────────
+#   You don't need to touch anything below this line
+# ────────────────────────────────────────────────────────────────
+from .sharedic import USR
+
+_MAPPING = {
+    0: 'Amazon',
+    1: 'Atlantean',
+    2: 'Barbarian',
+    3: 'Empire',
+    4: 'Frisian',
+}
+
+def get_tribe():
+    num = CURRENT_TRIBE_NUMBER
+    tribe = _MAPPING.get(num, 'Atlantean')  # safe fallback
+    USR['tribe'] = tribe
+    return tribe
+
+
+
+def load_USR_defaults():
+    """
+    Loads all user-adjustable defaults directly into USR.
+    Edit the values below — this is the only place you need to change things.
+    Each setting has a simple explanation of what it does and how it affects the macros.
+    """
+    global USR
+
+    # ────────────────────────────────────────────────────────────────
+    # Race & Basic Setup
+    # ────────────────────────────────────────────────────────────────
+    # Which race you are currently playing (0=Amazon, 1=Atlantean, 2=Barbarian, 3=Empire, 4=Frisian)
+    USR['race_number'] = 0          # Change this number to match your game
+
+    # ────────────────────────────────────────────────────────────────
+    # Timing & Delays (very important for fast/slow computers)
+    # ────────────────────────────────────────────────────────────────
+    # Delay after clicking to open dialog (helps game draw the window before screenshot)
+    USR['delay_click'] = 0.08       # 0.06–0.15 seconds. Too low = dialog not ready, too high = feels slow
+
+    # Tiny hold time during click (makes click feel real, prevents some game misses)
+    USR['delay_hold'] = 0.03        # 0.02–0.05 seconds. Usually fine at 0.03
+
+    # Delay after right-click to close dialog (before moving mouse back)
+    USR['delay_close'] = 0.12       # 0.10–0.18 seconds. Prevents mouse warp during dialog close animation
+
+    # Delay after pause-unpause (gives feedback sound and clears game mode)
+    USR['pause_delay'] = 0.15       # 0.10–0.30 seconds. Shorter = faster, longer = clearer feedback
+
+    # ────────────────────────────────────────────────────────────────
+    # Audio & Visual Feedback
+    # ────────────────────────────────────────────────────────────────
+    # Turn all sounds on/off (pause-unpause beeps, error tones, etc.)
+    USR['enable_sounds'] = True     # Set False if you don't want any sound feedback
+
+    # Where your sound files are stored (bell.oga, complete.oga, etc.)
+    USR['sound_dir'] = '/home/yourusername/Sounds/notifications/'  # Change to your real path
+
+    # ────────────────────────────────────────────────────────────────
+    # Debug & Logging
+    # ────────────────────────────────────────────────────────────────
+    # Full debug mode: saves screenshots + lots of log lines (makes macros slower)
+    USR['debug'] = False            # Turn True only when tuning or finding bugs
+
+    # Separate log file for debug messages (debug_save_shm_append)
+    USR['log_enabled'] = True       # Set False to completely disable the text log file
+
+    # Where debug log and snapshots are saved (RAM disk is fastest, auto-deletes on reboot)
+    USR['work_path'] = '/dev/shm/Widelands/'  # Change if you don't want RAM disk
+
+    # ────────────────────────────────────────────────────────────────
+    # Screenshot & Detection (advanced tuning)
+    # ────────────────────────────────────────────────────────────────
+    # Size of screenshot area for dialog detection (width, height in pixels)
+    USR['shot_size'] = (41, 29)     # Wider = more stable detection, but slightly slower
+
+    # Add your own settings below this line
+    # USR['my_custom_key'] = 'F13'
+    # USR['enable_extra_check'] = True
+
+
+
+
+
+
+
+
+
+
+

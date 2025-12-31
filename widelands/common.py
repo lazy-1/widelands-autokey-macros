@@ -22,8 +22,8 @@ from datetime import datetime
 from Xlib import display, X
 from Xlib.ext import xtest
 from mss import mss
-from .sharedic import CONTEXT
-
+from .sharedic import USR
+from .user_settings import load_USR_defaults
 disp = display.Display()
 root = disp.screen().root
 
@@ -33,8 +33,11 @@ try:# My personal stuff autokey module.
 except ImportError:
     HAS_P2AUTOKEYM = False
 
-DEBUG = True
-#DEBUG = False
+load_USR_defaults()
+
+    
+DEBUG = USR['debug']
+DEBUG = False
 
 
 
@@ -78,15 +81,15 @@ if not os.path.exists(WORK_PATH):
 AUTOKEY_TOGGLE_FILE = WORK_PATH+'autokey_transient_store.json'
 
 def debug_save_shm_append(text):
-    with open(WORK_PATH+f"{CONTEXT['tribe']}_debug.txt", "a") as file:
+    with open(WORK_PATH+f"{USR['tribe']}_debug.txt", "a") as file:
         file.write(text)
 
 
 def import_tribe_rgbv():
-    from .current_tribe import get_tribe
+    from .user_settings import get_tribe
     get_tribe()
 
-    tribe = CONTEXT.get('tribe')
+    tribe = USR.get('tribe')
     if not tribe:
         print("ERROR: Tribe not detected after get_tribe()!", file=sys.stderr)
         return
@@ -135,12 +138,12 @@ def stable_click(button=1):
     disp.sync()
     
     # Minimal reliable settle — tune once per system (0.05–0.1 safe range)
-    time.sleep(0.04)
+    time.sleep(USR['delay_stable_settle'])
     
     # Send clean press
     xtest.fake_input(disp, X.ButtonPress, button)
     disp.sync()
-    time.sleep(0.02)  # Short realistic hold — can go down to 0.01 if stable
+    time.sleep(USR['delay_click_hold'])  # Short realistic hold — can go down to 0.01 if stable
     
     # Send release
     xtest.fake_input(disp, X.ButtonRelease, button)
@@ -164,12 +167,12 @@ def stable_click_relative(dx=0, dy=0, button=1):
     # Warp to the relative offset
     root.warp_pointer(target_x, target_y)
     disp.sync()
-    time.sleep(0.05)  # Small settle — less than absolute click
+    time.sleep(USR['warp_settle'])  # Small settle — less than absolute click
     
     # Fake click at the new position
     xtest.fake_input(disp, X.ButtonPress, button)
     disp.sync()
-    time.sleep(0.03)
+    time.sleep(USR['click_hold'])
     xtest.fake_input(disp, X.ButtonRelease, button)
     disp.sync()
 
@@ -244,7 +247,7 @@ def output_error(message="Unknown error"):
     """
     if HAS_P2AUTOKEYM:
         # Your personal dbus feedback
-        p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':CONTEXT['building'],'Colour_Variance':CONTEXT['icon'],'Info':message})
+        p2autokeym.dbus_send_FM('Widelands','TEXT',{'site':'no colour returned','building type':USR['building'],'Colour_Variance':USR['icon'],'Info':message})
         _play_sound('big_error')
     else:
         # Fallback  no p2autokeym
@@ -254,10 +257,10 @@ def output_error(message="Unknown error"):
     
 
 def unpause_pause(delay=0.2):
-    #return
-    CONTEXT['keyboard'].send_keys("<pause>")
-    time.sleep(delay)
-    CONTEXT['keyboard'].send_keys("<pause>")
+    if USR['enable_pause']:
+        USR['keyboard'].send_keys("<pause>")
+        time.sleep(delay)
+        USR['keyboard'].send_keys("<pause>")
 
 
 # Direct keysym for Left Ctrl
@@ -278,7 +281,7 @@ def ctrl_release():
     
 
 def Build_Zigzag_Road(keyboard):
-    CONTEXT['keyboard'] = keyboard
+    USR['keyboard'] = keyboard
     do = transient_store_get('widelands_zigzag_rd', False)
     
     if do:# End road
@@ -295,7 +298,7 @@ def Build_Zigzag_Road(keyboard):
         
 def Build_Connect_Road(keyboard):
     do = transient_store_get('widelands_join_rd', False)
-    CONTEXT['keyboard'] = keyboard
+    USR['keyboard'] = keyboard
     if do:# End road
         ctrl_press()#ctrl_on()
         time.sleep(0.05)
@@ -313,7 +316,7 @@ def Build_Connect_Road(keyboard):
 
 def Build_New_Road(keyboard):
     do = transient_store_get('widelands_long_rd',False)
-    CONTEXT['keyboard'] = keyboard
+    USR['keyboard'] = keyboard
     if do:# End road
         transient_store_set('widelands_long_rd',False)
         ctrl_press()#ctrl_on()
@@ -352,7 +355,7 @@ def in_building_dialog(x,y):# For Dismantles & Upgrades etc
     ctrl_release()#ctrl_off()
     unpause_pause()
     stable_click(3)
-    restore_mouse_pos(CONTEXT['start_pos'])
+    restore_mouse_pos(USR['start_pos'])
 
 
 def build_item(x=0, y=0):# Current Tab
@@ -394,7 +397,7 @@ def build_item_L_M(x_bldg, y_bldg): # Move Large to Medium Tab
        
 def analyze_dialog(building): #For build sites mainly
     # 1. Open the dialog/window
-    CONTEXT['start_pos'] = capture_mouse_pos()
+    USR['start_pos'] = capture_mouse_pos()
     stable_click()
     time.sleep(0.05)  # Let it fully render
     build, site, variance = get_screenshot_info(desc=building)
@@ -402,7 +405,7 @@ def analyze_dialog(building): #For build sites mainly
 
 def determine_dialog():# For a built building what is it?
     # 1. Open the dialog/window
-    CONTEXT['start_pos'] = capture_mouse_pos()
+    USR['start_pos'] = capture_mouse_pos()
     stable_click()
     time.sleep(0.05)  # Let it fully render
     build,site,var = get_screenshot_info(x=-62,y=-35,area=(30,17),

@@ -5,7 +5,7 @@ import os
 import sys
 import importlib
 
-from .sharedic import CONTEXT     # shared dictionary (your global setup)
+from .sharedic import USR     # shared dictionary (your global setup)
 # No other imports here unless core.py itself calls them directly
 
 
@@ -14,10 +14,10 @@ from .sharedic import CONTEXT     # shared dictionary (your global setup)
 # ────────────────────────────────────────────────
 
 def import_tribe():
-    from .current_tribe import get_tribe
+    from .user_settings import get_tribe
     get_tribe()
 
-    tribe = CONTEXT.get('tribe')
+    tribe = USR.get('tribe')
     if not tribe:
         print("ERROR: Tribe not detected after get_tribe()!", file=sys.stderr)
         return
@@ -46,12 +46,12 @@ import_tribe()
 
 def call_shortcut(key, keyboard):
     """Main entry point called by AutoKey."""
-    CONTEXT['keyboard'] = keyboard
+    USR['keyboard'] = keyboard
     func_name = str(key)  # "F1", "end", "+" etc.
 
     func = globals().get(func_name)
     if func and callable(func):
         func()
     else:
-        print(f"Missing function '{func_name}' for tribe {CONTEXT.get('tribe', 'unknown')}")
+        print(f"Missing function '{func_name}' for tribe {USR.get('tribe', 'unknown')}")
         # Sound / notification can be added later — keep core clean for now
