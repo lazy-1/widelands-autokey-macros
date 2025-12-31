@@ -26,34 +26,34 @@ This will load the macros that you installed into autokey via copying the Widela
 ## Individual autokey scripts.
 - You will find the following scripts inside the Widelands directory:
 
-* 00-Reload_module
-* 00-Test_script
-* 00-Toggle_tab
-* Build-long-road-1-New
-*Build-long-road-2-Connect
-*Build-road-3-zigzag
-*Building_end_Sawmill1
-+ Building_equal_Tower
-+ Building_F01_Stone
-+ Building_F02_Woodcutter
-+ Building_F03_Forester
-Building_F04_Well
-Building_F05_Baker
-Building_F06_Smoke
-Building_F07_Mill
-Building_F08_Smelt
-Building_F09_Weaponsmith
-Building_F10_Armoursmith
-Building_F11_Fish
-Building_F12_Breader
-Building_hyphen_Guardhouse
-Building_plus_Liana_cutter
-Destroy_Something
-Dismantle_Something
-Double_Click
-Pause
-Upgrade_Something
-z-space-building-show
+- 00-Reload_module
+- 00-Test_script
+- 00-Toggle_tab
+- Build-long-road-1-New
+- Build-long-road-2-Connect
+- Build-road-3-zigzag
+- Building_end_Sawmill1
+- Building_equal_Tower
+- Building_F01_Stone
+- Building_F02_Woodcutter
+- Building_F03_Forester
+- Building_F04_Well
+- Building_F05_Baker
+- Building_F06_Smoke
+- Building_F07_Mill
+- Building_F08_Smelt
+- Building_F09_Weaponsmith
+- Building_F10_Armoursmith
+- Building_F11_Fish
+- Building_F12_Breader
+- Building_hyphen_Guardhouse
+- Building_plus_Liana_cutter
+- Destroy_Something
+- Dismantle_Something
+- Double_Click
+- Pause
+- Upgrade_Something
+- z-space-building-show
 
 
 ## What to do with them.
