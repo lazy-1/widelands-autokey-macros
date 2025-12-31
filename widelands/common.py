@@ -27,65 +27,16 @@ from .user_settings import load_USR_defaults
 disp = display.Display()
 root = disp.screen().root
 
-try:# My personal stuff autokey module.
+try:# My personal stuff autokey module, No issue if it is not there!
     import p2autokeym
     HAS_P2AUTOKEYM = True
 except ImportError:
     HAS_P2AUTOKEYM = False
 
-load_USR_defaults()
-
-    
-DEBUG = USR['debug']
-DEBUG = False
-
-
-
-# Make sure the parent directory is findable
-PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.dirname(PACKAGE_DIR)
-if PARENT_DIR not in sys.path:
-    sys.path.insert(0, PARENT_DIR)
-
-
-NOTIFICATIONS_DIR = os.path.normpath(
-    os.path.join(PACKAGE_DIR, '..','..', 'Sounds', 'Application', 'Notification')
-)+'/'
-
-PLAY_SOUND = {'red':NOTIFICATIONS_DIR+'bell.oga',
-              'orange':NOTIFICATIONS_DIR+'complete.oga',
-              'green':NOTIFICATIONS_DIR+'dialog-warning.oga',
-              'big_error':NOTIFICATIONS_DIR+'phone-incoming-call.oga',
-              'meedmeep':NOTIFICATIONS_DIR+'MeebMeeb.ogg',
-              'down1':NOTIFICATIONS_DIR+'KDE_Window_Close.ogg',
-              'up1':NOTIFICATIONS_DIR+'KDE_Window_Open.ogg',
-              'down2':NOTIFICATIONS_DIR+'Chatdown.ogg',
-              'up2':NOTIFICATIONS_DIR+'Chatup.ogg',
-              'down3':NOTIFICATIONS_DIR+'Musica Restore Down.ogg',
-              'up3':NOTIFICATIONS_DIR+'Musica Restore Up.ogg',
-              'sharpstrum1':NOTIFICATIONS_DIR+'sharp_organ.ogg',
-              }
-
-def _play_sound(result):
-    try:
-        path = PLAY_SOUND.get(result, PLAY_SOUND['sharpstrum1'])
-        subprocess.Popen(["paplay", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except:
-        print(f'sound issues? {result}')  # fail — no sound
-
-WORK_PATH = '/dev/shm/Widelands/' # temp dir 
-
-if not os.path.exists(WORK_PATH):
-    os.mkdir(WORK_PATH)
-    
-AUTOKEY_TOGGLE_FILE = WORK_PATH+'autokey_transient_store.json'
-
-def debug_save_shm_append(text):
-    with open(WORK_PATH+f"{USR['tribe']}_debug.txt", "a") as file:
-        file.write(text)
-
+load_USR_defaults() # loading the user_settings.py module.
 
 def import_tribe_rgbv():
+    # Importing tribe.amazon or whatever USR['race_number'] set to.
     from .user_settings import get_tribe
     get_tribe()
 
@@ -116,6 +67,23 @@ def import_tribe_rgbv():
 
 import_tribe_rgbv()
         
+def _play_sound(event_type):
+    if not USR['enable_sounds']: return
+    filename = USR['sound_files'].get(event_type)
+    if not filename:
+        return  # No sound defined for this event
+    full_path = os.path.join(USR['sound_dir'], filename)
+    try:
+        subprocess.Popen(["paplay", full_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        print(f'sound issues? {result}')
+
+def debug_save_shm_append(text):
+    if not os.path.isdir(USR['work_path']):return
+    with open(USR['work_path']+f"{USR['tribe']}_debug.txt", "a") as file:
+        file.write(text)
+
+
             
 
 def stable_click(button=1):
@@ -186,15 +154,15 @@ def restore_mouse_pos(pos):
     x, y = pos
     root.warp_pointer(x, y)
     disp.sync()
-    time.sleep(0.02)  # Tiny settle
-
+ 
 
 def transient_store_get(tag, default=None):
+    if not os.path.isdir(USR['work_path']):return
     # A json containing True False vars nessisary for road building 
     data = {}
     # Read existing data
     try:
-        with open(AUTOKEY_TOGGLE_FILE, 'r') as f:
+        with open(USR['transient_path'], 'r') as f:
             data = json.load(f)
     except (IOError, ValueError):  # Python 2: FileNotFoundError -> IOError, JSONDecodeError -> ValueError
         pass
@@ -202,7 +170,7 @@ def transient_store_get(tag, default=None):
     if tag not in data:
         data[tag] = default
         try:
-            with open(AUTOKEY_TOGGLE_FILE, 'w') as f:
+            with open(USR['transient_path'], 'w') as f:
                 json.dump(data, f)
                 #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Initialized {} = {}'.format(tag, default)]) # for debugging
         except Exception as e:
@@ -211,17 +179,18 @@ def transient_store_get(tag, default=None):
     return data.get(tag, default)
 
 def transient_store_set(tag, value):
+    if not os.path.isdir(USR['work_path']):return
     data = {}
     # Read existing data
     try:
-        with open(AUTOKEY_TOGGLE_FILE, 'r') as f:
+        with open(USR['transient_path'], 'r') as f:
             data = json.load(f)
     except (IOError, ValueError):
         pass
     # Set new value
     data[tag] = value
     try:
-        with open(AUTOKEY_TOGGLE_FILE, 'w') as f:
+        with open(USR['transient_path'], 'w') as f:
             json.dump(data, f)
             #subprocess.call(['notify-send', '-t', '2000', 'Transient Store', 'Set {} = {}'.format(tag, value)]) # for debugging
     except Exception as e:
@@ -256,7 +225,7 @@ def output_error(message="Unknown error"):
         _play_sound('big_error')
     
 
-def unpause_pause(delay=0.2):
+def unpause_pause(delay=USR['pause_delay']):
     if USR['enable_pause']:
         USR['keyboard'].send_keys("<pause>")
         time.sleep(delay)
@@ -272,7 +241,7 @@ ctrl_keycode = disp.keysym_to_keycodes(XK_Control_L)[0][0]  # <-- [0][0] gets th
 def ctrl_press():
     xtest.fake_input(disp, X.KeyPress, ctrl_keycode)
     disp.sync()
-    time.sleep(0.05)
+    time.sleep(USR['ctrl_press_delay'])
 
 def ctrl_release():
     xtest.fake_input(disp, X.KeyRelease, ctrl_keycode)
@@ -287,13 +256,12 @@ def Build_Zigzag_Road(keyboard):
     if do:# End road
         transient_store_set('widelands_zigzag_rd', False)
         stable_click()                    
-        time.sleep(0.05)
         unpause_pause()
     
     else:# Begin Road
         transient_store_set('widelands_zigzag_rd', True)
         stable_click()           # First: open dialog
-        time.sleep(0.05)  # Wait for dialog to open and settle (tune 0.15–0.22)
+        time.sleep(USR['wait_for_dialog1']) 
         stable_click()         # Second: select road icon
         
 def Build_Connect_Road(keyboard):
@@ -301,16 +269,15 @@ def Build_Connect_Road(keyboard):
     USR['keyboard'] = keyboard
     if do:# End road
         ctrl_press()#ctrl_on()
-        time.sleep(0.05)
         transient_store_set('widelands_join_rd', False)
         stable_click()              # final click to place the connection
-        time.sleep(0.1)
+        time.sleep(USR['wait1'])
         ctrl_release()#ctrl_off()
         unpause_pause()
     else:# Begin Road
         transient_store_set('widelands_join_rd', True)
         stable_click()              # open dialog / start road mode
-        time.sleep(0.1)
+        time.sleep(USR['wait_for_dialog2'])
         stable_click()              # select the “connect roads” option
 
 
@@ -321,18 +288,17 @@ def Build_New_Road(keyboard):
         transient_store_set('widelands_long_rd',False)
         ctrl_press()#ctrl_on()
         stable_click()
-        time.sleep(0.01)
+        time.sleep(USR['wait_to_register1'])
         stable_click()
-        time.sleep(0.01)
+        time.sleep(USR['wait_for_dialog3'])
         stable_click()
-        time.sleep(0.05)
+        time.sleep(USR['wait_to_register2'])
         ctrl_release()#ctrl_off()
-        time.sleep(0.1)
         unpause_pause()
     else:# Begin Road
         transient_store_set('widelands_long_rd',True)
         stable_click()              # open dialog / start road mode
-        time.sleep(0.05)
+        time.sleep(USR['wait_to_register2'])
         stable_click()              # select the “roads” option
 
 
@@ -346,12 +312,12 @@ def Build_New_Road(keyboard):
 
 def in_building_dialog(x,y):# For Dismantles & Upgrades etc
     ctrl_press()#ctrl_on()'
-    if DEBUG:
-        time.sleep(0.02)
+    if USR['debug']:
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
         get_screenshot_info(x=x,y=y,desc='in_building_dialog',area=(25,25))
-        time.sleep(0.05)
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
     stable_click_relative(x, y) 
-    time.sleep(0.05)
+    time.sleep(USR['wait_to_register3'])
     ctrl_release()#ctrl_off()
     unpause_pause()
     stable_click(3)
@@ -359,27 +325,27 @@ def in_building_dialog(x,y):# For Dismantles & Upgrades etc
 
 
 def build_item(x=0, y=0):# Current Tab
-    if DEBUG:
-        time.sleep(0.02)# race issues, mss is so fast....
+    if USR['debug']:
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
         get_screenshot_info(x=x,y=y,desc='destination_click',area=(60,60))
-        time.sleep(0.03)# race issues, mss is so fast....
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
     stable_click_relative(x, y)
     stable_click(3)
     unpause_pause(0.15)
 
 def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
-    if DEBUG:
-        time.sleep(0.02)# race issues, mss is so fast....
+    if USR['debug']:
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
         get_screenshot_info(x=x_tab,y=y_tab,desc='tab_selection',area=(40,40))
-        time.sleep(0.03)# race issues, mss is so fast....
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
     stable_click_relative(x_tab,y_tab)
-    time.sleep(0.02)
-    if DEBUG:
-        time.sleep(0.02)# race issues, mss is so fast....
+    time.sleep(USR['wait_to_register3'])
+    if USR['debug']:
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
         get_screenshot_info(x=x_bldg,y=y_bldg,desc='build_selection',area=(60,60))
-        time.sleep(0.03)# race issues, mss is so fast....
+        time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
     stable_click_relative(x_bldg, y_bldg)
-    unpause_pause(0.15)
+    unpause_pause()
     stable_click(3)
     
 def build_item_M_S(x_bldg, y_bldg): # Move Medium to Small Tab
@@ -399,7 +365,7 @@ def analyze_dialog(building): #For build sites mainly
     # 1. Open the dialog/window
     USR['start_pos'] = capture_mouse_pos()
     stable_click()
-    time.sleep(0.05)  # Let it fully render
+    time.sleep(USR['wait_to_register3'])  # Let it fully render
     build, site, variance = get_screenshot_info(desc=building)
     return build, site
 
@@ -407,7 +373,7 @@ def determine_dialog():# For a built building what is it?
     # 1. Open the dialog/window
     USR['start_pos'] = capture_mouse_pos()
     stable_click()
-    time.sleep(0.05)  # Let it fully render
+    time.sleep(USR['wait_to_register3'])  # Let it fully render
     build,site,var = get_screenshot_info(x=-62,y=-35,area=(30,17),
                                          method='building')
     if site == 'Standard_brown':
@@ -478,8 +444,8 @@ def get_screenshot_info(x=0, y=0, desc='n-a', area=(29, 29), method='general'):
     timestamp = datetime.now().strftime("%H%M%S_%f")[:-4]
     info = f"{timestamp}_{desc}-{ 'T' if build else 'F' }-{site}-{str(int(variance))}_RGB{r:03d}_{g:03d}_{b:03d}"
 
-    if DEBUG:
-        filename = f"{WORK_PATH}{info}.png"
+    if USR['debug']:
+        filename = f"{USR['work_path']}{info}.png"
         img.save(filename)
 
     debug_save_shm_append(info + '\n')
