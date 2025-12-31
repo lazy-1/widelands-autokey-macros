@@ -115,7 +115,7 @@ This will load the macros that you installed into autokey via copying the Widela
 - Destroy_Something: Here again I tried to be consisten. I hit on a pattern. The `scrol_lock` key being a pain to reach is set to destroy a building, that is select destry with the ctrl key held down so no mucking around and no safety.
 - Dismantle_Something: Same with Dismantle the `/` key. I got sick of manually dismantling buildings. This doesn't do them all, but does enough of the most common dismantles.
 - Double_Click `]` Yeh, I'm lazy. I hover over the roads that connect the built Forresters and hit this button. It does a fake double click that will delete the road. Saves a damb lot of mouse clicking.
-- Pause: Here I over-ride the spacebar and have it pause the game, you can keep or disable it. If you keep it you'll have to go into game options shortcut keys, find `Toggle Show Build` and replace the pause with a key, I used the Numpad * as I turn this on once and leave it on all game.
+- Pause: Here I over-ride the spacebar and have it pause the game, you can keep or disable it. If you keep it you'll have to go into game options shortcut keys, find `Toggle Show Build` and replace the `space` with a key, I used the Numpad * as I turn this on once and leave it on all game.
 - Upgrade_Something: `[` this will upgrade Tower or Woodcutter and the like with one hotkey press. 
 
 
