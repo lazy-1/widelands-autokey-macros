@@ -8,7 +8,7 @@
 
 ## First
 - Install autokey if you haven't got it. I have version 0.95.10 so that version and higher should work.
-- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `apt-get install autokey` if your on a ubuntu based system. As for other O.S. do a little research on how to install apps. autokey or autokey-gtk or autokey-kde 
+- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `sudo apt-get install autokey` if your on a ubuntu based system. As for other O.S. do a little research on how to install apps. autokey or autokey-gtk or autokey-kde (depends on your OS and your platform)
 
 ## Next
 - Once autokey is installed run it once to start so that it defines its' .config/autokey directory. Then close the autokey app.
@@ -26,17 +26,17 @@ This will load the macros that you installed into autokey via copying the Widela
 ## Individual autokey scripts.
 - You will find the following scripts inside the Widelands directory:
 
-*00-Reload_module
-*00-Test_script
-*00-Toggle_tab
-*Build-long-road-1-New
+* 00-Reload_module
+* 00-Test_script
+* 00-Toggle_tab
+* Build-long-road-1-New
 *Build-long-road-2-Connect
 *Build-road-3-zigzag
 *Building_end_Sawmill1
-+Building_equal_Tower
-+Building_F01_Stone
-+Building_F02_Woodcutter
-+Building_F03_Forester
++ Building_equal_Tower
++ Building_F01_Stone
++ Building_F02_Woodcutter
++ Building_F03_Forester
 Building_F04_Well
 Building_F05_Baker
 Building_F06_Smoke
