@@ -12,25 +12,28 @@ pip3 install python-xlib pyautogui pillow mss
  
 2. Copy `widelands` directory(package) to your AutoKey Module folder.
 
-3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory  in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
+3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
 
-4. **Important**: Personalise coordinates and paths in the user_settings.py file — these are tuned to my file system cpu etc (help provided).
+4. **Important**: Personalise coordinates and paths in the user_settings.py file — these are tuned to my file system cpu etc [user_settings.md](Tutorials/user_settings.md)
 
-5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_settings.py module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience.
+5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_settings.py module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience or see [user_settings.md](Tutorials/user_settings.md) for a comprehensive guide.
 
 ### Features
 
-- One-key building placement (hover mouse + F-key)
+- One-key building placement (hover mouse + Hotkey)
 - Road helpers: zigzag, connect, long roads
 - Tab switching as a fake Shiftlock key to double potential key uses.
-- Dismantle/Distroy/Upgrade shortcuts
+- Dismantle/Destroy/Upgrade Hotkeys
 - Visual/audio feedback (pause-unpause, optional sounds)
 
 ### Detailed Guides
+- [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md): All you need to know about the autokey files in the widelands-autokey.zip that you need.
+- [Tutorials/Building_Roads.md](Tutorials/Building_Roads.md): A guide on how to use the Hotkeys to build roads
+- [Tutorials/GUIDE.md](Tutorials/GUIDE.md): A mess at the moment
+- [Tutorials/Pause_Unpause.md](Tutorials/Pause_Unpause.md): The Pause feedback feature and how to disable if need be.
+- [Tutorials/user_settings.md](Tutorials/user_settings.md): How to customise some settings, what and where they are.
 
-See Tutorials Directory for  [Tutorials](Tutorials/)
-This has the full shortcut list, toggle keys, debug notes, known limitations, and in-depth explanations and should be helpful even for newbies.
-
+- See Tutorials Directory for [Tutorials](Tutorials/) incase I added files and didn't update this README.md.
 
 
 ### Warnings
