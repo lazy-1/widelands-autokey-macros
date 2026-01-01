@@ -27,9 +27,12 @@ pip3 install python-xlib pyautogui pillow mss
 - Visual/audio feedback (pause-unpause, optional sounds)
 
 ### Detailed Guides
+- [Tutorials/GUIDE.md](Tutorials/GUIDE.md): The Springboard to all the Tutorials.
 - [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md): All you need to know about the autokey files in the widelands-autokey.zip that you need to install.
 - [Tutorials/Building_Roads.md](Tutorials/Building_Roads.md): A guide on how to use the Hotkeys to build roads
-- [Tutorials/GUIDE.md](Tutorials/GUIDE.md): A mess at the moment but comprehensive info.
+- [Tutorials/Developers_Guide.md](Tutorials/Developers_Guide.md)
+- [Tutorials/Hotkey_Quick_Guide.md](Tutorials/Hotkey_Quick_Guide.md)
+- [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md)
 - [Tutorials/Pause_Unpause.md](Tutorials/Pause_Unpause.md): The Pause feedback feature and how to disable if need be.
 - [Tutorials/user_settings.md](Tutorials/user_settings.md): How to customise some settings, what and where they are.
 
