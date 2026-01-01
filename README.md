@@ -30,11 +30,11 @@ pip3 install python-xlib pyautogui pillow mss
 - [Tutorials/GUIDE.md](Tutorials/GUIDE.md): The Springboard to all the Tutorials.
 - [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md): All you need to know about the autokey files in the widelands-autokey.zip that you need to install.
 - [Tutorials/Building_Roads.md](Tutorials/Building_Roads.md): A guide on how to use the Hotkeys to build roads
-- [Tutorials/Developers_Guide.md](Tutorials/Developers_Guide.md)
-- [Tutorials/Hotkey_Quick_Guide.md](Tutorials/Hotkey_Quick_Guide.md)
-- [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md)
+- [Tutorials/Developers_Guide.md](Tutorials/Developers_Guide.md) Overview on my code and how you can improve on it.
+- [Tutorials/Hotkey_Quick_Guide.md](Tutorials/Hotkey_Quick_Guide.md) As it says.
+- [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md) As it says
 - [Tutorials/Pause_Unpause.md](Tutorials/Pause_Unpause.md): The Pause feedback feature and how to disable if need be.
-- [Tutorials/user_settings.md](Tutorials/user_settings.md): How to customise some settings, what and where they are.
+- [Tutorials/user_settings.md](Tutorials/user_settings.md): How to customise some settings, what and where they are. Specifically set what tribe you are playing as.
 
 - See Tutorials Directory for [Tutorials](Tutorials/) incase I added files and didn't update this README.md.
 
@@ -43,7 +43,7 @@ pip3 install python-xlib pyautogui pillow mss
 
 - Macros are personal — adjust to your setup
 - Only Amazon & Atlantean are fully tuned (others are skeletons)
-- Works best in paused game (most actions use pause-unpause feedback)
+- Works best in paused game (most actions use unpause-pause feedback)
 - No Windows/Mac support planned
 
 Feedback / issues? Post in the [Widelands forum thread](link-to-forum-post-if-you-make-one).
