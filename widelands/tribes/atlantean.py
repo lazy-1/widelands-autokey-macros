@@ -10,7 +10,6 @@ from ..common import *
 def F1():
     btype = 'Quarry'
     build, site = analyze_dialog(btype)
-    #build, site = analyze_dialog(btype,func1=id_dialog_icon2)
     update_USR(btype, site)
     item_pos = (5, 45)
     if site == 'red':

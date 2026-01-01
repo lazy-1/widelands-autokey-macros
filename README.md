@@ -45,6 +45,7 @@ pip3 install python-xlib pyautogui pillow mss
 - Only Amazon & Atlantean are fully tuned (others are skeletons)
 - Works best in paused game (most actions use unpause-pause feedback)
 - No Windows/Mac support planned
+- "This macro suite requires X11 (not Wayland). At login screen choose Cinnamon on Xorg (not Cinnamon on Wayland). I have no intentions of a Wayland upgrade, someone else my fork this and work on it.
 
 Feedback / issues? Post in the [Widelands forum thread](link-to-forum-post-if-you-make-one).
 

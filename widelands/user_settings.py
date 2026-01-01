@@ -50,7 +50,7 @@ def load_USR_defaults():
     # Which race you are currently playing
     # (0=Amazon, 1=Atlantean, 2=Barbarian, 3=Empire, 4=Frisian)
 
-    USR['race_number'] = 0          # Change this number to match your game
+    USR['race_number'] = 2          # Change this number to match your game
 
 
 
@@ -151,7 +151,7 @@ def load_USR_defaults():
     # Full debug mode: saves screenshots + lots of log lines (makes macros slower)
     # Turn True only when tuning or finding bugs
 
-    USR['debug'] = False
+    USR['debug'] = True
     
     # Separate log file for debug messages (debug_save_shm_append)
     # Set False to completely disable the text log file
