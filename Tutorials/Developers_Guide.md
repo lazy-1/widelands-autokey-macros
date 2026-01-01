@@ -143,8 +143,23 @@ If not this is going to be a struggle.
 - if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
    - and 10000 < variance < 12500):# 'Gar' image
    - return (False, 'Garrison')
-- You will see it is 116 in the image the filter has 118 +-10 so it is well within range. Next g is 103, the filter is 106 with a range of 10 again. All rgb fall in the range so it is probably a Garrison. But to add extra checking we see if the variance falls into the variance range which it does. So it is a `Garrison`.
+- You will see it is 116 in the image the filter has 118 +-10 so it is well within range. Next g(green) is 103, the filter is 106 with a range of 10 again. All rgb fall in the range so it is probably a Garrison. But to add extra checking we see if the variance falls into the variance range which it does. So it is a `Garrison`.
+- False just means it is a Built building Dialog, not a 'we are making a building dialog', that should be clear by now.
+- Now 165725_30_n-a-F-(113, 102, 75, 4137)-4137_RGB113_102_075.png is an interesting snapshot. It was taken with the method='id_dialog_icon'. filter, check that one in amazon_rgbv.py , it has several tests, is it a 'swirl' icon, is it a notable 'Charcoal_Kiln' tell. It is very hard to id a dialog at times as they are so generic at times yet ones like charcoal kiln are edge cases. 
+
+## Moving on, lets try Upgrade on a woodcutter.
+- still in amazon, and Hotkey `[` for upgrading. lets see what happens hovering over a built woodcutter and hit hotkey.
+- site = determine_dialog() returns a 172154_28_n-a-F-Standard_brown-387_RGB088_068_040.png snapshot. Interesting.
+- On Garrions the (x=-62,y=-35) offset snapshot returns a 'Gar' image. But on a woodcutter and some other but not all, that returns a brown image that I called 'Standard_brown', so you know a standard brown was snapshotted.
+- Next is the in determine_dialog() if site == 'Standard_brown': it goes for a second snapshot.
+- This is co-ordinates (x=-327,y=-67) of the dialog. and a tiny area=(22,22) and again we use the 'building' detect method.
+- if you check that tiny image 172154_29_n-a-F-Woodcutter-10002_RGB105_081_056.png you will note it is uneque to woodcutters, top left, you'll find it.
+- this image is passed through the id_building_via_dialog_tells and it found that that rgb and variance was all in the 'Woodcutter' range. 
+
+- following the flow we come to the last image: 172154_40_in_building_dialog-F-upgrade_icon-568_RGB095_076_045.png which is an upgrade icon. The code clicks on it and the building is upgraded as expected.
 
 
-
-
+## Wrapping Up.
+- I could go on all day but I feel that the essence has been told and the picture painted. With the tools I provided and the Help files there should be enough info for a compitent person to figure out the next steps.
+- Essencially snapshot the dialog, determine what it is which can be hard at times. Then click where you intend. and there you go. Hover mouse hit Hotkey and most labourious things can be streamlined.
+- Hope this helped and enjoy the game.
