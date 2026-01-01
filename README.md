@@ -14,7 +14,7 @@ pip3 install python-xlib pillow mss
 
 3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
 
-4. **Important**: Personalise coordinates and paths in the user_settings.py file — these are tuned to my file system cpu etc [user_settings.md](Tutorials/user_settings.md)
+4. **Important**: Personalise paths and desired Tribe your playing in the user_settings.py file — these are tuned to my file system cpu etc [user_settings.md](Tutorials/user_settings.md)
 
 5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_settings.py module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience or see [user_settings.md](Tutorials/user_settings.md) for a comprehensive guide.
 
@@ -24,7 +24,7 @@ pip3 install python-xlib pillow mss
 - Road helpers: zigzag, connect, long roads
 - Tab switching as a fake Shiftlock key to double potential key uses.
 - Dismantle/Destroy/Upgrade Hotkeys
-- Visual/audio feedback (pause-unpause, optional sounds)
+- Visual/audio feedback (unpause-pause, optional sounds)
 
 ### Detailed Guides
 - [Tutorials/GUIDE.md](Tutorials/GUIDE.md): The Springboard to all the Tutorials.
@@ -45,7 +45,7 @@ pip3 install python-xlib pillow mss
 - Only Amazon & Atlantean are fully tuned (others are skeletons)
 - Works best in paused game (most actions use unpause-pause feedback)
 - No Windows/Mac support planned
-- "This macro suite requires X11 (not Wayland). At login screen choose Cinnamon on Xorg (not Cinnamon on Wayland). I have no intentions of a Wayland upgrade, someone else my fork this and work on it.
+- "This macro suite requires X11 (not Wayland). At login screen choose Cinnamon on Xorg (not Cinnamon on Wayland). I have no intentions of a Wayland upgrade, someone else may fork this and work on it.
 
 Feedback / issues? Post in the [Widelands forum thread](link-to-forum-post-if-you-make-one).
 

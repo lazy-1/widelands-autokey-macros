@@ -151,12 +151,12 @@ def load_USR_defaults():
     # Full debug mode: saves screenshots + lots of log lines (makes macros slower)
     # Turn True only when tuning or finding bugs
 
-    USR['debug'] = True
+    USR['debug'] = False
     
     # Separate log file for debug messages (debug_save_shm_append)
     # Set False to completely disable the text log file
     
-    USR['log_enabled'] = True       
+    USR['log_enabled'] = False       
 
     
 
