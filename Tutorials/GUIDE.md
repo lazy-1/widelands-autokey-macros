@@ -1,4 +1,4 @@
-# Detailed Guide - Widelands AutoKey Macros
+# A Guide - Widelands AutoKey Macros
 
 ## Background
 Back many years ago I worked on an AutoKey script for this game in Solydx. It worked kind of, and was far better than not at all. One key for each build site, i.e. F1 was for red Quarry, F2 was for Orange Quarry etc. My objective was to cut down on the number of mouse clicks that were driving me crazy — love the game but it was wearing out my click finger. Hover Mouse over site and hit the keyboard shortcut and the building is built. This is a far better improvement on that simplistic version with more features.
@@ -14,12 +14,12 @@ Back many years ago I worked on an AutoKey script for this game in Solydx. It wo
 - **Note**: This is a Linux setup. If anyone ever wishes to use Microsoft and this stuff, go right ahead — I doubt it will translate directly, but at least the general idea may help.
 
 ## Overview
-In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the game, but crying about it doesn't help.
+In the end, with the help of Grok, I got a fairly efficient system setup. Unfortunately AutoKey has its quirks and so does the game itself. It would have been so much better if I could have just collected the simplest of info from the running game, but crying about it doesn't help.
 
 ## Contents of repo.
 - widelands-autokey.zip : this is the contents of my autokey/data/Scripts/Widelands/ directory. If they don't work for you make sure Widelands Window Filter is set to widelands.widelands see [Autokey_GUIDE.md](Autokey_GUIDE.md) for details
 - Tutorials : Here you will find this GUIDE.md along with other files that should help in getting this to work in your linux system. Along with comprhensive info that should help you modify the code.
-- Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the NOTIFICATIONS_DIR = '/new/notifications/path'. 
+- Notification directory: This is all the sounds I use for you to try if you want. Save it somewhere and set the USR['sound_dir'] = '/new/notifications/path'. see [user_settings.md](user_settings.md) or the actual widelands/user_settings.py for more info.
 
 ## General Shortcuts (set in AutoKey)
 I'm using F1 to F12, `[]\;',-/(tab), end and scroll_lock for individual buildings and some functions. The feedback is a quick **pause-unpause**. So you can build during a game pause. This obviously, like all code, can be modified. I've labeled all functions as friendly as possible.
