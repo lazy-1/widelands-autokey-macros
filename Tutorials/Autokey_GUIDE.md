@@ -2,21 +2,27 @@
 - This is Not an Autokey comprehensive guide, it is a general help for implementing the Widelands specific functions needed for using the widelands package.
 
 ## Overview
-- Basically you unzip the widelands-autokey.zip somewhere, copy/move the resulting 'Widelands' directory to your  ~/.config/autokey/data/Scripts/ directory 
+- Basically you download and unzip the widelands-autokey.zip somewhere, copy/move the resulting 'Widelands' directory to your  ~/.config/autokey/data/Scripts/ directory 
 
+- Install the `widelands` package/directory into the autokey modules.
 - Technically that is all that is needed. But when is anything easy in this world...
 
 ## First
 - Install autokey if you haven't got it. I have version 0.95.10 so that version and higher should work.
-- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `sudo apt-get install autokey` if your on a ubuntu based system. As for other O.S. do a little research on how to install apps. autokey or autokey-gtk or autokey-kde (depends on your OS and your platform)
+- For those that have little idea of how to do this, try your distros' package manager such as synaptic. If your old school use `sudo apt-get install autokey` if your on a ubuntu/debain  based system. As for other O.S. do a little research on how to install apps. autokey or autokey-gtk or autokey-kde (depends on your OS and your platform)
 
+## Next download and install the `widelands` package that is on my github site. 
 ## Next
 - Once autokey is installed run it once to start so that it defines its' .config/autokey directory. Then close the autokey app.
 
 - Then as stated above, unzip the widelands-autokey.zip somewhere and move the Widelands directory it created into the ~/.config/autokey/data/Scripts/ so that it is ready for autokey to load when it starts up.
 
-## Then Run autokey
-This will load the macros that you installed into autokey via copying the Widelands directory into it.
+## Next Run autokey and set module path.
+- In the autokey window `Edit` menu `Preferences`. Choose the `Script Engine` tab and in the Drop down directory searcher find the `root` directory the the `widelands` package is in.
+- 
+
+
+This will load the macros that you installed into autokey via the Widelands directory moved into it.
 
 ## First Time Autokey Run.
 - Open autokey and see 'Scripts', left side, it's a directory structure. If you successfully moved the Widelands into the directory above it should be seen inside the Scripts tree. If not check the path etc.
