@@ -1,19 +1,7 @@
 ## Quick Guide.
 - if you move the mouse as your hitting the Hotkey this can cause errors and unexpected results.
 
-
 ### Amazon
-**Tab toggle Down (normal, false, default state)**  
-- end = Stone_Workshop  
-- - = Patrol_Post  
-- = = Tower  
-- np_add(+) = Liana_Cutter  
-
-**Tab toggle Up (true)**  
-- end = Furnace "GOLD"  
-- - = Upgrades 'currently' Building Woodcutter to Rare  
-- = = Warriors_Dwelling  
-- np_add(+) = Rope_Weaver  
 
 **F-keys**  
 F1 = Stonecutter  
@@ -29,13 +17,31 @@ F10 = Rare_Tree_Plantation (toggle_tab: infinite Rare/StoneMine)
 F11 = Hunter_Gatherer  
 F12 = Wilderness_Keeper (inner radii is for fish)
 
+
+
+**Tab toggle Down (normal, false, default state)**  
+- 'end' = Stone_Workshop  
+- '-' = Patrol_Post  
+- '=' = Tower  
+- np_add(+) = Liana_Cutter  
+
+**Tab toggle Up (true)**  
+- 'end' = Furnace "GOLD"  
+- '-' = Patrol_Post
+- '=' = Warriors_Dwelling  
+- np_add(+) = Rope_Weaver  
+
+
 **Other**  
-[ = Double Click (Delete road under mouse, clean up foresters area)  
-] = Dismantles Stonecutter, UPGRADES BUILT woodcutter  
-\ = Dismantles Patrol, Tower and Fortress  
-scroll_lock = Dismantles Woodcutter
+  
+- [ = Upgrades Buldings such as Tower or Woodcutter
+- ] = Double Click (Delete road under mouse, clean up foresters area)
+- \ = Dismantles Most Buildings  
+- scroll_lock = Destroys Most Buildings
 
 ### Atlantean
+
+**F-keys** 
 F1 = Quarry  
 F2 = Woodcutter  
 F3 = Forester  
@@ -49,12 +55,16 @@ F10 = Armoursmith
 F11 = Fish  
 F12 = Fish Breader  
 
-end = SawMill  
-- = Guardhouse  
-= = Tower  
+'end' = SawMill  
+'-' = Guardhouse  
+'=' = Tower
 
-] = Dismantle StoneCutter/Woodcutter  
-\ = Dismantle Tower Guardhouse
+**Other** 
+- [ = Upgrades Buldings  Tower
+- ] = Double Click (Delete road under mouse, clean up foresters area)
+- \ = Dismantles Most Buildings  
+- scroll_lock = Destroys Most Buildings
+
 
 ### Barbarian / Empire / Frisian
 (These are placeholders — functions created but not yet tuned. Edit `btype` and `item_pos` as needed.)
@@ -62,7 +72,7 @@ end = SawMill
 
 
 
-## General Gameplay Shortcuts (from Widelands — may be wrong/outdated)
+## General Gameplay Shortcuts (from Widelands — probably wrong/outdated)
 Space: Toggle the build icons.  
 C: Toggle census display (shows information about buildings and workers).  
 S: Toggle statistics display (e.g., resource or economy stats).  
