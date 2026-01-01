@@ -50,7 +50,7 @@ def load_USR_defaults():
     # Which race you are currently playing
     # (0=Amazon, 1=Atlantean, 2=Barbarian, 3=Empire, 4=Frisian)
 
-    USR['race_number'] = 2          # Change this number to match your game
+    USR['race_number'] = 0          # Change this number to match your game
 
 
 

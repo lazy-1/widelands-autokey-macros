@@ -346,7 +346,7 @@ def build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
         time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
     stable_click_relative(x_bldg, y_bldg)
     unpause_pause()
-    stable_click(3)
+    #stable_click(3)
     
 def build_item_M_S(x_bldg, y_bldg): # Move Medium to Small Tab
     x_tab, y_tab = (-35, 0)

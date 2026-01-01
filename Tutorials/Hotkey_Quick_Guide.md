@@ -1,3 +1,7 @@
+## Quick Guide.
+- if you move the mouse as your hitting the Hotkey this can cause errors and unexpected results.
+
+
 ### Amazon
 **Tab toggle Down (normal, false, default state)**  
 - end = Stone_Workshop  
