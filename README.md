@@ -8,7 +8,7 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as
 ### Quick Start
 
 1. Install required Python packages:
-pip3 install python-xlib pyautogui pillow mss
+pip3 install python-xlib pillow mss
  
 2. Copy `widelands` directory(package) to your AutoKey Module folder.
 
