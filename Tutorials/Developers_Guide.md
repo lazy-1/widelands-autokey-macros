@@ -141,8 +141,8 @@ If not this is going to be a struggle.
 - Have a look at them. You've got a handle on how to `debug` read the file name. So what have we got.
 - The first is obviously recognised as a `Garrason`, if you see the tiny image and look at a fully opened Patrol Dialog , you will see where the snapshot was taken. If you look at the filter 
 - if (abs(r - 118) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
-       - and 10000 < variance < 12500):# 'Gar' image
-       - return (False, 'Garrison')
+   - and 10000 < variance < 12500):# 'Gar' image
+   - return (False, 'Garrison')
 - You will see it is 116 in the image the filter has 118 +-10 so it is well within range. Next g is 103, the filter is 106 with a range of 10 again. All rgb fall in the range so it is probably a Garrison. But to add extra checking we see if the variance falls into the variance range which it does. So it is a `Garrison`.
 
 
