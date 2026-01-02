@@ -14,9 +14,9 @@ pip3 install python-xlib pillow mss
 
 3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
 
-4. **Important**: Personalise paths and desired Tribe your playing in the user_settings.py file — these are tuned to my file system cpu etc [user_settings.md](Tutorials/user_settings.md)
+4. **Important**: Personalise paths and desired Tribe your playing in the user_config file — these are tuned to my file system cpu etc [user_config.md](Tutorials/user_config.md)
 
-5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_settings.py module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience or see [user_settings.md](Tutorials/user_settings.md) for a comprehensive guide.
+5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_config module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience or see [user_config.md](Tutorials/user_config.md) for a comprehensive guide.
 
 ### Features
 
@@ -34,7 +34,7 @@ pip3 install python-xlib pillow mss
 - [Tutorials/Hotkey_Quick_Guide.md](Tutorials/Hotkey_Quick_Guide.md) As it says.
 - [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md) As it says
 - [Tutorials/Pause_Unpause.md](Tutorials/Pause_Unpause.md): The Pause feedback feature and how to disable if need be.
-- [Tutorials/user_settings.md](Tutorials/user_settings.md): How to customise some settings, what and where they are. Specifically set what tribe you are playing as.
+- [Tutorials/user_config.md](Tutorials/user_config.md): How to customise some settings, what and where they are. Specifically set what tribe you are playing as.
 
 - See Tutorials Directory for [Tutorials](Tutorials/) incase I added files and didn't update this README.md.
 
