@@ -16,7 +16,9 @@ pip3 install python-xlib pillow mss
 
 4. **Important**: Personalise paths and desired Tribe your playing in the user_config file — these are tuned to my file system cpu etc [user_config.md](Tutorials/user_config.md)
 
-5. Tribe selection: You will have to tell the Package which Tribe you are playing as in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_config module near the top, In the function  load_USR_defaults(). It is heavilly commented for user convenience or see [user_config.md](Tutorials/user_config.md) for a comprehensive guide.
+5. Tribe selection: You will have to tell the Package which Tribe you are playing in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_config module in ~/.config/widelands_autokey/. It is heavilly commented for user convenience or see [user_config.md](Tutorials/user_config.md) for a comprehensive guide.
+
+6. Currently it is a manual edit to change the Tribe (and possible other settings) but a future thought has me thinking of a popup gui. See if I'm not as lazy as I say I am.
 
 ### Features
 
