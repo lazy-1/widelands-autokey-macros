@@ -2,6 +2,10 @@
 
 ## File Path ~/.config/widelands_autokey/user_config.py
 
+## First Things First.
+- Run autokey with the macros setup and the `widelands` module intalled. Then open a widelands game, any game. Press one of the Hotkeys, any Hotkey. This auto creates the ~/.config/widelands_autokey/user_config.py file.
+
+### Overview
 - This file is created on the first use of an autokey Hotkey press.
 - It is permanant and does not change between module upgrades (unless the config file itself needs changing and notes will be supplied for that upgrade)
 - To edit you need to be able to see Hidden files in your home directory. Turn that feature on in your file browser, and search for that file.

@@ -59,7 +59,7 @@ def import_tribe_rgbv():
                 if callable(obj):
                     globals()[name] = obj
                     count += 1
-        print(f"Loaded tribe '{tribe}' → {count} functions copied (F1 should be there)")
+        print(f"Loaded tribe '{tribe}' → {count} functions copied")
     except ImportError as e:
         print(f"Failed to load '{tribe_module_name}': {e}", file=sys.stderr)
     except Exception as e:

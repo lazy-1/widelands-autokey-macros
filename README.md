@@ -12,7 +12,7 @@ pip3 install python-xlib pillow mss
  
 2. Copy `widelands` directory(package) to your AutoKey modules folder [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md).
 
-3. Set hotkeys in AutoKey widelands-autokey.zip is supplied, unzip it, put the `Widelands` diretory in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
+3. Set hotkeys in AutoKey widelands-autokey.zip is supplied, unzip it, put the `Widelands` diretory in your `~/.config/autokey/data/Scripts/` directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
 
 4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the user_config.py file — these settings are tuned to my file system CPU etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
 
