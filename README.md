@@ -10,7 +10,7 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
 1. Install required Python packages:
 pip3 install python-xlib pillow mss
  
-2. Copy `widelands` directory(package) to your AutoKey Module folder.
+2. Copy `widelands` directory(package) to your AutoKey Module folder [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md).
 
 3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `Widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
 
