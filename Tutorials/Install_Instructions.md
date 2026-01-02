@@ -7,11 +7,11 @@ There are two ways to get the macros. Most people should use **Option 1 (ZIP)** 
 1. Go to the repo main page:  
    https://github.com/lazy-1/widelands-autokey-macros
 
-2. Click the green **Code** button (a little way from the top, roughly middle right).
+2. Click the green **Code** button (a little ways from the top, roughly middle right).
 
 3. Click **Download ZIP**.
 
-4. Save the file (widelands-autokey-macros-main.zip or main.zip) to your computer.
+4. Save the file widelands-autokey-macros-main.zip to your computer.
 
 5. Extract/unzip the folder anywhere (Desktop, Documents, etc.).
 
@@ -25,12 +25,13 @@ There are two ways to get the macros. Most people should use **Option 1 (ZIP)** 
 
 That's it — no terminal or extra programs required.
 
-### Option 2 is optional — use it only if you want easy updates later. Option 1 (ZIP) is enough for most people
+### Option 2
+ - use it only if you want easy updates later. Option 1 (ZIP) is enough for most people
 
 If you want to update easily with one command when new versions come out:
 
 1. Install Git (one-time):
-   Open a terminal and run:   `sudo apt update && sudo apt install git`
+   Open a terminal and run:   ```sudo apt update && sudo apt install git```
 2. Go to a folder where you want the files (e.g. Documents):`cd ~/Documents`
 3. Download the repo: `git clone https://github.com/lazy-1/widelands-autokey-macros.git`
 4. Enter the folder: `cd widelands-autokey-macros`

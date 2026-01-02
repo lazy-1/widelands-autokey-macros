@@ -33,7 +33,7 @@ pip3 install python-xlib pillow mss
 - [Tutorials/Developers_Guide.md](Tutorials/Developers_Guide.md) Overview on my code and how you can improve on it.
 - [Tutorials/Hotkey_Quick_Guide.md](Tutorials/Hotkey_Quick_Guide.md) As it says.
 - [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md) As it says
-- [Tutorials/Pause_Unpause.md](Tutorials/Pause_Unpause.md): The Pause feedback feature and how to disable if need be.
+- [Tutorials/Unpause_Pause.md](Tutorials/Unpause_Pause.md): The Pause feedback feature and how to disable if need be.
 - [Tutorials/user_config.md](Tutorials/user_config.md): How to customise some settings, what and where they are. Specifically set what tribe you are playing as.
 
 - See Tutorials Directory for [Tutorials](Tutorials/) incase I added files and didn't update this README.md.
