@@ -3,7 +3,7 @@
 
 Macros for faster building, road laying, and common actions in **Widelands 1.3+** (Linux only).
 
-Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands dirty as you'll need to modify the module and work a little on autokey. I've made  comprehensive Guides so it shouldn't be that hard. 
+Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little dirty as you'll need to manually set stuff up. I've made  comprehensive Guides so it shouldn't be that hard. 
 
 ### Quick Start
 
@@ -12,13 +12,11 @@ pip3 install python-xlib pillow mss
  
 2. Copy `widelands` directory(package) to your AutoKey Module folder.
 
-3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials](Tutorials/) Directory
+3. Set hotkeys in AutoKey widelands-autokey.zip supplied, put the unzipped directory `Widelands` in your autokey/data/Scripts/ directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
 
-4. **Important**: Personalise paths and desired Tribe your playing in the user_config file — these are tuned to my file system cpu etc [user_config.md](Tutorials/user_config.md)
+4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the user_config.py file — these settings are tuned to my file system cpu etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
 
-5. Tribe selection: You will have to tell the Package which Tribe you are playing in order to get the best out of the functions as each tribe has a different tailored module. This is done in the  user_config module in ~/.config/widelands_autokey/. It is heavilly commented for user convenience or see [user_config.md](Tutorials/user_config.md) for a comprehensive guide.
-
-6. Currently it is a manual edit to change the Tribe (and possible other settings) but a future thought has me thinking of a popup gui. See if I'm not as lazy as I say I am.
+5. Currently it is a manual edit to change the Tribe and other settings but a future thought has me thinking of a popup gui. See if I'm not as lazy as I say I am.
 
 ### Features
 
