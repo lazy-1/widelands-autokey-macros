@@ -23,7 +23,7 @@ There are two ways to get the macros. Most people should use **Option 1 (ZIP)** 
    - `widelands-autokey.zip` (autokey macros)
    - `LICENSE` (the usual crap)
 
-That's it — no terminal or extra programs required.
+7. That's it — no terminal or extra programs required if you're using Option 1
 
 ### Option 2
  - use it only if you want easy updates later. Option 1 (ZIP) is enough for most people
@@ -51,16 +51,16 @@ If you want to update easily with one command when new versions come out:
 
    - Next is the  `widelands` specific module. Instructions assume you have an unzipped download or are in the git which is the same. In that dir you will find `widelands` inside is core.py , common.py, load_config.py and other files/directories.
 
-   - So this `widelands` is the `Package` (modules) , we need to tell autokey where the Package is. Before we do that make sure, that the `widelands` directory is in a place not easilly deleted accidently. Copy/Move it somewhere safe or leave it where it is if that is a safe place.
+   - So this `widelands` is the `Package` (modules) , we need to tell autokey where the Package is. Before we do that make sure, that the `widelands` directory is in a place not easily deleted accidentally. Copy/Move it somewhere safe or leave it where it is if that is a safe place.
 
    - Now run autokey. It usually launches as a system icon and doesn't open the window, if that happens find the system tray icon, usually an 'A' type outline font looking thing. Click it and 'show main window'. The app is open.
 
    - Edit -> Preferences -> Script Engine (its a tab), there is a drop down selector, it is a directory browser, find the directory that contains the mentions `widelands` package NOT the package itself, but the directory that contains the widelands directory.
    - IF you already use autokey, then copy or move `widelands` to your already defined modules directory.
-   - Re-Start autokey to make sure it is loading the package. [Autokey_GUIDE.md](Autokey_GUIDE.md) is a comprehensive overview of My macros, what to do if they are not automatically set etc.
+   - Restart autokey to make sure it is loading the package. [Autokey_GUIDE.md](Autokey_GUIDE.md) is a comprehensive overview of My macros, what to do if they are not automatically set etc.
 
 ## That is the Install done.
-   - Next we make a few tweek in your user_config.py see [user_config.md](user_config.md)
+   - Next we make a few tweak in your user_config.py see [user_config.md](user_config.md).
 
 
 
