@@ -14,7 +14,7 @@ from .sharedic import USR     # shared dictionary (your global setup)
 # ────────────────────────────────────────────────
 
 def import_tribe():
-    from .user_settings import get_tribe
+    from .load_config import get_tribe
     get_tribe()
 
     tribe = USR.get('tribe')

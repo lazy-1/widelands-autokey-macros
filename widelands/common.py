@@ -23,7 +23,7 @@ from Xlib import display, X
 from Xlib.ext import xtest
 from mss import mss
 from .sharedic import USR
-from .user_settings import load_USR_defaults
+from .load_config import load_USR_defaults
 disp = display.Display()
 root = disp.screen().root
 
@@ -33,11 +33,11 @@ try:# My personal stuff autokey module, No issue if it is not there!
 except ImportError:
     HAS_P2AUTOKEYM = False
 
-load_USR_defaults() # loading the user_settings.py module.
+#load_USR_defaults() # loading the load_config.py module.
 
 def import_tribe_rgbv():
     # Importing tribe.amazon or whatever USR['race_number'] set to.
-    from .user_settings import get_tribe
+    from .load_config import get_tribe
     get_tribe()
 
     tribe = USR.get('tribe')

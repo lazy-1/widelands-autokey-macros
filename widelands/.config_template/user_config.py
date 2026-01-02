@@ -1,48 +1,24 @@
-# widelands/current_tribe.py
-# ────────────────────────────────────────────────────────────────
-#   0 = Amazon
-#   1 = Atlantean
-#   2 = Barbarian
-#   3 = Empire
-#   4 = Frisian
-# ────────────────────────────────────────────────────────────────
-# In
-# load_USR_defaults() find
-# 
-# USR['race_number'] =
-#
-# Set it to the Tribe Number You are playing This is Critical!!!
-#
-# ────────────────────────────────────────────────────────────────
-#   You don't need to touch anything below this line
-# ────────────────────────────────────────────────────────────────
+"""
+    Returns your personal settings as a dictionary.
+    
+    This is the ONLY file you should edit for customisation.
+    All values below are defaults — change them to suit your setup.
+    
+    - Race number: 0=Amazon, 1=Atlantean, 2=Barbarian, 3=Empire, 4=Frisian
+    - Debug: True = snapshots & logs (slows macros)
+    - Sounds: Enable/disable audio feedback
+    - Delays: Tune timing if dialogs miss or macros feel laggy
+    - Paths: Set sound_dir and work_path to your preferred locations
+    
+    Add your own settings at the bottom if needed.
+    This file survives updates — don't overwrite it when pulling new versions.
+"""
 import os
-from .sharedic import USR
 
-_MAPPING = {
-    0: 'Amazon',
-    1: 'Atlantean',
-    2: 'Barbarian',
-    3: 'Empire',
-    4: 'Frisian',
-}
+def load_the_config():
+    usr = {}
 
-def get_tribe():
-    load_USR_defaults()
-    num = USR['race_number']
-    tribe = _MAPPING.get(num, 'Atlantean')  # safe fallback
-    USR['tribe'] = tribe
-    return tribe
-
-
-
-def load_USR_defaults():
-    """
-    Loads all user-adjustable defaults directly into USR.
-    Edit the values below — this is the only place you need to change things.
-    Each setting has a simple explanation of what it does and how it affects the macros.
-    """
-    global USR
+    
 
     # ────────────────────────────────────────────────────────────────
     # Race & Basic Setup
@@ -50,7 +26,7 @@ def load_USR_defaults():
     # Which race you are currently playing
     # (0=Amazon, 1=Atlantean, 2=Barbarian, 3=Empire, 4=Frisian)
 
-    USR['race_number'] = 0          # Change this number to match your game
+    usr['race_number'] = 0          # Change this number to match your game
 
 
 
@@ -67,16 +43,16 @@ def load_USR_defaults():
     # Widelands directory will be created via os.mkdir
     # without this build roads can not work.
     
-    USR['work_path'] = '/dev/shm/Widelands/'
+    usr['work_path'] = '/dev/shm/Widelands/'
     
     # leave this here to check/create work_path or comment out and disable
     # road building and any debugging.
     
-    if not os.path.exists(USR['work_path']):
-        os.mkdir(USR['work_path'])
+    if not os.path.exists(usr['work_path']):
+        os.mkdir(usr['work_path'])
     # Path to the transient file for road building, must be in work_path
     
-    USR['transient_path'] = USR['work_path']+'autokey_transient_store.json'
+    usr['transient_path'] = usr['work_path']+'autokey_transient_store.json'
 
 
 
@@ -89,15 +65,15 @@ def load_USR_defaults():
     # ────────────────────────────────────────────────────────────────
     # Where your sound files are stored (bell.oga, complete.oga, etc.)
     # Change to your real path
-    #  example USR['sound_dir'] = '/home/yourusername/Sounds/notifications/'
+    #  example usr['sound_dir'] = '/home/yourusername/Sounds/notifications/'
 
     # This is My personal path to the sounds. So edit it!
     
-    USR['sound_dir'] = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'Sounds', 'Application', 'Notification')) + '/'
+    usr['sound_dir'] = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'Sounds', 'Application', 'Notification')) + '/'
 
     # Turn all sounds on/off (pause-unpause beeps, error tones, etc.)
     
-    USR['enable_sounds'] = True 
+    usr['enable_sounds'] = True 
 
 
 
@@ -110,7 +86,7 @@ def load_USR_defaults():
     # Value = filename (.oga recommended)
     # Leave value as '' to disable a sound
 
-    USR['sound_files'] = {
+    usr['sound_files'] = {
     'red': 'bell.oga',                  # Build site: large/red Not Used
     'orange': 'complete.oga',           # Build site: medium/orange Not Used
     'green': 'dialog-warning.oga',      # Build site: small/green Not Used
@@ -134,29 +110,29 @@ def load_USR_defaults():
     
     # ────────────────────────────────────────────────────────────────
     # Pause enable and pause delay.
-    # unpause_pause(delay=USR['pause_delay']):
+    # unpause_pause(delay=usr['pause_delay']):
     # ────────────────────────────────────────────────────────────────
     # If the delay is too short the pause is not registered.
     
-    USR['enable_pause'] = True
-    USR['pause_delay'] = 0.2
+    usr['enable_pause'] = True
+    usr['pause_delay'] = 0.2
     
 
 
     
 
     # ────────────────────────────────────────────────────────────────
-    # Debug & Logging all Use USR['work_path']
+    # Debug & Logging all Use usr['work_path']
     # ────────────────────────────────────────────────────────────────
     # Full debug mode: saves screenshots + lots of log lines (makes macros slower)
     # Turn True only when tuning or finding bugs
 
-    USR['debug'] = False
+    usr['debug'] = False
     
     # Separate log file for debug messages (debug_save_shm_append)
     # Set False to completely disable the text log file
     
-    USR['log_enabled'] = False       
+    usr['log_enabled'] = False       
 
     
 
@@ -177,7 +153,7 @@ def load_USR_defaults():
     # Too long = feels slightly sluggish
     # Typical range: 0.03–0.08 (0.04 is a safe middle ground)
 
-    USR['delay_stable_settle'] = 0.04   
+    usr['delay_stable_settle'] = 0.04   
 
     # Short hold time during the click itself (press → release)
     # Mimics a real human finger press duration so
@@ -186,7 +162,7 @@ def load_USR_defaults():
     # Too long = click feels noticeably delayed
     # Typical range: 0.01–0.05 (0.02 is very reliable and barely perceptible)
 
-    USR['delay_click_hold'] = 0.02      
+    usr['delay_click_hold'] = 0.02      
 
 
 
@@ -199,12 +175,12 @@ def load_USR_defaults():
 
     # Small settle — gives X server time to register the cursor warp before click
 
-    USR['warp_settle'] = 0.05
+    usr['warp_settle'] = 0.05
 
     # Short realistic hold —
     # mimics human finger press so the game detects the click properly
 
-    USR['click_hold'] = 0.03
+    usr['click_hold'] = 0.03
 
 
 
@@ -220,7 +196,7 @@ def load_USR_defaults():
     # Race conditions apply here if you want ctrl held then this needs to
     # be realistic.
     
-    USR['ctrl_press_delay'] = 0.05
+    usr['ctrl_press_delay'] = 0.05
 
 
 
@@ -233,7 +209,7 @@ def load_USR_defaults():
 
     # Wait for dialog to open and settle (tune 0.05–0.22)
     
-    USR['wait_for_dialog1'] = 0.05
+    usr['wait_for_dialog1'] = 0.05
 
 
 
@@ -246,11 +222,11 @@ def load_USR_defaults():
 
     # Wait for stable click to register before it proceeds to ctrl_release
 
-    USR['wait1'] = 0.1
+    usr['wait1'] = 0.1
 
     # A wait for Dialog to open properly.
 
-    USR['wait_for_dialog2'] = 0.1
+    usr['wait_for_dialog2'] = 0.1
 
 
 
@@ -263,16 +239,16 @@ def load_USR_defaults():
     # These are waits when building a new road.
     # Wait to make sure the game registers the mouse click
 
-    USR['wait_to_register1'] = 0.1
+    usr['wait_to_register1'] = 0.1
 
     # Wait for the dialog to fully render
 
-    USR['wait_for_dialog3'] = 0.1
+    usr['wait_for_dialog3'] = 0.1
 
     # Wait for the click on dialog to fully register before ctrl release
     # reuse this in else: if you have issues and want separate go for it.
 
-    USR['wait_to_register2'] = 0.05
+    usr['wait_to_register2'] = 0.05
     
 
 
@@ -287,15 +263,15 @@ def load_USR_defaults():
     # The get_screenshot_info has a quirk. A race condition between it and
     # the wideland responses, ironically the snapshot needs to be throttled.
     
-    USR['wait_screenshot'] = 0.05
+    usr['wait_screenshot'] = 0.05
     
     # Common wait for Dialog clicks to be registered by the game before Proceeding
 
-    USR['wait_to_register3'] = 0.05
+    usr['wait_to_register3'] = 0.05
 
 
 
-
+    return usr
 
 
 
