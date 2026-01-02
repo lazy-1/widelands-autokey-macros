@@ -12,11 +12,11 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
  
 2. Copy `widelands` directory(package) to your AutoKey modules folder [Tutorials/Install_Instructions.md](Tutorials/Install_Instructions.md).
 
-3. Set hotkeys in AutoKey widelands-autokey.zip is supplied, unzip it, put the `Widelands` diretory in your `~/.config/autokey/data/Scripts/` directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
+3. Set hotkeys in AutoKey, widelands-autokey.zip is supplied, unzip it, put the `Widelands` diretory in your `~/.config/autokey/data/Scripts/` directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
 
 4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the user_config.py file — these settings are tuned to my file system CPU etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
 
-5. Currently it is a manual edit to change the Tribe and other settings but a future thought has me thinking of a popup gui. See if I'm not as lazy as I say I am.
+5. Currently it is a manual edit to change the Tribe and other settings but a future thought has me thinking of a popup GUI. See if I'm not as lazy as I say I am.
 
 ### Features
 
@@ -47,6 +47,6 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
 - No Windows/Mac support planned
 - This macro suite requires X11 (not Wayland). At your login screen, choose Cinnamon on Xorg (not Cinnamon on Wayland). I have no intentions of a Wayland upgrade, someone else may fork this and work on it.
 
-Feedback / issues? Post in the [Widelands forum thread](link-to-forum-post-if-you-make-one).
+Feedback / issues? Post in the [Widelands forum thread](https://www.widelands.org/forum/topic/6574/?page=1).
 
 Enjoy faster Widelands!
