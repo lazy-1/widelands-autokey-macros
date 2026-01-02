@@ -1,6 +1,8 @@
 ## A Simple? Developers Guide
 - coding is not simple. This started out with using autokey native keyboard and mouse events and the frustrating race conditions that autokey natively has. It is not made for fine intergration. So I eventually took a deep dive of X11 and found mss which is 10x better than the eventual pyautogui that I used. So many iterations I could write a book but won't.
 
+### File Path ~/.config/widelands_autokey/user_config.py
+- referenced so you know where the config file is.
 
 ### General
 - `` ` `` = Development, reloads the widelands module for AutoKey, so module modifications take affect. autokey will not recognise any changes to modules unless you reboot it or use this reload package function.
@@ -18,11 +20,11 @@
 If not this is going to be a struggle.
 
 ## Editing an existing function, tracing the flow.
-- in user_setting.py set USR['race_number'] = 2 and save it. Barbarian
-- in user_setting.py set USR['work_path'] = to a valid/creatable path if /dev/shm is not to your liking. Remember the game when playing will constantly write to this path.
-- if you want audio feedback set the USR['sound_dir'] to where you saved the Notification directory you downloaded.
-- essencial set USR['debug'] = True
-- essencial set USR['log_enabled'] = True 
+- in user_config.py set usr['race_number'] = 2 and save it. Barbarian
+- in user_config.py set usr['work_path'] = to a valid/creatable path if /dev/shm is not to your liking. Remember the game when playing will constantly write to this path.
+- if you want audio feedback set the usr['sound_dir'] to where you saved the Notification directory you downloaded.
+- essencial set usr['debug'] = True
+- essencial set usr['log_enabled'] = True 
 - Open a Widelands game, it is recommended not be in Fullscreen for ease of debug etc.
 - Load or create a Barbarian Game. Pause game and 'show buildings' the `space` bar if you have the default in game macros, or whatever you set it to.
 - Hit the Hotkey `` ` `` backtick and you should get a 'meep meep' audio that is feedback that the widelands modules have been reloaded. If you have disabled sound, then maybe exit autokey. Open a terminal and launch autokey from there so you can see the print statements.
@@ -31,14 +33,14 @@ If not this is going to be a struggle.
 ## Building a Building. 
 - Hover mouse over a 'Green'(large) build site.
 - Hit F1 once only. Congrats you built a Quarry.
-- Now open the USR['work_path'] , in it you will find 4 similar named files.
+- Now open the usr['work_path'] , in it you will find 4 similar named files.
 
 - 145648_03_Quarry-T-green-4164_RGB018_087_008.png
 - 145648_09_tab_selection-F-(93, 50, 40, 7510)-7510_RGB093_050_040.png
 - 145648_35_build_selection-F-(72, 58, 42, 2691)-2691_RGB072_058_042.png
 - Barbarian_debug.txt
 
-- Opening Barbarian_debug.txt , this is the log `USR['log_enabled']` it will have the three image file names minus the .png. This makes life easy if your not making images but want the information, it is readaly at hand.
+- Opening Barbarian_debug.txt , this is the log `usr['log_enabled']` it will have the three image file names minus the .png. This makes life easy if your not making images but want the information, it is readaly at hand.
 
 ## What those images mean.
 - I've supplied them in [example_snapshots/](example_snapshots/)
@@ -49,7 +51,7 @@ If not this is going to be a struggle.
 - find the `def F1()` funtion. It says btype = 'Quarry', should be Quary so you get to edit my spelling mistake. btype is short for building type.
 - next line is build, site = analyze_dialog(btype) , what that does is what I just described above. Take a snapshot of the dialog where the mouse is now (widelands moves the mouse to the tab of the dialog).
 - In this case `build` will be `True` and `site` will be `green`.
-- update_USR(btype, site): this updates the USR globals USR['building'] and USR['icon'] so I am not forever passing these variables around.
+- update_USR(btype, site): this updates the USR globals usr['building'] and usr['icon'] so I am not forever passing these variables around.
 
 - item_pos = (5, 45) we'll get to that in a second.
 - elif site == 'green': I've skipped the others for the moment, this is the `True` condition and it will use the function build_item_L_S(*item_pos) passing the item_pos to that function.
@@ -65,7 +67,7 @@ If not this is going to be a struggle.
 
 ## Now the Action Function. build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg):
 - build_item_tab_change(x_tab, y_tab, x_bldg, y_bldg): you know the `tab` x,y and the item pos x,y , they are passed to the work function: Which I will not labour over other than to give a brief outline.
-- USR['debug'] is on so the second screenshot 145648_09_tab_selection-F-(93, 50, 40, 7510)-7510_RGB093_050_040.png is made on the `destination` click. i.e. where you are about to click , the `red` tab. So you know that it is going to click the red tab. hence the name `tab_selection` in the image file name , i'll explain the rest later.
+- usr['debug'] is on so the second screenshot 145648_09_tab_selection-F-(93, 50, 40, 7510)-7510_RGB093_050_040.png is made on the `destination` click. i.e. where you are about to click , the `red` tab. So you know that it is going to click the red tab. hence the name `tab_selection` in the image file name , i'll explain the rest later.
 - the line stable_click_relative(x_tab,y_tab) , says it all, it clicks the `tab` red in this case, moving the mouse to that position, the dialog opens on the `red` tab. a wait_time is requiered or the dialog won't be fully rendered when we make the third snapshot and click.
 
 - Third snapshot here. Since it is now open on the `red` tab and you want to click on the `Quary` icon, the snapshot is 5 pixels to the right and 45 pixels down. Hence the item_pos is where the building icon is relitive to where the mouse is when it is sitting on the building relavant tab. i.e. if it is an Orange (M,medium) building it is relative from the mouse hovering over the Orange tab.
@@ -103,7 +105,7 @@ If not this is going to be a struggle.
 - So what if I want to upgrade the Amazon Woodcutter. How does that work. Not that simple.
 
 ## Existing Function amazon.py leftbracket()
-- as a pre cursor to this I expect the user to have changed the USR['race_number'] = to 0 so that we are working on the same thing. And opened an Amazon game.
+- as a pre cursor to this I expect the user to have changed the usr['race_number'] = to 0 so that we are working on the same thing. And opened an Amazon game.
 - find that function and let us go through it.
 - update_USR('leftbracket', 'none'): just updating the two USR variables for feedback purposes though I don't even think I bothered to use them but following a standard is good for future profing things.
 - site = determine_dialog(): this is new and the core of this function. Go to common.py and find it and I'll do a step by step.
@@ -111,7 +113,7 @@ If not this is going to be a struggle.
 
 - capter the mouse position so later we can return the mouse to that spot so it doesn't stay where it last was and become a pain in the butt.
 - stable_click() this just `left clicks` where the mouse is hovering and opens a dialog.
-- the sleep here is to give time for the dialog to render, if your getting map images a lot your render time is too short, edit it in the user_setting.py.
+- the sleep here is to give time for the dialog to render, if your getting map images a lot your render time is too short, edit it in the user_config.py.
 - build,site,var = get_screenshot_info(x=-62,y=-35,area=(30,17), method='building')
 - I need to explain this a little. get_screenshot_info() we brushed passed when doing the Build Building tutorial. But now it is essencial for developers to understand as you could write your own `determine_X_dialog` and need specifics.
 
@@ -134,7 +136,7 @@ If not this is going to be a struggle.
 - Now the 'building' method wants to use id_building_via_dialog_tells. check it out. we will go through the most common `Garrison`
 - find a built Patrol Post, Garrison. hover over it and hit the `[` hotkey or your version of it. Then look inside the debug directory and see simalar images 
 - as a side note I usually delete all files in the debug directory before I do things as it gets full and confusing after a while.
-- don't forget to have USR['race_number'] = 0 and `` ` `` reload modules for this tutorial.
+- don't forget to have usr['race_number'] = 0 and `` ` `` reload modules for this tutorial.
 - Two images this time: 
 - 165725_29_n-a-F-Garrison-11512_RGB116_103_023.png
 - 165725_30_n-a-F-(113, 102, 75, 4137)-4137_RGB113_102_075.png

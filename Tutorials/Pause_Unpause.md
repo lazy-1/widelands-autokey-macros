@@ -5,4 +5,4 @@
 - My code relies on `pause` as the pause button and I did not change that so unless you have modified the in game hotkeys for pause to something else all should be fine.
 - I usually do mass building setup while the game is paused so I can take my sweet time. Hence in `Pause` I hover mouse over build site, hit F1 and the Quary is built there, the game unpauses and pauses again to show that the site is built.
 ## Potential issues.
-- The Pause Unpause feedback is great for Single Players but I assume a pain in the ass for Multiplaying. So I suggest you disable the function see [user_settings.md](user_settings.md) to learn about the user_settings.py or just read user_settings.py and set the pause feature to False.
+- The Pause Unpause feedback is great for Single Players but I assume a pain in the ass for Multiplaying. So I suggest you disable the function see [user_config.md](user_config.md) to learn about the user_config.py and how to turn this off.

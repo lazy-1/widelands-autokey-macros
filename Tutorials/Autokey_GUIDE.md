@@ -74,7 +74,7 @@
 - full guide here [Building_Roads.md](Building_Roads.md) 
 
 ## These are all specific Buildings to build
-- I originally created this for Atlantean, hence the Atlantean building names for the hotkeys but those names are irrelivent as a F1 will build a Quarry in Atlantean, if the game is set for Amazon it will build a Stonecutter. See [user_settings.md](user_settings.md) for how to change tribes and other settings.
+- I originally created this for Atlantean, hence the Atlantean building names for the hotkeys but those names are irrelivent as a F1 will build a Quarry in Atlantean, if the game is set for Amazon it will build a Stonecutter. See [user_config.md](user_config.md) for how to change tribes and other settings.
 - These just launch the associated function names. If your technical, open a tribe.py eg: atlantean.py and see the function names are F1() F2() etc, end() for the end key , it is all intuitive I hope and makes for ease of following the code.
 - Here I tried to be consistant. Example F1 makes stonecutter or quary, the same building just different names, obviously when setting up empire or barbarians the F1 will have their quary type buildings.
 - **Special Feature** Example F7 Builds an Amazon Charcoal Kiln. IF the building is built. An F7 on that building will toggle the "Produce Indefinately" option. IF it is a woodcutter that is already built, and F2 will evict the worker, same with the Jungle Preservers , so they can go to Rare Tree Cutters/Plantation. F10 will toggle the "Produce Indefinately" on the Rare Tree Plantation..
@@ -111,6 +111,6 @@
 - Start Widelands (paused is best).
 - Hover over a build site (e.g. red Quarry icon).
 - Press F1 (or your set hotkey) → it should build the Quarry.
-- Make sure user_settings.py has USR['race_number'] = 0 (Amazon) Hover over a woodcutters building, Hit F2 hotkey, the worker should be ejected.
-- If nothing happens: check AutoKey is running, hotkeys set, tribe number correct in user_settings.py.
+- Make sure user_config.py has usr['race_number'] = 0 (Amazon) Hover over a woodcutters building, Hit F2 hotkey, the worker should be ejected.
+- If nothing happens: check AutoKey is running, hotkeys set, tribe number correct in user_config.py.
 - Have Fun :)

@@ -48,7 +48,7 @@ If you want to update easily with one command when new versions come out:
 
    - Starting with widelands-autokey.zip, extract the `Widelands` folder. This will need to be placed in your autokey data directory.  `~/.config/autokey/data/Scripts/` (press Ctrl+H in file manager to see hidden folders) or find a setting to show hidden files. 
 
-   - Next is the  `widelands` specific module. Instructions assume you have an unzipped download or are in the git which is the same. In that dir you will find `widelands` inside is core.py , common.py, user_settings.py and other files etc.
+   - Next is the  `widelands` specific module. Instructions assume you have an unzipped download or are in the git which is the same. In that dir you will find `widelands` inside is core.py , common.py, load_config.py and other files/directories.
 
    - So this `widelands` is the `Package` (modules) , we need to tell autokey where the Package is. Before we do that make sure, that the `widelands` directory is in a place not easilly deleted accidently. Copy/Move it somewhere safe or leave it where it is if that is a safe place.
 
@@ -59,7 +59,7 @@ If you want to update easily with one command when new versions come out:
    - Re-Start autokey to make sure it is loading the package. [Autokey_GUIDE.md](Autokey_GUIDE.md) is a comprehensive overview of My macros, what to do if they are not automatically set etc.
 
 ## That is the Install done.
-   - Next are a few tweek of your user_settings.py which is inside the `widelands` package. see [user_settings.md](user_settings.md)
+   - Next we make a few tweek in your user_config.py see [user_config.md](user_config.md)
 
 
 
