@@ -16,9 +16,7 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
 
 4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the user_config.py file — these settings are tuned to my file system CPU etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
 
-5. Currently it is a manual edit to change the Tribe and other settings but a future thought has me thinking of a popup GUI. See if I'm not as lazy as I say I am.
-
-### Features
+5. GUI edit has been added, in the game, Hotkey Shift plus `` ` ``
 
 - One-key building placement (hover mouse + Hotkey)
 - Road helpers: zigzag, connect, long roads

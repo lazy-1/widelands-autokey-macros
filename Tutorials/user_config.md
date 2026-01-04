@@ -2,6 +2,8 @@
 
 ## File Path ~/.config/widelands_autokey/user_config.py
 
+**OR** hit `Shift````` ` for the GUI interface with the few setting that are needed.
+
 ## First Things First.
 - Run autokey with the macros setup and the `widelands` module intalled. Then open a widelands game, any game. Press one of the Hotkeys, any Hotkey. This auto creates the ~/.config/widelands_autokey/user_config.py file.
 
@@ -10,7 +12,8 @@
 - It is permanant and does not change between module upgrades (unless the config file itself needs changing and notes will be supplied for that upgrade)
 - To edit you need to be able to see Hidden files in your home directory. Turn that feature on in your file browser, and search for that file.
 - It is a literal python module so has more scope than a simple text file. Be careful when editing as corrupting it will disable the macros.
-- Primary use is when you want to be Atlantean instead of Amazon. You will find the usr['race_number'] = 0 , and change that 0 (Amazon) to 1 (Atlantean) reload the package via the `` ` `` (backtick) key (alternate, close and open autokey so it sees the change). And away you go, the Hotkeys are now tuned to building Atlantean buildings etc. Probably I'll make a GUI interface but for now it is manual handling.
+- Primary use is when you want to be Atlantean instead of Amazon. You will find the usr['race_number'] = 0 , and change that 0 (Amazon) to 1 (Atlantean) reload the package via the `` ` `` (backtick) key (alternate, close and open autokey so it sees the change). And away you go, the Hotkeys are now tuned to building Atlantean buildings etc.
+
 - Yet that is not all that this file can do. From change the 'work_path' to how quick the 'warp_settle' is. So have a browse through it and see the comments, they should be very helpful.
 - **Important** before you run this and use it, you should edit a few things. Number one is usr['work_path'] this is where the transient save file goes and I strongly suggest you leave it as /dev/shm as described in [Building_Roads.md](Building_Roads.md) "Coding Overview/Reasons"
 - Another suggestion is edit the usr['sound_dir'] with the path you saved the Notifications in that way you'll have sound, although I don't have a lot of sound, just the `tab` Toggle_tab and the `` ` `` Reload_module nowadays, I did start out with a lot of feedback when I was constructing but dropped a lot of it, you can insert them at will in the code if you want `_play_sound('your_defined_str')` with obviously the entry update in user_config with the sound path.
