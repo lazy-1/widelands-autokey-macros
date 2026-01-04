@@ -45,11 +45,8 @@ def load_the_config():
     
     usr['work_path'] = '/dev/shm/Widelands/'
     
-    # leave this here to check/create work_path or comment out and disable
-    # road building and any debugging.
-    
-    if not os.path.exists(usr['work_path']):
-        os.mkdir(usr['work_path'])
+
+
     # Path to the transient file for road building, must be in work_path
     
     usr['transient_path'] = usr['work_path']+'autokey_transient_store.json'
@@ -67,9 +64,9 @@ def load_the_config():
     # Change to your real path
     #  example usr['sound_dir'] = '/home/yourusername/Sounds/notifications/'
 
-    # This is My personal path to the sounds. So edit it!
+    # make sure it has trailing '/', i.e '/path/' not '/path'
     
-    usr['sound_dir'] = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'Sounds', 'Application', 'Notification')) + '/'
+    usr['sound_dir'] = '' 
 
     # Turn all sounds on/off (pause-unpause beeps, error tones, etc.)
     

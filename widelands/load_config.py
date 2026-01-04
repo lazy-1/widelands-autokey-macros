@@ -10,22 +10,13 @@
 
 import os
 import shutil
-import importlib.util
 import sys
 from pathlib import Path
+import configparser
 
 from .sharedic import USR
+from .tribe_map import _MAPPING
 
-# ────────────────────────────────────────────────────────────────
-# Tribe mapping — used by get_tribe()
-# ────────────────────────────────────────────────────────────────
-_MAPPING = {
-    0: 'Amazon',
-    1: 'Atlantean',
-    2: 'Barbarian',
-    3: 'Empire',
-    4: 'Frisian',
-}
 
 
 def get_tribe():
@@ -37,17 +28,67 @@ def get_tribe():
     return tribe
 
 
+def load_configparser_flat(path: str | Path) -> dict:
+    """
+    Reusable helper: Loads a .conf / .ini file and returns a flat dictionary.
+    
+    - Booleans ('true'/'false' case-insensitive) → bool
+    - Numbers (with or without decimal) → int or float
+    - Everything else → str (whitespace stripped, empty → '')
+    - All sections are flattened — no nesting preserved
+    - Interpolation (%(name)s) is resolved automatically by configparser
+    
+    Usage in other projects:
+        settings = load_configparser_flat('settings.conf')
+        USR.update(settings)
+    """
+    path = Path(path)
+    if not path.is_file():
+        return {}
+
+    cfg = configparser.ConfigParser(allow_no_value=True, interpolation=configparser.ExtendedInterpolation())
+    read_files = cfg.read(path)
+    if not read_files:
+        return {}
+
+    flat = {}
+    for section in cfg.sections():
+        for key, value in cfg[section].items():
+            # Handle empty values
+            if value is None or value.strip() == '':
+                flat[key] = ''
+                continue
+
+            val = value.strip()
+
+            # Boolean
+            if val.lower() in ('true', 'false', 'yes', 'no', 'on', 'off'):
+                flat[key] = val.lower() in ('true', 'yes', 'on')
+
+            # Number (int or float)
+            else:
+                try:
+                    if '.' in val or 'e' in val.lower() or 'E' in val:
+                        flat[key] = float(val)
+                    else:
+                        flat[key] = int(val)
+                except ValueError:
+                    flat[key] = val  # keep as string
+
+    return flat
+
+
 def load_USR_defaults():
     """
-    Creates user config, updates USR.
+    Creates user config if missing, reads user_conf.conf using configparser,
+    updates USR with flat dictionary.
     """
-
     config_dir = Path.home() / '.config' / 'widelands_autokey'
-    config_file = config_dir / 'user_config.py'
+    config_file = config_dir / 'user_conf.conf'
 
     config_dir.mkdir(parents=True, exist_ok=True)
 
-    template_file = Path(__file__).parent / '.config_template' / 'user_config.py'
+    template_file = Path(__file__).parent / '.config_template' / 'user_conf.conf'
 
     # Copy template if user config missing
     if not config_file.exists():
@@ -59,26 +100,30 @@ def load_USR_defaults():
             print("Cannot continue — exiting.")
             sys.exit(1)
 
-    # Load user config dynamically
-    spec = importlib.util.spec_from_file_location("user_config", config_file)
-    if spec is None:
-        print(f"Failed to load user config: {config_file}")
-        sys.exit(1)
-
-    user_config = importlib.util.module_from_spec(spec)
-    sys.modules["user_config"] = user_config
-
+    # Load and flatten
     try:
-        spec.loader.exec_module(user_config)
-        settings_dict = user_config.load_the_config()
+        settings_dict = load_configparser_flat(config_file)
+
+        # If sound_files section exists, store it as a nested dict
+        # (this is the only place where we do something special)
+        cfg = configparser.ConfigParser()
+        cfg.read(config_file)
+        if 'sound_files' in cfg:
+            settings_dict['sound_files'] = dict(cfg['sound_files'])
+
         USR.update(settings_dict)
+        print(USR['sound_dir'])
+        USR['work_path'] = os.path.join(USR['work_path'], "")
+        #print(USR['work_path'] , 'snot gobbler')
+        if not os.path.exists(USR['work_path']):
+            os.mkdir(USR['work_path'])
+        USR['transient_path'] = os.path.join(USR['work_path'], 'autokey_transient_store.json')
     except Exception as e:
-        print(f"ERROR: user_config.py is corrupt or invalid: {e}")
+        print(f"ERROR: user_conf.conf is corrupt or invalid: {e}")
         print("Fallback: Manually copy template to overwrite your config file.")
         print(f"Template location: {template_file}")
         print(f"Target location: {config_file}")
         print("1. Copy the template file to the target location")
         print("2. Edit the copied file with your settings")
         print("3. Reload AutoKey")
-        sys.exit(1)  # or continue with defaults if you prefer not to exit
-
+        sys.exit(1)
