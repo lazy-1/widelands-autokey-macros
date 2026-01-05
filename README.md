@@ -14,9 +14,9 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
 
 3. Set hotkeys in AutoKey, widelands-autokey.zip is supplied, unzip it, put the `Widelands` diretory in your `~/.config/autokey/data/Scripts/` directory. Possibly need to update the keybindings, see [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md).
 
-4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the user_config.py file — these settings are tuned to my file system CPU etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
+4. **Important**: Personalise your paths and desired **Tribe Selection** that you are playing via the in game popup GUI editor or via user_config.py file — these settings are tuned to my file system CPU etc. see [Tutorials/user_config.md](Tutorials/user_config.md)
 
-5. GUI edit has been added, in the game, Hotkey `Shift` and backtick `` ` `` to access it.
+
 
 - One-key building placement (hover mouse + Hotkey)
 - Road helpers: zigzag, connect, long roads
