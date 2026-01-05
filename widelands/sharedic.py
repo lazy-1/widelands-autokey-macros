@@ -1,5 +1,5 @@
 # shared dictionary 
-
+global USR
 USR = {
     'tribe': None,
     'keyboard': None,

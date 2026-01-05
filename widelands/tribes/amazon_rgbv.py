@@ -106,7 +106,7 @@ def id_building_via_dialog_tells(r, g, b, variance):
         and 250 < variance < 450):#Blank brown image Woodcutter is building dialog
         return (False, 'Lighter_brown')
         
-    if (abs(r - 67) <= 5 and abs(g - 52) <= 5 and abs(b - 27) <= 5
+    if (abs(r - 66) <= 3 and abs(g - 52) <= 5 and abs(b - 27) <= 5
         and 1800 < variance < 2500):# Tiny Liana icon
         return (False, 'Liana')
 
@@ -115,7 +115,11 @@ def id_building_via_dialog_tells(r, g, b, variance):
         return (False, 'Stonecutter')
 
     if (abs(r - 105) <= 5 and abs(g - 81) <= 5 and abs(b - 56) <= 5
-        and 9000 < variance < 11500):# Tiny Woodcutter icon
+        and 9000 < variance < 11500):# Tiny Woodcutter icon Master!
+        return (False, 'WoodcutterM')
+
+    if (abs(r - 71) <= 3 and abs(g - 52) <= 5 and abs(b - 27) <= 5
+        and 1800 < variance < 2500):# Tiny Woodcutter icon
         return (False, 'Woodcutter')
     
     return (False, f"({r}, {g}, {b}, {int(variance)})")  

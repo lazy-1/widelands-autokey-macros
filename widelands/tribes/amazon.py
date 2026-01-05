@@ -282,7 +282,7 @@ def backslash():
         in_building_dialog(-195,0)
     if site == 'Stonecutter':
         in_building_dialog(-235, 0)
-    if site == 'Woodcutter':
+    if site == 'WoodcutterM' or site == 'Woodcutter':
         in_building_dialog(-165, 0)
     
 def rightbracket():
@@ -301,9 +301,9 @@ def leftbracket():
         _, usite, var = get_screenshot_info(x=-188,y=0, method='id_dialog_icon')
         if usite == 'upgrade_icon':
             in_building_dialog(-188,0)
-    if site == 'Woodcutter':
+    elif site == 'WoodcutterM' or site == 'Woodcutter':
         in_building_dialog(-234, 0)
-    if site == 'Lighter_brown':
+    elif site == 'Lighter_brown':
         in_building_dialog(-206, 0)
     
 
@@ -313,9 +313,9 @@ def scroll_lock():
     site = determine_dialog()
     if site == 'Garrison':
         in_building_dialog(-164,0)
-    if site == 'Liana':
-        in_building_dialog(-235,0)
-    if site == 'Stonecutter':
+    elif site == 'Stonecutter':
         in_building_dialog(-275, 0)
-    if site == 'Woodcutter':
+    elif site == 'WoodcutterM' or site == 'Woodcutter':
         in_building_dialog(-205, 0)
+    elif site == 'Liana':
+        in_building_dialog(-235,0)
