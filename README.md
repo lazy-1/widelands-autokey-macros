@@ -24,6 +24,8 @@ Tested on Linux Mint 2025 with native AutoKey. Expect to get your hands a little
 - Dismantle/Destroy/Upgrade Hotkeys
 - Visual/audio feedback (unpause-pause, optional sounds)
 
+
+
 ### Detailed Guides
 - [Tutorials/GUIDE.md](Tutorials/GUIDE.md): The Springboard to all the Tutorials.
 - [Tutorials/Autokey_GUIDE.md](Tutorials/Autokey_GUIDE.md): All you need to know about the autokey files in the widelands-autokey.zip that you need to install.
