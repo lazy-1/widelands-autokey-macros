@@ -108,11 +108,18 @@ class ConfigEditor(tk.Tk):
         row += 1
 
         paths = [
-            ("work_path", "[main] work_path"),
-            ("sound_dir", "[main] sound_dir"),
+            ("work_path", "[main] work_path","RAM based is better as Road build writes constantly\nwhich is bad for ssd."),
+            ("sound_dir", "[main] sound_dir","Your Personal Notifications or where you stored the\nNotifications from the download."),
         ]
 
-        for key, label_text in paths:
+        for key, label_text,header_text in paths:
+
+            ttk.Label(tab1, text=header_text).grid(
+                row=row, column=1, sticky="w", padx=5, pady=3
+            )
+            row += 1
+
+            
             ttk.Label(tab1, text=label_text + ":").grid(
                 row=row, column=0, sticky="e", padx=5, pady=3
             )
