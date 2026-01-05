@@ -67,7 +67,7 @@ def F3():
     _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
     if site == 'swirl': # remove worker
         
-        in_building_dialog(68, -34, 'remove_worker')
+        in_building_dialog(68, -34)
         
     
 

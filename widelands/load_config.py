@@ -112,7 +112,6 @@ def load_USR_defaults():
             settings_dict['sound_files'] = dict(cfg['sound_files'])
 
         USR.update(settings_dict)
-        print(USR['sound_dir'])
         USR['work_path'] = os.path.join(USR['work_path'], "")
         #print(USR['work_path'] , 'snot gobbler')
         if not os.path.exists(USR['work_path']):

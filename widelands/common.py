@@ -373,7 +373,7 @@ def analyze_dialog(building): #For build sites mainly
 def determine_dialog():# For a built building what is it?
     # 1. Open the dialog/window
     USR['start_pos'] = capture_mouse_pos()
-    print(USR['start_pos'])
+    #print(USR['start_pos'])
     stable_click()
     time.sleep(USR['wait_to_register3'])  # Let it fully render
     build,site,var = get_screenshot_info(x=-62,y=-35,area=(30,17),
