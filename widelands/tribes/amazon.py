@@ -35,18 +35,15 @@ def F2():
         elif site == 'green':
             build_item_L_S(*item_pos)
         return
-    toggle_tab = transient_store_get('widelands_Toggle_Fkeys', False)
-
-    
-    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
-
-    if site == 'swirl':
-        if built == 'building_built':#, 'remove_worker'
-            in_building_dialog(68, -34)
-            return
-            
-  
-    output_error(f'{built} toggled-{toggle_tab}')
+    start_pos = USR['start_pos']
+    site = determine_dialog()
+    if site == 'WoodcutterM':
+        in_building_dialog(68, -34)
+        return
+    stable_click(3)
+    time.sleep(USR['wait_to_register3'])
+    restore_mouse_pos(start_pos)
+    #output_error(f'{built} toggled-{toggle_tab}')
 
 
 def F3():
@@ -64,10 +61,16 @@ def F3():
         else:
             output_error()
         return
-    _, built, var = get_screenshot_info(x=0,y=-90,desc='detect_dialog',area=(15,15))
-    if site == 'swirl': # remove worker
-        
+    start_pos = USR['start_pos']
+    site = determine_dialog()
+    if site == 'Jungle_PreserverM':
         in_building_dialog(68, -34)
+        return
+  
+    stable_click(3)
+    time.sleep(USR['wait_to_register3'])
+    restore_mouse_pos(start_pos)
+        
         
     
 

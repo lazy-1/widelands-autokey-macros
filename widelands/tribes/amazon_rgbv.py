@@ -114,6 +114,17 @@ def id_building_via_dialog_tells(r, g, b, variance):
         and 3000 < variance < 4000):# Tiny StoneCutter icon
         return (False, 'Stonecutter')
 
+
+    if (abs(r - 58) <= 5 and abs(g - 63) <= 5 and abs(b - 24) <= 5
+        and 2500 < variance < 3200):# Tiny Jungle Preserver
+        return (False, 'Jungle_Preserver')
+
+    if (abs(r - 64) <= 5 and abs(g - 67) <= 5 and abs(b - 33) <= 5
+        and 3000 < variance < 4000):# Tiny Jungle Preserver Master
+        return (False, 'Jungle_PreserverM')
+
+
+    
     if (abs(r - 105) <= 5 and abs(g - 81) <= 5 and abs(b - 56) <= 5
         and 9000 < variance < 11500):# Tiny Woodcutter icon Master!
         return (False, 'WoodcutterM')
