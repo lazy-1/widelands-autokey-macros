@@ -10,6 +10,6 @@
 
 - Fixed Dismantle issues that destroyed some building, should work as expected now.
 
-- Fixed Connect roads not creating flags, needed an extra dwell time.
+- Fixed Connect roads not creating flags, needed an extra wait time.
 
 - Added this changelog file. 
