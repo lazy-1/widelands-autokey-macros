@@ -9,6 +9,7 @@
 - Fixed return to original possition in woodcutter and jungle worker kick
 
 - Fixed Dismantle issues that destroyed some building, should work as expected now.
+- Fixed not detecting Fortress Amazon
 
 - Fixed Connect roads not creating flags, needed an extra wait time.
 

@@ -94,7 +94,7 @@ def id_dialog_icon(r, g, b, variance):
     return (False, f"({r}, {g}, {b}, {int(variance)})") 
 
 def id_building_via_dialog_tells(r, g, b, variance):
-    if (abs(r - 124) <= 10 and abs(g - 106) <= 10 and abs(b - 26) <= 10
+    if (abs(r - 124) <= 12 and abs(g - 106) <= 10 and abs(b - 26) <= 10
         and 10000 < variance < 12500):# 'Gar' image
         return (False, 'Garrison')
     
