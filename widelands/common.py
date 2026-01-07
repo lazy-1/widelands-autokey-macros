@@ -269,6 +269,7 @@ def Build_Connect_Road(keyboard):
     USR['keyboard'] = keyboard
     if do:# End road
         ctrl_press()#ctrl_on()
+        time.sleep(USR['wait1'])
         transient_store_set('widelands_join_rd', False)
         stable_click()              # final click to place the connection
         time.sleep(USR['wait1'])

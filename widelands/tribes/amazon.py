@@ -38,6 +38,7 @@ def F2():
     start_pos = USR['start_pos']
     site = determine_dialog()
     if site == 'WoodcutterM':
+        USR['start_pos'] = start_pos
         in_building_dialog(68, -34)
         return
     stable_click(3)
@@ -64,9 +65,9 @@ def F3():
     start_pos = USR['start_pos']
     site = determine_dialog()
     if site == 'Jungle_PreserverM':
+        USR['start_pos'] = start_pos 
         in_building_dialog(68, -34)
         return
-  
     stable_click(3)
     time.sleep(USR['wait_to_register3'])
     restore_mouse_pos(start_pos)
