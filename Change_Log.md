@@ -6,6 +6,8 @@
 
 - finetuned Woodcutter and Jungle preserver Kick Master, will only kick if it is a master.
 
+- Fixed return to original possition in woodcutter and jungle worker kick
+
 - Fixed Dismantle issues that destroyed some building, should work as expected now. 
 
 - Added this changelog file. 
