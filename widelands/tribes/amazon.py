@@ -281,13 +281,13 @@ def backslash():
     update_USR('backslash_Dismantle', 'none')
     site = determine_dialog()
     if site == 'Garrison':
-        in_building_dialog(-124,0)
+        in_building_dialog(-124,0,leftc=False)
     if site == 'Liana':
-        in_building_dialog(-195,0)
+        in_building_dialog(-195,0,leftc=False)
     if site == 'Stonecutter':
-        in_building_dialog(-235, 0)
+        in_building_dialog(-235, 0,leftc=False)
     if site == 'WoodcutterM' or site == 'Woodcutter':
-        in_building_dialog(-165, 0)
+        in_building_dialog(-165, 0,leftc=False)
     
 def rightbracket():
     # Double Click

@@ -311,7 +311,7 @@ def Build_New_Road(keyboard):
 #
 #
 
-def in_building_dialog(x,y):# For Dismantles & Upgrades etc
+def in_building_dialog(x,y,leftc=True):# For Dismantles & Upgrades etc
     ctrl_press()#ctrl_on()'
     if USR['debug']:
         time.sleep(USR['wait_screenshot'])# race issues, mss is so fast....
@@ -321,7 +321,8 @@ def in_building_dialog(x,y):# For Dismantles & Upgrades etc
     time.sleep(USR['wait_to_register3'])
     ctrl_release()#ctrl_off()
     unpause_pause()
-    stable_click(3)
+    if leftc:
+        stable_click(3)
     time.sleep(0.03)# too quick and it doesn't restore mouse...
     restore_mouse_pos(USR['start_pos'])
 
