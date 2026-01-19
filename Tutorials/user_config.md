@@ -5,15 +5,15 @@
 **OR** hit the `Shift` plus `````` for the GUI interface with the few setting that are needed.
 
 ## First Things First.
-- Run autokey with the macros setup and the `widelands` module intalled. Then open a widelands game, any game. Press one of the Hotkeys, any Hotkey. This auto creates the ~/.config/widelands_autokey/user_config.py file.
+- Run autokey with the macros setup and the `widelands` module installed. Then open a widelands game, any game. Press one of the Hotkeys, any Hotkey. This auto creates the ~/.config/widelands_autokey/user_config.py file.
 
 ### Overview
 - This file is created on the first use of an autokey Hotkey press.
-- It is permanant and does not change between module upgrades (unless the config file itself needs changing and notes will be supplied for that upgrade)
+- It is permanent and does not change between module upgrades (unless the config file itself needs changing and notes will be supplied for that upgrade)
 - To edit this manually you need to be able to see Hidden files in your home directory. Turn that feature on in your file browser, and search for that file.
 - It is a native .conf file. Be careful when editing as corrupting it will disable the macros.
-- Alternate, use the editor supplied, optimally launch it via `Shift` + `` ` `` (shift backtick) or if you want to, via config_editor.py by running `./config_editor.py` in the widelands directory.
-- Primary use is when you want to be Atlantean instead of Amazon. You will find the 'race_number' = 0 up top, and change that 0 (Amazon) to 1 (Atlantean) reload the package via the `` ` `` (backtick) key Or via editor choose tribe from dropdown. And away you go, the Hotkeys are now tuned to building Atlantean buildings etc.
+- Alternate, use the editor supplied, optimally launch it via `Shift` + `` ` `` (shift back-tick) or if you want to, via config_editor.py by running `./config_editor.py` in the widelands directory.
+- Primary use is when you want to be Atlantean instead of Amazon. You will find the 'race_number' = 0 up top, and change that 0 (Amazon) to 1 (Atlantean) reload the package via the `` ` `` (back-tick) key Or via editor choose tribe from drop-down. And away you go, the Hotkeys are now tuned to building Atlantean buildings etc.
 
 - Yet that is not all that this file can do. From change the 'work_path' to how quick the 'warp_settle' is. README-user_conf.txt in the hidden directory of the .config_template/ directory should be helful if your a developer.
 

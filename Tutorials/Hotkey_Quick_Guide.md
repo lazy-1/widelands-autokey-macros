@@ -4,23 +4,23 @@
 ### Amazon
 
 **F-keys**
-F1 =	Stonecutter	
-F2 =  	Woodcutter		      if Built:# remove worker
-F3 =  	Jungle_Preserver	      if Built:# remove worker
-F4 =  	Water_Gatherer
-F5 =	Cassava_Root_Cooker (Bread)
-F6 =  	Chocolate_Brewery
-F7 =  	Charcoal_Kiln			if Built:# infinate coal
-F8 =  	Food_Preserver
-F9 =  	DressMakery
-F10 =  	Rare_Tree_Plantation		if Built:#  infinate Rare/StoneMine
-F11 =  	Hunter_Gatherer
-F12 =  	Wilderness_Keeper 
+- F1 =	Stonecutter	
+- F2 =  	Woodcutter		      if Built:# remove worker
+- F3 =  	Jungle_Preserver	      if Built:# remove worker
+- F4 =  	Water_Gatherer
+- F5 =	Cassava_Root_Cooker (Bread)
+- F6 =  	Chocolate_Brewery
+- F7 =  	Charcoal_Kiln			if Built:# infinate coal
+- F8 =  	Food_Preserver
+- F9 =  	DressMakery
+- F10 =  	Rare_Tree_Plantation		if Built:#  infinate Rare/StoneMine
+- F11 =  	Hunter_Gatherer
+- F12 =  	Wilderness_Keeper 
 
-[ = 	Upgrade: Woodcutter and Garrisons
-] =	Double Click. (Delete road under mouse, good for clean up forests)
-\ =	Dismantles: Garrison, Stonecutter, Woodcutter and Lianacutter
-
+- [ = 	Upgrade: Woodcutter and Garrisons
+- ] =	Double Click. (Delete road under mouse, good for clean up forests)
+- \ =	ctrl-Dismantles: Garrison, Stonecutter, Woodcutter and Lianacutter
+- scroll_lock, ctrl-Destroys Most Buildings.. If on a flag ctrl-destroy
 
 **Tab toggle Down (normal, false, default state)**  
 - 'end' = Stone_Workshop  
@@ -34,13 +34,6 @@ F12 =  	Wilderness_Keeper
 - '=' = Warriors_Dwelling  
 - np_add(+) = Rope_Weaver  
 
-
-**Other**  
-  
-- [ = Upgrades Buldings such as Tower or Woodcutter
-- ] = Double Click (Delete road under mouse, clean up foresters area)
-- \ = Dismantles Most Buildings  
-- scroll_lock = Destroys Most Buildings
 
 ### Atlantean
 

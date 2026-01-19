@@ -91,6 +91,14 @@ def id_dialog_icon(r, g, b, variance):
         and 12000 < variance < 13500):
         return (False, 'building_built')#is a woodcutter or Jungle preserve
 
+    #if (abs(r - 39) <= 5 and abs(g - 50) <= 5 and abs(b - 35) <= 4
+    #    and 3500 < variance < 4500):
+    #    return (False, 'flag_selected')#is a build road dialog
+
+
+
+    
+
     return (False, f"({r}, {g}, {b}, {int(variance)})") 
 
 def id_building_via_dialog_tells(r, g, b, variance):
@@ -132,6 +140,16 @@ def id_building_via_dialog_tells(r, g, b, variance):
     if (abs(r - 71) <= 3 and abs(g - 52) <= 5 and abs(b - 27) <= 5
         and 1800 < variance < 2500):# Tiny Woodcutter icon
         return (False, 'Woodcutter')
+
+
+    if (abs(r - 39) <= 5 and abs(g - 50) <= 5 and abs(b - 35) <= 4
+        and 3500 < variance < 4500):
+        return (False, 'flag_selected')#is a build road dialog
+
+
+
+
+
     
     return (False, f"({r}, {g}, {b}, {int(variance)})")  
     

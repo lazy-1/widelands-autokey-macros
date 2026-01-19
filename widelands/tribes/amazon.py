@@ -323,3 +323,5 @@ def scroll_lock():
         in_building_dialog(-205, 0)
     elif site == 'Liana':
         in_building_dialog(-235,0)
+    elif site == 'flag_selected':
+        in_building_dialog(36,0)

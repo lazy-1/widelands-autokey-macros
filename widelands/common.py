@@ -383,6 +383,10 @@ def determine_dialog():# For a built building what is it?
     if site == 'Standard_brown':
         build,site,var = get_screenshot_info(x=-327,y=-67,area=(22,22),
                                              method='building')
+
+    elif site[0] == '(':
+        build,site,var = get_screenshot_info(x=0,y=0,area=(30,30),
+                                             method='building')
     #if site == 'none':
         
     return site
