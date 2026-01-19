@@ -1,3 +1,10 @@
+## 2026 January 19th.
+
+- Added ctrl click on flag to delete it using the scroll-lock key in Amazon tribe. Not implemented in any other tribe yet.
+
+- tidied the code a tiny bit, did some spelling fixes on a few of the md files.
+
+
 ## 2026 January 7th.
 
 - Fixed many minor issues with detecting Amazon buildings.
